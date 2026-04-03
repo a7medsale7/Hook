@@ -71,6 +71,13 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
                     entry.Entity.UpdatedById = userId;
                     entry.Entity.UpdatedOn = DateTime.UtcNow; // ضبط تاريخ آخر تعديل
                     break;
+
+                case EntityState.Deleted:
+                    entry.State = EntityState.Modified; // تحويل الحذف لتعديل
+                    entry.Entity.IsDeleted = true; // علامة الحذف
+                    entry.Entity.UpdatedById = userId;
+                    entry.Entity.UpdatedOn = DateTime.UtcNow;
+                    break;
             }
         }
 

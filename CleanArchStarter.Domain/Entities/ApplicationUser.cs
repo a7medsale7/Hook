@@ -14,6 +14,9 @@ public class ApplicationUser : IdentityUser
     // ✅ إضافة المحافظة
     public string? Governorate { get; set; }
 
+    public string? ProfilePictureUrl { get; set; }
+    public string? Bio { get; set; }
+
     public bool IsDisabled { get; set; }
 
     // Navigation Properties

@@ -5,7 +5,7 @@
 namespace CleanArchStarter.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class book5 : Migration
+    public partial class FinalizeDatabaseArchitecture : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

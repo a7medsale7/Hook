@@ -7,10 +7,9 @@ namespace Hook.Domain.Entities;
 public class Payment : Auditable
 {
     public Guid Id { get; set; } = Guid.NewGuid();
-    public bool IsDeleted { get; set; } = false;
 
-    public Guid BookingId { get; set; }
-    public virtual Booking Booking { get; set; } = null!;
+    public Guid? BookingId { get; set; }
+    public virtual Booking? Booking { get; set; }
 
     public decimal Amount { get; set; }
     public PaymentStatus Status { get; set; } = PaymentStatus.Pending;

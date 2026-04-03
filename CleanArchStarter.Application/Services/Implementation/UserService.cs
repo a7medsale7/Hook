@@ -1,6 +1,5 @@
 using Hook.Application.Abstractions.Result;
 using Hangfire;
-using Hook.Application.Abstractions.Result;
 using Hook.Application.Contracts.Users;
 using Hook.Application.Errors;
 using Hook.Application.Services.Interfaces;
@@ -25,18 +24,21 @@ public class UserService : IUserService
     private readonly ApplicationDbContext _context;
     private readonly RoleManager<ApplicationRole> _roleManager;
     private readonly IRoleService _roleService;
+    private readonly IFileService _fileService;
     public UserService(
         UserManager<ApplicationUser> userManager,
         IEmailSender emailSender,
         ApplicationDbContext context,
         RoleManager<ApplicationRole> roleManager,
-        IRoleService roleService)
+        IRoleService roleService,
+        IFileService fileService)
     {
         _userManager = userManager;
         _emailSender = emailSender;
         _context = context;
         _roleManager = roleManager;
         _roleService = roleService;
+        _fileService = fileService;
     }
 
     public async Task<IEnumerable<UserResponse>> GetAllAsync(CancellationToken cancellationToken = default) =>
@@ -53,10 +55,11 @@ public class UserService : IUserService
                u.LastName,
                u.Email,
                u.IsDisabled,
+               u.Governorate,
                Roles = roles.Select(x => x.Name!).ToList()
            }
             )
-            .GroupBy(u => new { u.Id, u.FirstName, u.LastName, u.Email, u.IsDisabled })
+            .GroupBy(u => new { u.Id, u.FirstName, u.LastName, u.Email, u.IsDisabled , u.Governorate })
            .Select(u => new UserResponse
            {
                Id = u.Key.Id,
@@ -64,7 +67,10 @@ public class UserService : IUserService
                LastName = u.Key.LastName,
                Email = u.Key.Email,
                IsDisabled = u.Key.IsDisabled,
-               Roles = u.SelectMany(x => x.Roles)
+               Roles = u.SelectMany(x => x.Roles),
+               Governorate = u.Key.Governorate
+
+
            })
            .ToListAsync(cancellationToken);
 
@@ -83,6 +89,7 @@ public class UserService : IUserService
             LastName = user.LastName,
             Email = user.Email!,
             IsDisabled = user.IsDisabled,
+            Governorate = user.Governorate!,
             Roles = roles
         };
 
@@ -99,7 +106,10 @@ public class UserService : IUserService
             FirstName = user.FirstName,
             LastName = user.LastName,
             Email = user.Email!,
-            PhoneNumber = user.PhoneNumber
+            PhoneNumber = user.PhoneNumber,
+            Governorate = user.Governorate,
+            Bio = user.Bio,
+            ProfilePictureUrl = user.ProfilePictureUrl
         });
     }
     public async Task<Result<UserProfileResponse>> UpdateProfileAsync(string userId, UpdateProfileRequest request)
@@ -107,18 +117,35 @@ public class UserService : IUserService
         var user = await _userManager.FindByIdAsync(userId);
         if (user is null)
             return Result.Failure<UserProfileResponse>(UserErrors.UserNotFound);
+
+        // --- التعامل مع الملف (رفع الصورة) ---
+        if (request.Image is not null)
+        {
+            // مسح الصورة القديمة إذا وجدت
+            _fileService.DeleteFile(user.ProfilePictureUrl);
+            
+            // حفظ الصورة الجديدة
+            user.ProfilePictureUrl = await _fileService.SaveFileAsync(request.Image, "profiles");
+        }
+
         user.FirstName = request.FirstName;
         user.LastName = request.LastName;
         user.PhoneNumber = request.PhoneNumber;
+        user.Governorate = request.Governorate;
+        user.Bio = request.Bio;
         await _userManager.UpdateAsync(user);
         return Result.Success(new UserProfileResponse
         {
             FirstName = user.FirstName,
             LastName = user.LastName,
             Email = user.Email!,
-            PhoneNumber = user.PhoneNumber
+            PhoneNumber = user.PhoneNumber,
+            Governorate = user.Governorate,
+            Bio = user.Bio,
+            ProfilePictureUrl = user.ProfilePictureUrl
         });
     }
+
     public async Task<Result> ChangePasswordAsync(string userId, ChangePasswordRequest request)
     {
         var user = await _userManager.FindByIdAsync(userId);
@@ -139,18 +166,20 @@ public class UserService : IUserService
         // ?? ????? Error ?? ??????? ?? ????? ???? ??? Security (???? ???? ???? ????????? ???????)
         if (user is null)
             return Result.Success();
-        // 1. ????? ??????
+        // 1. Generate Token
         var token = await _userManager.GeneratePasswordResetTokenAsync(user);
 
-        // 2. ????? ?????? ???? ????? ?? ??? URL
+        // 2. Encode token for URL safety
         var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
-        // 3. ???? ???? ??? Reset (?? ???? ??????? ???)
+        
+        // 3. Create reset link (Point to Frontend or API helper)
         var resetLink = $"{originUrl}/reset-password?email={user.Email}&token={encodedToken}";
-        // 4. ????? ??????? ?? ??????? ?? Hangfire
+        
+        // 4. Enqueue email sending job
         BackgroundJob.Enqueue(() => _emailSender.SendEmailAsync(
             user.Email!,
-            "??????? ???? ??????",
-            $"????? ???<br>???????? ???? ???? ?????? ???? ??? ?????? ??????:<br><a href='{resetLink}'>???? ???</a>"
+            "Hook - Password Reset Request ⚓",
+            $"Hello {user.FirstName},<br><br>You requested to reset your password. Please click the link below to proceed:<br><br><a href='{resetLink}' style='display: inline-block; padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;'>Reset Password</a><br><br>If you didn't request this, please ignore this email."
         ));
         return Result.Success();
     }
@@ -197,7 +226,8 @@ public class UserService : IUserService
             LastName = request.LastName,
             Email = request.Email,
             UserName = request.Email, // ????????? ?? ??? ???????? ?? ??????
-            EmailConfirmed = true   // ????? ?? ??????? ?? ?? ????? ????? ?????? ????????
+            EmailConfirmed = true,   // ????? ?? ??????? ?? ?? ????? ????? ?????? ????????
+            Governorate = request.Governorate
         };
 
         // 4. ????? ???????? ?? ???? ??????
@@ -228,14 +258,12 @@ public class UserService : IUserService
             LastName = user.LastName,
             Email = user.Email!,
             IsDisabled = user.IsDisabled,
-            Roles = request.Roles
+            Roles = request.Roles,
+            Governorate = user.Governorate!
         };
 
         return Result.Success(response);
     }
-
-
-
 
 
 
@@ -263,6 +291,7 @@ public class UserService : IUserService
         user.Email = request.Email;
         user.UserName = request.Email;
         user.PhoneNumber = request.PhoneNumber;
+        user.Governorate = request.Governorate;
 
         var result = await _userManager.UpdateAsync(user);
 

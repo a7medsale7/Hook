@@ -7,7 +7,6 @@ namespace Hook.Domain.Entities;
 public class Trip : Auditable
 {
     public Guid Id { get; set; } = Guid.NewGuid();
-    public bool IsDeleted { get; set; } = false;
 
     public string Title { get; set; } = string.Empty;
     public string ShortDescription { get; set; } = string.Empty;

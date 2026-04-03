@@ -22,9 +22,15 @@ public class BoatOwnerProfileConfiguration : IEntityTypeConfiguration<BoatOwnerP
             .IsRequired()
             .HasMaxLength(50);
 
+        builder.HasIndex(x => x.NationalIdNumber)
+            .IsUnique();
+
         builder.Property(x => x.BoatLicenseNumber)
             .IsRequired()
             .HasMaxLength(50);
+
+        builder.HasIndex(x => x.BoatLicenseNumber)
+            .IsUnique();
 
         builder.HasMany(x => x.Boats)
             .WithOne(b => b.OwnerProfile)

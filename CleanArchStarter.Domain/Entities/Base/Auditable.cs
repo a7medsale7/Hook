@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,4 +18,7 @@ public abstract class Auditable
 
     // تاريخ آخر تعديل
     public DateTime? UpdatedOn { get; set; }
+
+    // ✅ للحذف الناعم (Soft Delete)
+    public bool IsDeleted { get; set; } = false;
 }

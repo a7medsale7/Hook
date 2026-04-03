@@ -28,7 +28,7 @@ public class UsersController(IUserService userService) : ControllerBase
 
     [HttpPut("profile")]
     [Authorize(Policy = Permissions.Users_UpdateProfile)]
-    public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileRequest request)
+    public async Task<IActionResult> UpdateProfile([FromForm] UpdateProfileRequest request)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         if (userId is null) return Unauthorized();
@@ -60,7 +60,7 @@ public class UsersController(IUserService userService) : ControllerBase
     {
         var originUrl = $"{Request.Scheme}://{Request.Host.Value}";
         await _userService.ForgotPasswordAsync(request, originUrl);
-        return Ok(new { message = "??? ??? ????? ?????????? ?????? ?????? ????? ????? ????? ??? ???? ???????? ???? ??????." });
+        return Ok(new { message = "If the email address is in the system, a password reset link will be sent to it soon 🙌" });
     }
 
     [HttpPost("reset-password")]

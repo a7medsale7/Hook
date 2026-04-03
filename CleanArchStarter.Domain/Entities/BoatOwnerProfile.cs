@@ -8,7 +8,6 @@ namespace Hook.Domain.Entities;
 public class BoatOwnerProfile : Auditable
 {
     public Guid Id { get; set; } = Guid.NewGuid();
-    public bool IsDeleted { get; set; } = false;
 
     // UserId in Identity system is string
     public string UserId { get; set; } = string.Empty;

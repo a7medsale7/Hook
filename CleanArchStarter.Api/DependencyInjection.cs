@@ -4,6 +4,7 @@ using Hook.Application.Services.Interfaces;
 using Hook.Infrastructure;
 using Hook.Infrastructure.Authentication;
 using Hook.Infrastructure.Mail;
+using Hook.Application.Abstractions;
 using FluentValidation;
 using Hangfire;
 using Mapster;
@@ -55,6 +56,7 @@ public static class DependencyInjection
         services.AddInfrastructure(configuration);
         services.Configure<MailSetting>(configuration.GetSection(nameof(MailSetting)));
         services.AddTransient<IEmailSender, EmailService>();
+        services.AddScoped<IFileService, FileService>();
         services.AddHttpContextAccessor();
 
         return services;

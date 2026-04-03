@@ -7,7 +7,6 @@ namespace Hook.Domain.Entities;
 public class TripDate : Auditable
 {
     public Guid Id { get; set; } = Guid.NewGuid();
-    public bool IsDeleted { get; set; } = false;
 
     public Guid TripId { get; set; }
     public virtual Trip Trip { get; set; } = null!;

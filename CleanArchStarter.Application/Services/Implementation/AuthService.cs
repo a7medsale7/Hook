@@ -97,6 +97,8 @@ public class AuthService(UserManager<ApplicationUser> userManager,
             Name = user.UserName,
             FirstName = user.FirstName,
             LastName = user.LastName,
+            Governorate = user.Governorate,
+            ProfilePictureUrl = user.ProfilePictureUrl,
             Token = token,
             ExpiresIn = (int)(expiration - DateTime.UtcNow).TotalSeconds,
             RefreshToken = refreshToken,
@@ -122,7 +124,8 @@ public class AuthService(UserManager<ApplicationUser> userManager,
             UserName = registerRequest.Email,
             Email = registerRequest.Email,
             FirstName = registerRequest.FirstName,
-            LastName = registerRequest.LastName
+            LastName = registerRequest.LastName,
+            Governorate = registerRequest.Governorate
         };
 
         var result = await _userManager.CreateAsync(user, registerRequest.Password);
@@ -316,6 +319,8 @@ public class AuthService(UserManager<ApplicationUser> userManager,
             Name = user.UserName,
             FirstName = user.FirstName,
             LastName = user.LastName,
+            Governorate = user.Governorate,
+            ProfilePictureUrl = user.ProfilePictureUrl,
             Token = newToken,
             ExpiresIn = (int)(expiration - DateTime.UtcNow).TotalSeconds,
             RefreshToken = newRefreshToken,

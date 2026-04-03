@@ -13,5 +13,7 @@ public class UserResponse
     public string Email { get; set; }
     public bool IsDisabled { get; set; }
 
+    public string Governorate { get; set; }
+
     public IEnumerable<string> Roles { get; set; }
 }

@@ -7,7 +7,6 @@ namespace Hook.Domain.Entities;
 public class Booking : Auditable
 {
     public Guid Id { get; set; } = Guid.NewGuid();
-    public bool IsDeleted { get; set; } = false;
 
     public string UserId { get; set; } = string.Empty;
     public virtual ApplicationUser User { get; set; } = null!;
