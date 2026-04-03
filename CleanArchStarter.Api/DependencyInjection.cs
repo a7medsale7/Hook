@@ -1,0 +1,202 @@
+using CleanArchStarter.Api.Middleware;
+using CleanArchStarter.Application;
+using CleanArchStarter.Application.Services.Implementation;
+using CleanArchStarter.Application.Services.Interfaces;
+using CleanArchStarter.Infrastructure;
+using CleanArchStarter.Infrastructure.Authentication;
+using CleanArchStarter.Infrastructure.Mail;
+using FluentValidation;
+using Hangfire;
+using Mapster;
+using MapsterMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.IdentityModel.Tokens;
+using CleanArchStarter.Domain.Abstractions;
+using CleanArchStarter.Infrastructure.Persistence;
+using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
+using System.Reflection.Metadata;
+using System.Text;
+using CleanArchStarter.Domain.Abstractions.Repositories;
+using CleanArchStarter.Infrastructure.Repositories;
+using CleanArchStarter.Infrastructure.Authentication.Filters;
+
+namespace CleanArchStarter.Api;
+
+public static class DependencyInjection
+{
+    public static IServiceCollection AddApiDependencies(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        services
+            .AddInfrastructureLayer(configuration)
+            .AddRepositories()
+            .AddApplicationServices()
+            .AddPresentation()
+            .AddSwaggerDocumentation()
+            .AddMapsterConfiguration()
+            .AddFluentValidationConfiguration()
+            .AddAuthenticationConfiguration(configuration)
+            .AddHangfireConfig(configuration);
+
+        return services;
+    }
+
+    // ================================
+    // Infrastructure Layer
+    // ================================
+    private static IServiceCollection AddInfrastructureLayer(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        services.AddInfrastructure(configuration);
+        services.Configure<MailSetting>(configuration.GetSection(nameof(MailSetting)));
+        services.AddTransient<IEmailSender, EmailService>();
+        services.AddHttpContextAccessor();
+
+        return services;
+    }
+
+    // ================================
+    // Repositories Registration
+    // ================================
+    private static IServiceCollection AddRepositories(
+        this IServiceCollection services)
+    {
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddScoped<IRoleRepository, RoleRepository>();
+
+        services.AddExceptionHandler<GlobalExceptionHandler>();
+        services.AddProblemDetails();
+
+        
+
+
+        return services;
+    }
+
+    // ================================
+    // Application Services
+    // ================================
+    private static IServiceCollection AddApplicationServices(
+        this IServiceCollection services)
+    {
+        services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<IRoleService, RoleService>();
+
+        services.AddScoped<IUserService,UserService>();
+        return services;
+    }
+
+    // ================================
+    // Controllers + API Explorer
+    // ================================
+    private static IServiceCollection AddPresentation(
+        this IServiceCollection services)
+    {
+        services.AddControllers();
+        services.AddEndpointsApiExplorer();
+        return services;
+    }
+
+    // ================================
+    // Swagger Configuration
+    // ================================
+    private static IServiceCollection AddSwaggerDocumentation(
+        this IServiceCollection services)
+    {
+        services.AddSwaggerGen();
+        return services;
+    }
+
+    // ================================
+    // Mapster Configuration
+    // ================================
+    private static IServiceCollection AddMapsterConfiguration(
+        this IServiceCollection services)
+    {
+        var mappingConfig = TypeAdapterConfig.GlobalSettings;
+        mappingConfig.Scan(typeof(CleanArchStarter.Application.AssemblyReference).Assembly);
+        services.AddSingleton<IMapper>(new Mapper(mappingConfig));
+
+        return services;
+    }
+
+    // ================================
+    // FluentValidation Configuration
+    // ================================
+    private static IServiceCollection AddFluentValidationConfiguration(
+        this IServiceCollection services)
+    {
+        services.AddFluentValidationAutoValidation();
+        services.AddValidatorsFromAssembly(
+            typeof(CleanArchStarter.Application.AssemblyReference).Assembly);
+
+        return services;
+    }
+
+    // ================================
+    // AddAuthentication Configuration
+    // ================================
+
+    private static IServiceCollection AddAuthenticationConfiguration(
+     this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddScoped<IJwtProvider, JwtProvider>();
+
+        services.AddOptions<JwtOptions>()
+            .Bind(configuration.GetSection(JwtOptions.SectionName))
+            .ValidateDataAnnotations()
+            .ValidateOnStart();
+
+        services.AddSingleton<IAuthorizationPolicyProvider, PermissionAuotherzationPolicyProvider>();
+        services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>();
+
+        var settings = configuration
+            .GetSection(JwtOptions.SectionName)
+            .Get<JwtOptions>()!;
+
+        services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
+        .AddJwtBearer(options =>
+        {
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = settings.Issuer,
+                ValidAudience = settings.Audience,
+                IssuerSigningKey = new SymmetricSecurityKey(
+                    Encoding.UTF8.GetBytes(settings.Key))
+            };
+        });
+
+        return services;
+    }
+
+    // ================================
+    // Hangfire Configuration
+    // ================================
+    private static IServiceCollection AddHangfireConfig(
+       this IServiceCollection services,
+       IConfiguration configuration)
+    {
+
+        services.AddHangfire(config => config
+      .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+      .UseSimpleAssemblyNameTypeSerializer()
+      .UseRecommendedSerializerSettings()
+      .UseSqlServerStorage(configuration.GetConnectionString("HangfireConnection"))); // أو DefaultConnection حسب إنت مسجل الداتا بيس بتاعتك فين
+
+        return services;
+    }
+
+}
