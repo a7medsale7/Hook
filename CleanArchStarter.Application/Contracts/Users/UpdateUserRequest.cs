@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CleanArchStarter.Application.Contracts.Users;
+namespace Hook.Application.Contracts.Users;
 public class UpdateUserRequest
 {
     public string FirstName { get; set; } = string.Empty;

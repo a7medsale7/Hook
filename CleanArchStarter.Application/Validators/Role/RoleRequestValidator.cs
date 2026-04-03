@@ -1,12 +1,12 @@
-﻿using CleanArchStarter.Application.Contracts.Roles;
-using FluentValidation;
+﻿using FluentValidation;
+using Hook.Application.Contracts.Roles;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CleanArchStarter.Application.Validators.Role;
+namespace Hook.Application.Validators.Role;
 public class RoleRequestValidator : AbstractValidator<RoleReqest>
 {
     public RoleRequestValidator()

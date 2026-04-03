@@ -1,5 +1,5 @@
-﻿using CleanArchStarter.Domain.Consts;
-using CleanArchStarter.Domain.Entities;
+﻿using Hook.Domain.Consts;
+using Hook.Domain.Entities;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -10,7 +10,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CleanArchStarter.Infrastructure.Authentication;
+namespace Hook.Infrastructure.Authentication;
 public class JwtProvider(IOptions<JwtOptions> options) : IJwtProvider
 {
     private readonly JwtOptions options = options.Value;

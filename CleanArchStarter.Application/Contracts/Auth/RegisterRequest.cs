@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CleanArchStarter.Application.Contracts.Auth;
+namespace Hook.Application.Contracts.Auth;
 public class RegisterRequest
 {
     public string Email { get; set; }

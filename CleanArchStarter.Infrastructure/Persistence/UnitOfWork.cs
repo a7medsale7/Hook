@@ -1,7 +1,6 @@
-using CleanArchStarter.Domain.Abstractions;
-using CleanArchStarter.Infrastructure.Persistence;
+using Hook.Domain.Abstractions;
 
-namespace CleanArchStarter.Infrastructure.Persistence;
+namespace Hook.Infrastructure.Persistence;
 
 public class UnitOfWork(ApplicationDbContext context) : IUnitOfWork
 {

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CleanArchStarter.Domain.Entities;
+namespace Hook.Domain.Entities;
 [Owned]
 public class RefreshToken
 {

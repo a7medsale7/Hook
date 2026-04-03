@@ -1,12 +1,12 @@
-﻿using CleanArchStarter.Application.Contracts.Users;
-using FluentValidation;
+﻿using FluentValidation;
+using Hook.Application.Contracts.Users;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CleanArchStarter.Application.Validators.User;
+namespace Hook.Application.Validators.User;
 public class UpdateUserRequestValidator : AbstractValidator<UpdateUserRequest>
 {
     public UpdateUserRequestValidator()

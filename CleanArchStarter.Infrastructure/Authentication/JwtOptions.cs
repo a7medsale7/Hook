@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CleanArchStarter.Infrastructure.Authentication;
+namespace Hook.Infrastructure.Authentication;
 public class JwtOptions
 {
     public const string SectionName = "Jwt";

@@ -1,12 +1,12 @@
-﻿using CleanArchStarter.Application.Contracts.Users;
-using CleanArchStarter.Application.Services.Interfaces;
-using CleanArchStarter.Domain.Consts;
+using Hook.Application.Contracts.Users;
+using Hook.Application.Services.Interfaces;
+using Hook.Domain.Consts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
-namespace CleanArchStarter.Api.Controllers;
+namespace Hook.Api.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 public class UsersController(IUserService userService) : ControllerBase
@@ -60,7 +60,7 @@ public class UsersController(IUserService userService) : ControllerBase
     {
         var originUrl = $"{Request.Scheme}://{Request.Host.Value}";
         await _userService.ForgotPasswordAsync(request, originUrl);
-        return Ok(new { message = "إذا كان بريدك الإلكتروني مسجلاً لدينا، ستصلك رسالة تحتوي على رابط لاستعادة كلمة المرور." });
+        return Ok(new { message = "??? ??? ????? ?????????? ?????? ?????? ????? ????? ????? ??? ???? ???????? ???? ??????." });
     }
 
     [HttpPost("reset-password")]
@@ -92,7 +92,7 @@ public class UsersController(IUserService userService) : ControllerBase
     }
 
 
-    // 1. أندبوينت تعديل بيانات المستخدم وأدواره
+    // 1. ???????? ????? ?????? ???????? ???????
     [HttpPut("{id}")]
     [Authorize(Roles = DefaultRoles.Admin, Policy = Permissions.Users_ManageRoles)]
     public async Task<IActionResult> Update([FromRoute] string id, [FromBody] UpdateUserRequest request, CancellationToken cancellationToken)
@@ -102,7 +102,7 @@ public class UsersController(IUserService userService) : ControllerBase
         return result.IsSuccess ? NoContent() : BadRequest(result.Error);
     }
 
-    // 2. أندبوينت تغيير حالة المستخدم (تفعيل/تعطيل)
+    // 2. ???????? ????? ???? ???????? (?????/?????)
     [HttpPatch("{id}/toggle-status")]
     [Authorize(Roles = DefaultRoles.Admin, Policy = Permissions.Users_ManageRoles)]
     public async Task<IActionResult> ToggleStatus([FromRoute] string id)
@@ -112,7 +112,7 @@ public class UsersController(IUserService userService) : ControllerBase
         return result.IsSuccess ? Ok() : BadRequest(result.Error);
     }
 
-    // 3. أندبوينت فك حظر المستخدم (Unlock)
+    // 3. ???????? ?? ??? ???????? (Unlock)
     [HttpPatch("{id}/unlock")]
     [Authorize(Roles = DefaultRoles.Admin, Policy = Permissions.Users_ManageRoles)]
     public async Task<IActionResult> Unlock([FromRoute] string id)

@@ -1,6 +1,6 @@
-﻿using CleanArchStarter.Domain.Abstractions.Repositories;
-using CleanArchStarter.Domain.Consts;
-using CleanArchStarter.Domain.Entities;
+﻿using Hook.Domain.Abstractions.Repositories;
+using Hook.Domain.Consts;
+using Hook.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -10,7 +10,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CleanArchStarter.Infrastructure.Repositories;
+namespace Hook.Infrastructure.Repositories;
 public class RoleRepository : IRoleRepository
 {
     private readonly RoleManager<ApplicationRole> _roleManager;
@@ -24,7 +24,7 @@ public class RoleRepository : IRoleRepository
     public async Task<List<ApplicationRole>> GetAllAsync(bool? includeDisabled = false)
     {
         return await _roleManager.Roles
-            .Where(x => !x.IsDefault && (!x.IsDeleted || (includeDisabled.HasValue && includeDisabled.Value)))
+            .Where(x => !x.IsDefault && (!x.IsDeleted || includeDisabled.HasValue && includeDisabled.Value))
             .ToListAsync();
     }
 

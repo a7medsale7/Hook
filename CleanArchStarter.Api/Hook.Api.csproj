@@ -22,8 +22,8 @@
 	</ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CleanArchStarter.Application\CleanArchStarter.Application.csproj" />
-    <ProjectReference Include="..\CleanArchStarter.Infrastructure\CleanArchStarter.Infrastructure.csproj" />
+    <ProjectReference Include="..\CleanArchStarter.Application\Hook.Application.csproj" />
+    <ProjectReference Include="..\CleanArchStarter.Infrastructure\Hook.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>

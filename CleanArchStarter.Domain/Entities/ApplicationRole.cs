@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CleanArchStarter.Domain.Entities;
+namespace Hook.Domain.Entities;
 public class ApplicationRole : IdentityRole
 {
     public bool IsDefault { get; set; }

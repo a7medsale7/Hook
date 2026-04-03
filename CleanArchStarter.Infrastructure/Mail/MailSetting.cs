@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CleanArchStarter.Infrastructure.Mail;
+namespace Hook.Infrastructure.Mail;
 public class MailSetting
 {
     public string Mail { get; set; } = string.Empty;

@@ -1,11 +1,11 @@
-﻿using CleanArchStarter.Domain.Entities;
+﻿using Hook.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CleanArchStarter.Domain.Abstractions.Repositories;
+namespace Hook.Domain.Abstractions.Repositories;
 public interface IRoleRepository
 {
 

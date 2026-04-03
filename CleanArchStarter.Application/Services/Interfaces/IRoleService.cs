@@ -1,12 +1,12 @@
-﻿using CleanArchStarter.Application.Abstractions.Result;
-using CleanArchStarter.Application.Contracts.Roles;
+﻿using Hook.Application.Abstractions.Result;
+using Hook.Application.Contracts.Roles;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CleanArchStarter.Application.Services.Interfaces;
+namespace Hook.Application.Services.Interfaces;
 public interface IRoleService
 {
     Task<Result<List<RoleResponse>>> GetAllAsync(bool includeDisabled = false);

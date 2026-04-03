@@ -14,8 +14,8 @@
 	</ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CleanArchStarter.Domain\CleanArchStarter.Domain.csproj" />
-    <ProjectReference Include="..\CleanArchStarter.Infrastructure\CleanArchStarter.Infrastructure.csproj" />
+    <ProjectReference Include="..\CleanArchStarter.Domain\Hook.Domain.csproj" />
+    <ProjectReference Include="..\CleanArchStarter.Infrastructure\Hook.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,4 +1,4 @@
-namespace CleanArchStarter.Api;
+namespace Hook.Api;
 
 public static class AssemblyReference
 {

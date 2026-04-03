@@ -1,11 +1,12 @@
-﻿using CleanArchStarter.Application.Abstractions.Result;
-using CleanArchStarter.Application.Contracts.Users;
-using CleanArchStarter.Application.Errors;
-using CleanArchStarter.Application.Services.Interfaces;
-using CleanArchStarter.Domain.Consts;
-using CleanArchStarter.Domain.Entities;
-using CleanArchStarter.Infrastructure.Persistence;
+using Hook.Application.Abstractions.Result;
 using Hangfire;
+using Hook.Application.Abstractions.Result;
+using Hook.Application.Contracts.Users;
+using Hook.Application.Errors;
+using Hook.Application.Services.Interfaces;
+using Hook.Domain.Consts;
+using Hook.Domain.Entities;
+using Hook.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.WebUtilities;
@@ -16,7 +17,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CleanArchStarter.Application.Services.Implementation;
+namespace Hook.Application.Services.Implementation;
 public class UserService : IUserService
 {
     private readonly UserManager<ApplicationUser> _userManager;
@@ -126,7 +127,7 @@ public class UserService : IUserService
         var result = await _userManager.ChangePasswordAsync(user, request.CurrentPassword, request.NewPassword);
         if (!result.Succeeded)
         {
-            // ممكن ترجع أول إيرور بيحصل (زي Password too short وهكذا)
+            // ???? ???? ??? ????? ????? (?? Password too short ?????)
             return Result.Failure(new Error("User.InvalidPassword", result.Errors.First().Description));
         }
         return Result.Success();
@@ -135,21 +136,21 @@ public class UserService : IUserService
     {
         var user = await _userManager.FindByEmailAsync(request.Email);
 
-        // مش بنرجع Error لو الإيميل مش موجود عشان الـ Security (عشان محدش يعرف الإيميلات المسجلة)
+        // ?? ????? Error ?? ??????? ?? ????? ???? ??? Security (???? ???? ???? ????????? ???????)
         if (user is null)
             return Result.Success();
-        // 1. توليد التوكن
+        // 1. ????? ??????
         var token = await _userManager.GeneratePasswordResetTokenAsync(user);
 
-        // 2. تشفير التوكن عشان يتبعت في الـ URL
+        // 2. ????? ?????? ???? ????? ?? ??? URL
         var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
-        // 3. بناء لينك الـ Reset (زي لينك الفرونت إند)
+        // 3. ???? ???? ??? Reset (?? ???? ??????? ???)
         var resetLink = $"{originUrl}/reset-password?email={user.Email}&token={encodedToken}";
-        // 4. إرسال الإيميل في الخلفية بـ Hangfire
+        // 4. ????? ??????? ?? ??????? ?? Hangfire
         BackgroundJob.Enqueue(() => _emailSender.SendEmailAsync(
             user.Email!,
-            "استعادة كلمة المرور",
-            $"أهلاً بك،<br>لاستعادة كلمة مرور حسابك، اضغط على الرابط التالي:<br><a href='{resetLink}'>اضغط هنا</a>"
+            "??????? ???? ??????",
+            $"????? ???<br>???????? ???? ???? ?????? ???? ??? ?????? ??????:<br><a href='{resetLink}'>???? ???</a>"
         ));
         return Result.Success();
     }
@@ -160,10 +161,10 @@ public class UserService : IUserService
             return Result.Failure(UserErrors.UserNotFound);
         try
         {
-            // فك تشفير التوكن اللي جاي من الـ URL
+            // ?? ????? ?????? ???? ??? ?? ??? URL
             var decodedTokenBytes = WebEncoders.Base64UrlDecode(request.Token);
             var decodedToken = Encoding.UTF8.GetString(decodedTokenBytes);
-            // الريسيت الحقيقي
+            // ??????? ???????
             var result = await _userManager.ResetPasswordAsync(user, decodedToken, request.NewPassword);
             if (!result.Succeeded)
                 return Result.Failure(UserErrors.InvalidToken);
@@ -177,29 +178,29 @@ public class UserService : IUserService
 
     public async Task<Result<UserResponse>> AddAsync(CreateUserReqeust request, CancellationToken cancellationToken = default)
     {
-        // 1. التحقق من وجود البريد الإلكتروني مسبقًا (استخدمنا EmailAlreadyExists بدلاً من DisabledUser)
+        // 1. ?????? ?? ???? ?????? ?????????? ?????? (???????? EmailAlreadyExists ????? ?? DisabledUser)
         var emailExists = await _userManager.Users.AnyAsync(x => x.Email == request.Email, cancellationToken);
         if (emailExists)
             return Result.Failure<UserResponse>(UserErrors.EmailAlreadyExists);
 
-        // 2. التحقق من أن الأدوار (Roles) المرسلة موجودة فعلاً في النظام
-        // استخدمنا _roleManager هنا مباشرة للتحقق
+        // 2. ?????? ?? ?? ??????? (Roles) ??????? ?????? ????? ?? ??????
+        // ???????? _roleManager ??? ?????? ??????
         var systemRoles = await _roleManager.Roles.Select(r => r.Name).ToListAsync(cancellationToken);
 
         if (request.Roles.Except(systemRoles).Any())
             return Result.Failure<UserResponse>(UserErrors.InvalidRoles);
 
-        // 3. تحويل DTO إلى ApplicationUser
+        // 3. ????? DTO ??? ApplicationUser
         var user = new ApplicationUser
         {
             FirstName = request.FirstName,
             LastName = request.LastName,
             Email = request.Email,
-            UserName = request.Email, // الافتراضي أن اسم المستخدم هو إيميله
-            EmailConfirmed = true   // نفترض أن المسؤول هو من أنشأه فيكون مفعلاً تلقائياً
+            UserName = request.Email, // ????????? ?? ??? ???????? ?? ??????
+            EmailConfirmed = true   // ????? ?? ??????? ?? ?? ????? ????? ?????? ????????
         };
 
-        // 4. إنشاء المستخدم مع كلمة المرور
+        // 4. ????? ???????? ?? ???? ??????
         var result = await _userManager.CreateAsync(user, request.Password);
 
         if (!result.Succeeded)
@@ -208,7 +209,7 @@ public class UserService : IUserService
             return Result.Failure<UserResponse>(new Error(error.Code, error.Description));
         }
 
-        // 5. إضافة المستخدم إلى الأدوار المطلوبة
+        // 5. ????? ???????? ??? ??????? ????????
         if (request.Roles.Any())
         {
             var rolesResult = await _userManager.AddToRolesAsync(user, request.Roles);
@@ -219,7 +220,7 @@ public class UserService : IUserService
             }
         }
 
-        // 6. تجهيز الـ Response النهائي
+        // 6. ????? ??? Response ???????
         var response = new UserResponse
         {
             Id = user.Id,
@@ -238,25 +239,25 @@ public class UserService : IUserService
 
 
 
-    // --- ميثود التحديث (Update) ---
+    // --- ????? ??????? (Update) ---
     public async Task<Result> UpdateAsync(string id, UpdateUserRequest request, CancellationToken cancellationToken = default)
     {
-        // 1. التأكد من أن البريد الإلكتروني غير مستخدم من قبل شخص آخر
+        // 1. ?????? ?? ?? ?????? ?????????? ??? ?????? ?? ??? ??? ???
         var emailExists = await _userManager.Users.AnyAsync(x => x.Email == request.Email && x.Id != id, cancellationToken);
         if (emailExists)
             return Result.Failure(UserErrors.EmailAlreadyExists);
 
-        // 2. جلب المستخدم والتأكد من وجوده
+        // 2. ??? ???????? ??????? ?? ?????
         var user = await _userManager.FindByIdAsync(id);
         if (user is null)
             return Result.Failure(UserErrors.UserNotFound);
 
-        // 3. التحقق من أن الأدوار المرسلة صحيحة وموجودة في النظام
+        // 3. ?????? ?? ?? ??????? ??????? ????? ??????? ?? ??????
         var systemRoles = await _roleManager.Roles.Select(r => r.Name).ToListAsync(cancellationToken);
         if (request.Roles.Except(systemRoles).Any())
             return Result.Failure(UserErrors.InvalidRoles);
 
-        // 4. تحديث البيانات (يدوياً أو باستخدام Adapt)
+        // 4. ????? ???????? (?????? ?? ???????? Adapt)
         user.FirstName = request.FirstName;
         user.LastName = request.LastName;
         user.Email = request.Email;
@@ -267,8 +268,8 @@ public class UserService : IUserService
 
         if (result.Succeeded)
         {
-            // 5. تحديث الأدوار (حذف الأدوار القديمة وإضافة الجديدة)
-            // الطريقة الرسمية لـ Identity (أكثر أماناً):
+            // 5. ????? ??????? (??? ??????? ??????? ?????? ???????)
+            // ??????? ??????? ?? Identity (???? ??????):
             var currentRoles = await _userManager.GetRolesAsync(user);
             await _userManager.RemoveFromRolesAsync(user, currentRoles);
             await _userManager.AddToRolesAsync(user, request.Roles);
@@ -280,7 +281,7 @@ public class UserService : IUserService
         return Result.Failure(new Error(error.Code, error.Description));
     }
 
-    // --- ميثود تغيير الحالة (تفعيل/تعطيل) ---
+    // --- ????? ????? ?????? (?????/?????) ---
     public async Task<Result> ToggleStatus(string id)
     {
         var user = await _userManager.FindByIdAsync(id);
@@ -296,14 +297,14 @@ public class UserService : IUserService
             : Result.Failure(new Error(result.Errors.First().Code, result.Errors.First().Description));
     }
 
-    // --- ميثود فك الحفل (Unlock) ---
+    // --- ????? ?? ????? (Unlock) ---
     public async Task<Result> Unlock(string id)
     {
         var user = await _userManager.FindByIdAsync(id);
         if (user is null)
             return Result.Failure(UserErrors.UserNotFound);
 
-        // تصفير تاريخ انتهاء الحظر لفك القفل فوراً
+        // ????? ????? ?????? ????? ??? ????? ?????
         var result = await _userManager.SetLockoutEndDateAsync(user, null);
 
         return result.Succeeded

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CleanArchStarter.Domain.Entities.Base;
+namespace Hook.Domain.Entities.Base;
 public abstract class Auditable
 {
     // Id الشخص اللي أنشأ الريكورد

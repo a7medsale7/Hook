@@ -1,12 +1,12 @@
-﻿using CleanArchStarter.Application.Contracts.Auth;
-using FluentValidation;
+﻿using FluentValidation;
+using Hook.Application.Contracts.Auth;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CleanArchStarter.Application.Validators.Auth;
+namespace Hook.Application.Validators.Auth;
 public class LoginRequestValidator : AbstractValidator<LoginRequest>
 {
     public LoginRequestValidator()

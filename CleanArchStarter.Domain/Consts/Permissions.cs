@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CleanArchStarter.Domain.Consts;
+namespace Hook.Domain.Consts;
 public static class Permissions
 {
     public const string Type = "Permissions";

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CleanArchStarter.Domain.Consts;
+namespace Hook.Domain.Consts;
 public static class  DefaultUsers
 {
     public const string AdminId = "877a5585-4894-4f4b-8989-f45476063ce1";

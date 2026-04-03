@@ -1,13 +1,14 @@
-﻿using CleanArchStarter.Application.Abstractions.Result;
-using CleanArchStarter.Application.Contracts.Auth;
-using CleanArchStarter.Application.Errors;
-using CleanArchStarter.Application.Services.Interfaces;
-using CleanArchStarter.Domain.Consts;
-using CleanArchStarter.Domain.Entities;
-using CleanArchStarter.Infrastructure.Authentication;
-using CleanArchStarter.Infrastructure.Helper;
-using CleanArchStarter.Infrastructure.Persistence;
+using Hook.Application.Abstractions.Result;
 using Hangfire;
+using Hook.Application.Abstractions.Result;
+using Hook.Application.Contracts.Auth;
+using Hook.Application.Errors;
+using Hook.Application.Services.Interfaces;
+using Hook.Domain.Consts;
+using Hook.Domain.Entities;
+using Hook.Infrastructure.Authentication;
+using Hook.Infrastructure.Helper;
+using Hook.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -21,7 +22,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CleanArchStarter.Application.Services.Implementation;
+namespace Hook.Application.Services.Implementation;
 public class AuthService(UserManager<ApplicationUser> userManager,
     SignInManager<ApplicationUser> signInManager,
     IJwtProvider jwtProvider,
@@ -206,25 +207,25 @@ public class AuthService(UserManager<ApplicationUser> userManager,
     ResendConfirmationEmailReqest resendConfirmation,
     CancellationToken cancellationToken)
     {
-        // 1️⃣ البحث عن المستخدم
+        // 1?? ????? ?? ????????
         var user = await _userManager.Users
             .FirstOrDefaultAsync(u => u.Email == resendConfirmation.Email, cancellationToken);
 
         if (user is null)
             return Result.Failure(UserErrors.UserNotFound);
 
-        // 2️⃣ تحقق إن الإيميل مش Confirmed بالفعل
+        // 2?? ???? ?? ??????? ?? Confirmed ??????
         if (user.EmailConfirmed)
             return Result.Failure(UserErrors.EmailAlreadyConfirmed);
 
-        // 3️⃣ توليد التوكين
+        // 3?? ????? ???????
         var emailToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
-        // 4️⃣ تشفير التوكين
+        // 4?? ????? ???????
         var encodedToken = WebEncoders.Base64UrlEncode(
             Encoding.UTF8.GetBytes(emailToken));
 
-        // 5️⃣ تسجيل التوكين في الـ logs
+        // 5?? ????? ??????? ?? ??? logs
         logger.LogInformation(
             "Email confirmation token for user {Email}: {Token}",
             user.Email,
@@ -233,11 +234,11 @@ public class AuthService(UserManager<ApplicationUser> userManager,
         var request = httpContextAccessor.HttpContext?.Request;
         var baseUrl = $"{request?.Scheme}://{request?.Host}";
 
-        // 6️⃣ إنشاء رابط التأكيد
+        // 6?? ????? ???? ???????
         var confirmationLink =
             $"{baseUrl}/Auth/confirm-email?userId={user.Id}&code={encodedToken}";
 
-        // 7️⃣ تجهيز محتوى الإيميل
+        // 7?? ????? ????? ???????
         var emailBody = EmailBodyBuilder.GenerateEmailBody(
             "EmailConfirmation",
             new Dictionary<string, string>
@@ -247,7 +248,7 @@ public class AuthService(UserManager<ApplicationUser> userManager,
             {"{{Year}}", DateTime.UtcNow.Year.ToString() }
             });
 
-        // 👈 إرسال الإيميل مباشرة لضمان وصوله (بدل Hangfire مؤقتاً)
+        // ?? ????? ??????? ?????? ????? ????? (??? Hangfire ??????)
         await emailSender.SendEmailAsync(
             user.Email!,
             "Confirm your email",

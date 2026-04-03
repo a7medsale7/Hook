@@ -1,5 +1,5 @@
-﻿using CleanArchStarter.Domain.Consts;
-using CleanArchStarter.Domain.Entities;
+﻿using Hook.Domain.Consts;
+using Hook.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CleanArchStarter.Infrastructure.EntitiesConfigurations;
+namespace Hook.Infrastructure.EntitiesConfigurations;
 public class ApplicationRolesConfiguration : IEntityTypeConfiguration<ApplicationRole>
 {
     public void Configure(EntityTypeBuilder<ApplicationRole> builder)
@@ -30,6 +30,17 @@ public class ApplicationRolesConfiguration : IEntityTypeConfiguration<Applicatio
                 ConcurrencyStamp = DefaultRoles.UserRoleConcurrencyStamp,
                 IsDefault = true,
             },
+
+             new ApplicationRole
+            {
+                Id = DefaultRoles.BoatOwnerRoleId,
+                Name = DefaultRoles.BoatOwner,
+                NormalizedName = DefaultRoles.BoatOwner.ToUpper(),
+                ConcurrencyStamp = DefaultRoles.BoatOwnerConcurrencyStamp,
+                IsDefault = false,
+            },
+
+
             ]);
     }
 }

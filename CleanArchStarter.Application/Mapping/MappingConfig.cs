@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CleanArchStarter.Application.Mapping;
+namespace Hook.Application.Mapping;
 internal class MappingConfig : IRegister
 {
     public void Register(TypeAdapterConfig config)

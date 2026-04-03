@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CleanArchStarter.Infrastructure.Helper;
+namespace Hook.Infrastructure.Helper;
 public class EmailBodyBuilder
 {
     public static string GenerateEmailBody(string template, Dictionary<string, string> templatemodel)

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CleanArchStarter.Infrastructure.Authentication.Filters;
+namespace Hook.Infrastructure.Authentication.Filters;
 public class HasPermissionAttribute(string permission) : AuthorizeAttribute(permission)
 {
 }

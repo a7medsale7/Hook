@@ -1,5 +1,5 @@
-﻿using CleanArchStarter.Domain.Entities;
-using CleanArchStarter.Infrastructure.Persistence;
+﻿using Hook.Domain.Entities;
+using Hook.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -11,7 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CleanArchStarter.Infrastructure;
+namespace Hook.Infrastructure;
 public static class InfrastructureDependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)

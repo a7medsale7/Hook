@@ -1,10 +1,9 @@
-using CleanArchStarter.Api.Middleware;
-using CleanArchStarter.Application;
-using CleanArchStarter.Application.Services.Implementation;
-using CleanArchStarter.Application.Services.Interfaces;
-using CleanArchStarter.Infrastructure;
-using CleanArchStarter.Infrastructure.Authentication;
-using CleanArchStarter.Infrastructure.Mail;
+using Hook.Application;
+using Hook.Application.Services.Implementation;
+using Hook.Application.Services.Interfaces;
+using Hook.Infrastructure;
+using Hook.Infrastructure.Authentication;
+using Hook.Infrastructure.Mail;
 using FluentValidation;
 using Hangfire;
 using Mapster;
@@ -14,16 +13,17 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.IdentityModel.Tokens;
-using CleanArchStarter.Domain.Abstractions;
-using CleanArchStarter.Infrastructure.Persistence;
+using Hook.Domain.Abstractions;
+using Hook.Infrastructure.Persistence;
 using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
 using System.Reflection.Metadata;
 using System.Text;
-using CleanArchStarter.Domain.Abstractions.Repositories;
-using CleanArchStarter.Infrastructure.Repositories;
-using CleanArchStarter.Infrastructure.Authentication.Filters;
+using Hook.Domain.Abstractions.Repositories;
+using Hook.Infrastructure.Repositories;
+using Hook.Infrastructure.Authentication.Filters;
+using Hook.Api.Middleware;
 
-namespace CleanArchStarter.Api;
+namespace Hook.Api;
 
 public static class DependencyInjection
 {
@@ -119,7 +119,7 @@ public static class DependencyInjection
         this IServiceCollection services)
     {
         var mappingConfig = TypeAdapterConfig.GlobalSettings;
-        mappingConfig.Scan(typeof(CleanArchStarter.Application.AssemblyReference).Assembly);
+        mappingConfig.Scan(typeof(Hook.Application.AssemblyReference).Assembly);
         services.AddSingleton<IMapper>(new Mapper(mappingConfig));
 
         return services;
@@ -133,7 +133,7 @@ public static class DependencyInjection
     {
         services.AddFluentValidationAutoValidation();
         services.AddValidatorsFromAssembly(
-            typeof(CleanArchStarter.Application.AssemblyReference).Assembly);
+            typeof(Hook.Application.AssemblyReference).Assembly);
 
         return services;
     }

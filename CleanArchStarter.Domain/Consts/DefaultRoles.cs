@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CleanArchStarter.Domain.Consts;
+namespace Hook.Domain.Consts;
 public static class DefaultRoles
 {
     public const string Admin = "Admin";
@@ -17,4 +17,9 @@ public static class DefaultRoles
     public const string User = "User";
     public const string UserRoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9";
     public const string UserRoleConcurrencyStamp = "f3a7b8c9-0d2e-4f5a-9b3c-4d6e7f8a9b1c";
+
+
+    public const string BoatOwner = "BoatOwner";
+    public const string BoatOwnerRoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3";
+    public const string BoatOwnerConcurrencyStamp = "e6253d46-e8bc-454e-9846-8b4513db68cc";
 }

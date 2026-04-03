@@ -1,20 +1,20 @@
-﻿using CleanArchStarter.Application.Contracts.Roles;
-using CleanArchStarter.Application.Services.Interfaces;
-using CleanArchStarter.Domain.Consts;
-using CleanArchStarter.Infrastructure.Authentication.Filters;
+using Hook.Application.Contracts.Roles;
+using Hook.Application.Services.Interfaces;
+using Hook.Domain.Consts;
+using Hook.Infrastructure.Authentication.Filters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CleanArchStarter.Api.Controllers;
+namespace Hook.Api.Controllers;
 [Route("api/[controller]")]
 [ApiController]
-[Authorize(Roles = DefaultRoles.Admin)] // تقييد الوصول للـ Admin فقط لإدارة الأدوار
+[Authorize(Roles = DefaultRoles.Admin)] // ????? ?????? ??? Admin ??? ?????? ???????
 public class RolesController(IRoleService _roleService) : ControllerBase
 {
     private readonly IRoleService roleService = _roleService;
 
-    // جلب كل الأدوار
+    // ??? ?? ???????
     [HttpGet]
     [HasPermission(Permissions.Roles_View)]
     public async Task<IActionResult> GetAll([FromQuery] bool includeDisabled = false)
@@ -27,7 +27,7 @@ public class RolesController(IRoleService _roleService) : ControllerBase
         return Ok(result);
     }
 
-    // جلب دور معين بالتفاصيل والصلاحيات المرتبطة به
+    // ??? ??? ???? ????????? ?????????? ???????? ??
     [HttpGet("{id}")]
     [HasPermission(Permissions.Roles_View)]
     public async Task<IActionResult> GetById([FromRoute] string id)
@@ -40,8 +40,8 @@ public class RolesController(IRoleService _roleService) : ControllerBase
         return Ok(result);
     }
 
-    // جلب قائمة بكل الصلاحيات المتاحة في النظام
-    // مفيدة جداً للـ Frontend عند عرض الـ Checkboxes لإضافة أو تعديل دور
+    // ??? ????? ??? ????????? ??????? ?? ??????
+    // ????? ???? ??? Frontend ??? ??? ??? Checkboxes ?????? ?? ????? ???
     [HttpGet("permissions")]
     [HasPermission(Permissions.Roles_View)]
     public IActionResult GetPermissions()
@@ -50,7 +50,7 @@ public class RolesController(IRoleService _roleService) : ControllerBase
         return Ok(permissions);
     }
 
-    // إضافة دور جديد مع تحديد قائمة الصلاحيات الخاصة به
+    // ????? ??? ???? ?? ????? ????? ????????? ?????? ??
     [HttpPost]
     [HasPermission(Permissions.Roles_Create)]
     public async Task<IActionResult> Add([FromBody] RoleReqest request)
@@ -63,7 +63,7 @@ public class RolesController(IRoleService _roleService) : ControllerBase
         return Ok(result);
     }
 
-    // تحديث اسم الدور أو تعديل قائمة الصلاحيات (Sync Permissions)
+    // ????? ??? ????? ?? ????? ????? ????????? (Sync Permissions)
     [HttpPut("{id}")]
     [HasPermission(Permissions.Roles_Update)]
     public async Task<IActionResult> Update([FromRoute] string id, [FromBody] RoleReqest request)
@@ -76,7 +76,7 @@ public class RolesController(IRoleService _roleService) : ControllerBase
         return Ok(result);
     }
 
-    // تفعيل أو تعطيل (Soft Delete) للدور
+    // ????? ?? ????? (Soft Delete) ?????
     [HttpPatch("{id}/toggle")]
     [HasPermission(Permissions.Roles_ToggleActive)]
     public async Task<IActionResult> ToggleStatus([FromRoute] string id)

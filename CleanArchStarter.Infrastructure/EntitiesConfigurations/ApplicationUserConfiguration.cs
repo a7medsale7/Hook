@@ -1,5 +1,5 @@
-﻿using CleanArchStarter.Domain.Consts;
-using CleanArchStarter.Domain.Entities;
+using Hook.Domain.Consts;
+using Hook.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -8,13 +8,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CleanArchStarter.Infrastructure.EntitiesConfigurations;
+namespace Hook.Infrastructure.EntitiesConfigurations;
 public class ApplicationUserConfiguration : IEntityTypeConfiguration<ApplicationUser>
 {
     public void Configure(EntityTypeBuilder<ApplicationUser> builder)
     {
         builder.Property(u => u.FirstName).HasMaxLength(100).IsRequired();
         builder.Property(u => u.LastName).HasMaxLength(100).IsRequired();
+
+        // ✅ المحافظة - اختيارية (nullable)
+        builder.Property(u => u.Governorate).HasMaxLength(100).IsRequired(false);
 
         // تظبيط הـ RefreshTokens عشان يعملهم في جدول منفصل مرتبط باليوزر
         builder.OwnsMany(u => u.RefreshTokens, t =>

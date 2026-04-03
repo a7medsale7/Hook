@@ -1,10 +1,10 @@
-﻿using CleanArchStarter.Application.Abstractions.Result;
-using CleanArchStarter.Application.Contracts.Roles;
-using CleanArchStarter.Application.Errors;
-using CleanArchStarter.Application.Services.Interfaces;
-using CleanArchStarter.Domain.Abstractions.Repositories;
-using CleanArchStarter.Domain.Consts;
-using CleanArchStarter.Domain.Entities;
+﻿using Hook.Application.Abstractions.Result;
+using Hook.Application.Contracts.Roles;
+using Hook.Application.Errors;
+using Hook.Application.Services.Interfaces;
+using Hook.Domain.Abstractions.Repositories;
+using Hook.Domain.Consts;
+using Hook.Domain.Entities;
 using Mapster;
 using Microsoft.AspNetCore.Identity;
 using System;
@@ -13,7 +13,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CleanArchStarter.Application.Services.Implementation;
+namespace Hook.Application.Services.Implementation;
 public class RoleService(IRoleRepository roleRepository, RoleManager<ApplicationRole> roleManager) : IRoleService
 {
     private readonly IRoleRepository roleRepository = roleRepository;
@@ -36,7 +36,7 @@ public class RoleService(IRoleRepository roleRepository, RoleManager<Application
         // جلب الـ claims الخاصة بالـ permissions
         var claims = await roleManager.GetClaimsAsync(role);
         var permissions = claims
-            .Where(c => string.Equals(c.Type, Permissions.Type, System.StringComparison.OrdinalIgnoreCase))
+            .Where(c => string.Equals(c.Type, Permissions.Type, StringComparison.OrdinalIgnoreCase))
             .Select(c => c.Value)
             .ToList();
 

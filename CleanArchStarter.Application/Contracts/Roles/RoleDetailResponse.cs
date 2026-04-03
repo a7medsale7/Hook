@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CleanArchStarter.Application.Contracts.Roles;
+namespace Hook.Application.Contracts.Roles;
 public class RoleDetailResponse
 {
     public string Id { get; set; } = default!;

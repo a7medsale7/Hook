@@ -1,4 +1,4 @@
-﻿using CleanArchStarter.Domain.Consts;
+﻿using Hook.Domain.Consts;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CleanArchStarter.Infrastructure.EntitiesConfigurations;
+namespace Hook.Infrastructure.EntitiesConfigurations;
 public class ApplicationUserRolesConfigurations : IEntityTypeConfiguration<IdentityUserRole<string>>
 {
     public void Configure(EntityTypeBuilder<IdentityUserRole<string>> builder)

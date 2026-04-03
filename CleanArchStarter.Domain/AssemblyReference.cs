@@ -1,4 +1,4 @@
-namespace CleanArchStarter.Domain;
+namespace Hook.Domain;
 
 public static class AssemblyReference
 {

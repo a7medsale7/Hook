@@ -1,4 +1,4 @@
-﻿using CleanArchStarter.Domain.Consts;
+﻿using Hook.Domain.Consts;
 using Microsoft.AspNetCore.Authorization;
 using System;
 using System.Collections.Generic;
@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CleanArchStarter.Infrastructure.Authentication.Filters;
+namespace Hook.Infrastructure.Authentication.Filters;
 public class PermissionAuthorizationHandler : AuthorizationHandler<PermissionRequirements>
 {
     protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, PermissionRequirements requirement)

@@ -1,4 +1,4 @@
-namespace CleanArchStarter.Infrastructure;
+namespace Hook.Infrastructure;
 
 public static class AssemblyReference
 {

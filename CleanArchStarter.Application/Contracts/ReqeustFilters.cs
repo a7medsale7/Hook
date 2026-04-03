@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CleanArchStarter.Application.Contracts;
+namespace Hook.Application.Contracts;
 public class ReqeustFilters
 {
     public int PageNumber { get; init; } = 1;

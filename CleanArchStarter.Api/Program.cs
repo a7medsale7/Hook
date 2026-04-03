@@ -1,14 +1,14 @@
-﻿using CleanArchStarter.Api;
-using CleanArchStarter.Infrastructure.Persistence;
+using Hook.Infrastructure.Persistence;
 using Hangfire;
 using HangfireBasicAuthenticationFilter;
+using Hook.Api;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // ============================================
-// 1️⃣ Register all dependencies
+// 1?? Register all dependencies
 // ============================================
 builder.Services.AddApiDependencies(builder.Configuration);
 
@@ -31,12 +31,12 @@ builder.Services.AddCors(options =>
 });
 
 // ============================================
-// 2️⃣ Build the app
+// 2?? Build the app
 // ============================================
 var app = builder.Build();
 
 // ============================================
-// 3️⃣ Apply EF Core Migrations automatically
+// 3?? Apply EF Core Migrations automatically
 // ============================================
 using (var scope = app.Services.CreateScope())
 {
@@ -57,7 +57,7 @@ using (var scope = app.Services.CreateScope())
 }
 
 // ============================================
-// 4️⃣ Middleware Pipeline
+// 4?? Middleware Pipeline
 // ============================================
 
 // Swagger setup (enabled for all environments)
@@ -102,6 +102,6 @@ app.UseExceptionHandler("/error"); // Make sure you have a route/controller to h
 app.MapControllers();
 
 // ============================================
-// 5️⃣ Run the app
+// 5?? Run the app
 // ============================================
 app.Run();

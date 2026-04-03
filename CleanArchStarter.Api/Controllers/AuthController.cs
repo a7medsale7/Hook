@@ -1,9 +1,9 @@
-﻿using CleanArchStarter.Application.Contracts.Auth;
-using CleanArchStarter.Application.Services.Interfaces;
+using Hook.Application.Contracts.Auth;
+using Hook.Application.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CleanArchStarter.Api.Controllers;
+namespace Hook.Api.Controllers;
 [Route("[controller]")]
 [ApiController]
 public class AuthController(IAuthService authService) : ControllerBase
@@ -108,7 +108,7 @@ public class AuthController(IAuthService authService) : ControllerBase
         string message = result.IsSuccess
             ? "Your email has been successfully verified. You can now close this window and log in to the app."
             : $"Verification failed: {result.Error.Description}";
-        string icon = result.IsSuccess ? "✅" : "❌";
+        string icon = result.IsSuccess ? "?" : "?";
         string color = result.IsSuccess ? "#22c55e" : "#ef4444";
 
         var html = $@"

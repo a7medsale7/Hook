@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Hook.Infrastructure.Authentication.Filters;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
@@ -6,25 +7,25 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CleanArchStarter.Infrastructure.Authentication.Filters;
+namespace Hook.Infrastructure.Authentication.Filters;
 public class PermissionAuotherzationPolicyProvider(IOptions<AuthorizationOptions> options) : DefaultAuthorizationPolicyProvider(options)
 {
     private readonly AuthorizationOptions _authorizationoptions = options.Value;
     public override async Task<AuthorizationPolicy> GetPolicyAsync(string policyName)
     {
 
-        // لو policy موجودة في الخيارات العادية نرجعها
+        // ?? policy ?????? ?? ???????? ??????? ??????
         var policy = await base.GetPolicyAsync(policyName);
         if (policy != null)
         {
             return policy;
         }
-        // لو policy مش موجودة، نفترض إنها صلاحية وننشئ بوليصة جديدة
+        // ?? policy ?? ??????? ????? ???? ?????? ????? ?????? ?????
         var newPolicy = new AuthorizationPolicyBuilder()
-            .AddRequirements(new PermissionRequirements(policyName)) // نضيف الـ requirement اللي هو صلاحية
+            .AddRequirements(new PermissionRequirements(policyName)) // ???? ??? requirement ???? ?? ??????
             .Build();
-        _authorizationoptions.AddPolicy(policyName, newPolicy); // نضيف البوليصة الجديدة للخيارات
-        return newPolicy; // نرجع البوليصة الجديدة
+        _authorizationoptions.AddPolicy(policyName, newPolicy); // ???? ???????? ??????? ????????
+        return newPolicy; // ???? ???????? ???????
 
     }
 }

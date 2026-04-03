@@ -1,11 +1,11 @@
-﻿using CleanArchStarter.Application.Abstractions.Result;
+﻿using Hook.Application.Abstractions.Result;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CleanArchStarter.Application.Errors;
+namespace Hook.Application.Errors;
 public class RoleErrors
 {
     public static readonly Error NotFound =

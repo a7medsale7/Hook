@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CleanArchStarter.Application.Validators.Auth;
+namespace Hook.Application.Validators.Auth;
 public class ResendConfirmationEmailReqestValidator : AbstractValidator<ResendConfirmationEmailRequest>
 {
     public ResendConfirmationEmailReqestValidator()

@@ -1,4 +1,4 @@
-namespace CleanArchStarter.Domain.Abstractions;
+namespace Hook.Domain.Abstractions;
 
 public interface IUnitOfWork
 {

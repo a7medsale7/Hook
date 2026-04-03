@@ -11,7 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CleanArchStarter.Infrastructure.Mail;
+namespace Hook.Infrastructure.Mail;
 public class EmailService : IEmailSender
 {
     private readonly MailSetting mailSettings;
