@@ -70,6 +70,7 @@ public static class DependencyInjection
     {
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IRoleRepository, RoleRepository>();
+        services.AddScoped<IBoatOwnerRepository, BoatOwnerRepository>();
 
         services.AddExceptionHandler<GlobalExceptionHandler>();
         services.AddProblemDetails();
@@ -90,6 +91,7 @@ public static class DependencyInjection
         services.AddScoped<IRoleService, RoleService>();
 
         services.AddScoped<IUserService,UserService>();
+        services.AddScoped<IBoatOwnerService, BoatOwnerService>();
         return services;
     }
 
@@ -108,9 +110,19 @@ public static class DependencyInjection
     // Swagger Configuration
     // ================================
     private static IServiceCollection AddSwaggerDocumentation(
-        this IServiceCollection services)
+    this IServiceCollection services)
     {
-        services.AddSwaggerGen();
+        services.AddSwaggerGen(options =>
+        {
+            options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+            {
+                Title = "Fishing Platform API",
+                Version = "v1"
+               
+
+            });
+        });
+
         return services;
     }
 

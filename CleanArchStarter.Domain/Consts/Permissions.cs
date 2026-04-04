@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,6 +21,14 @@ public static class Permissions
     public const string Roles_Create = "Permissions.Roles.Create";
     public const string Roles_Update = "Permissions.Roles.Update";
     public const string Roles_ToggleActive = "Permissions.Roles.ToggleActive";
+
+    // BoatOwner
+    public const string BoatOwner_Apply = "Permissions.BoatOwner.Apply";
+    public const string BoatOwner_ViewProfile = "Permissions.BoatOwner.ViewProfile";
+    public const string BoatOwner_ViewAll = "Permissions.BoatOwner.ViewAll";
+    public const string BoatOwner_UpdateStatus = "Permissions.BoatOwner.UpdateStatus";
+    public const string BoatOwner_Delete = "Permissions.BoatOwner.Delete";
+    public const string BoatOwner_Restore = "Permissions.BoatOwner.Restore";
 
 
 

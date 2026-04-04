@@ -64,8 +64,8 @@ using (var scope = app.Services.CreateScope())
 app.UseSwagger();
 app.UseSwaggerUI(options =>
 {
-    options.SwaggerEndpoint("/swagger/v1/swagger.json", "CleanArchStarter API V1");
-    options.RoutePrefix = string.Empty; // Swagger will be at root: http://localhost:xxxx/
+    options.SwaggerEndpoint("/swagger/v1/swagger.json", "Fishing Platform API V1");
+    options.RoutePrefix = string.Empty;
 });
 
 // Hangfire Dashboard setup
@@ -79,7 +79,7 @@ app.UseHangfireDashboard("/jobs", new DashboardOptions
             Pass = app.Configuration.GetValue<string>("HangfireSettings:Password")
         }
     },
-    DashboardTitle = "CleanArchStarter Jobs Dashboard"
+    DashboardTitle = "Hook Jobs Dashboard"
 });
 
 // Enable CORS

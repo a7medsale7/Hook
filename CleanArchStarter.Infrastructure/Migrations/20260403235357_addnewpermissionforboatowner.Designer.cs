@@ -4,6 +4,7 @@ using Hook.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CleanArchStarter.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260403235357_addnewpermissionforboatowner")]
+    partial class addnewpermissionforboatowner
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -798,75 +801,61 @@ namespace CleanArchStarter.Infrastructure.Migrations
                         {
                             Id = 15,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.BoatOwner.Delete",
-                            RoleId = "3a6ce7a1-2b66-48dd-ba28-3cf7080a3297"
+                            ClaimValue = "Permissions.Users.ViewProfile",
+                            RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
                         },
                         new
                         {
                             Id = 16,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.BoatOwner.Restore",
-                            RoleId = "3a6ce7a1-2b66-48dd-ba28-3cf7080a3297"
+                            ClaimValue = "Permissions.Users.UpdateProfile",
+                            RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
                         },
                         new
                         {
                             Id = 17,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Users.ViewProfile",
+                            ClaimValue = "Permissions.Users.ChangePassword",
                             RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
                         },
                         new
                         {
                             Id = 18,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Users.UpdateProfile",
+                            ClaimValue = "Permissions.BoatOwner.Apply",
                             RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
                         },
                         new
                         {
                             Id = 19,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Users.ChangePassword",
+                            ClaimValue = "Permissions.BoatOwner.ViewProfile",
                             RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
                         },
                         new
                         {
                             Id = 20,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.BoatOwner.Apply",
-                            RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
-                        },
-                        new
-                        {
-                            Id = 21,
-                            ClaimType = "Permissions",
-                            ClaimValue = "Permissions.BoatOwner.ViewProfile",
-                            RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
-                        },
-                        new
-                        {
-                            Id = 22,
-                            ClaimType = "Permissions",
                             ClaimValue = "Permissions.Users.ViewProfile",
                             RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"
                         },
                         new
                         {
-                            Id = 23,
+                            Id = 21,
                             ClaimType = "Permissions",
                             ClaimValue = "Permissions.Users.UpdateProfile",
                             RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"
                         },
                         new
                         {
-                            Id = 24,
+                            Id = 22,
                             ClaimType = "Permissions",
                             ClaimValue = "Permissions.Users.ChangePassword",
                             RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"
                         },
                         new
                         {
-                            Id = 25,
+                            Id = 23,
                             ClaimType = "Permissions",
                             ClaimValue = "Permissions.BoatOwner.ViewProfile",
                             RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"

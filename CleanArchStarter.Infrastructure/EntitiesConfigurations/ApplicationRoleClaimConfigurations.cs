@@ -1,4 +1,4 @@
-﻿using Hook.Domain.Consts;
+using Hook.Domain.Consts;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -39,6 +39,8 @@ public class ApplicationRoleClaimConfigurations : IEntityTypeConfiguration<Ident
             Permissions.Users_ViewProfile,
             Permissions.Users_UpdateProfile,
             Permissions.Users_ChangePassword,
+            Permissions.BoatOwner_Apply,
+            Permissions.BoatOwner_ViewProfile
         };
 
         foreach (var permission in userPermissions)
@@ -47,6 +49,26 @@ public class ApplicationRoleClaimConfigurations : IEntityTypeConfiguration<Ident
             {
                 Id = claimId++,
                 RoleId = DefaultRoles.UserRoleId,
+                ClaimType = Permissions.Type,
+                ClaimValue = permission
+            });
+        }
+
+        // 4. BoatOwner Permissions
+        var boatOwnerPermissions = new List<string>
+        {
+            Permissions.Users_ViewProfile,
+            Permissions.Users_UpdateProfile,
+            Permissions.Users_ChangePassword,
+            Permissions.BoatOwner_ViewProfile
+        };
+
+        foreach (var permission in boatOwnerPermissions)
+        {
+            allClaims.Add(new IdentityRoleClaim<string>
+            {
+                Id = claimId++,
+                RoleId = DefaultRoles.BoatOwnerRoleId,
                 ClaimType = Permissions.Type,
                 ClaimValue = permission
             });
