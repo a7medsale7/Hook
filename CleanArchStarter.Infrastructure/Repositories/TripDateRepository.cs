@@ -58,4 +58,11 @@ public class TripDateRepository(ApplicationDbContext context) : ITripDateReposit
     {
         return await context.TripDates.AnyAsync(d => d.Id == id && !d.IsDeleted);
     }
+
+    public async Task UpdateExpiredDatesAsync(System.Threading.CancellationToken cancellationToken = default)
+    {
+        await context.TripDates
+            .Where(d => d.IsActive && d.StartDate < DateTime.UtcNow)
+            .ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, false), cancellationToken);
+    }
 }

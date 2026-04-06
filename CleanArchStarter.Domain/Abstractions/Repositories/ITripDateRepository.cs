@@ -14,4 +14,5 @@ public interface ITripDateRepository
     void Update(TripDate tripDate);
     void Delete(TripDate tripDate);
     Task<bool> ExistsAsync(Guid id);
+    Task UpdateExpiredDatesAsync(System.Threading.CancellationToken cancellationToken = default);
 }
