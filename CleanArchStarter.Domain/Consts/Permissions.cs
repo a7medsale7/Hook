@@ -35,6 +35,14 @@ public static class Permissions
     public const string Boats_Create = "Permissions.Boats.Create";
     public const string Boats_Update = "Permissions.Boats.Update";
     public const string Boats_Delete = "Permissions.Boats.Delete";
+    public const string Boats_Restore = "Permissions.Boats.Restore";
+
+    // Trips
+    public const string Trips_View = "Permissions.Trips.View";
+    public const string Trips_Create = "Permissions.Trips.Create";
+    public const string Trips_Update = "Permissions.Trips.Update";
+    public const string Trips_Delete = "Permissions.Trips.Delete";
+    public const string Trips_Restore = "Permissions.Trips.Restore";
 
 
 

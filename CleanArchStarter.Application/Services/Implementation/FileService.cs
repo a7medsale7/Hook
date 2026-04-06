@@ -3,7 +3,9 @@ using Hook.Application.Services.Interfaces;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Hook.Application.Services.Implementation;
@@ -28,10 +30,10 @@ public class FileService(IWebHostEnvironment webHostEnvironment) : IFileService
         return $"/{folderName}/{fileName}";
     }
 
-    public async Task<List<string>> SaveFilesAsync(IFormFileCollection? files, string folderName)
+    public async Task<List<string>> SaveFilesAsync(IEnumerable<IFormFile>? files, string folderName)
     {
         var urls = new List<string>();
-        if (files is null || files.Count == 0)
+        if (files is null || !files.Any())
             return urls;
 
         foreach (var file in files)

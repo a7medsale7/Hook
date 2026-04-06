@@ -1,4 +1,4 @@
-﻿using Hook.Domain.Consts;
+using Hook.Domain.Consts;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -35,7 +35,8 @@ public class ApplicationRoleClaimConfigurations : IEntityTypeConfiguration<Ident
             Permissions.Users_ChangePassword,
             Permissions.BoatOwner_Apply, // يقدر يقدم طلب عشان يبقى صاحب مركب
             Permissions.BoatOwner_ViewProfile,
-            Permissions.Boats_View // يقدر يتصفح المراكب عشان يحجز
+            Permissions.Boats_View, // يقدر يتصفح المراكب عشان يحجز
+            Permissions.Trips_View // يقدر يشوف الرحلات المتاحة
         };
 
         foreach (var permission in userPermissions)
@@ -60,7 +61,12 @@ public class ApplicationRoleClaimConfigurations : IEntityTypeConfiguration<Ident
             Permissions.Boats_View,
             Permissions.Boats_Create,
             Permissions.Boats_Update,
-            Permissions.Boats_Delete
+            Permissions.Boats_Delete,
+            // صلاحيات إدارة الرحلات الخاصة به
+            Permissions.Trips_View,
+            Permissions.Trips_Create,
+            Permissions.Trips_Update,
+            Permissions.Trips_Delete
         };
 
         foreach (var permission in boatOwnerPermissions)
