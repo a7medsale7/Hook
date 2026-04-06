@@ -22,5 +22,7 @@ public record TripResponse(
     Guid TripManagerId,
     string TripManagerName,
     List<string> ImageUrls,
-    List<TripDateResponse> TripDates
+    string? MainImageUrl,
+    List<TripDateResponse> TripDates,
+    Hook.Application.Contracts.Boat.BoatResponse? Boat = null
 );

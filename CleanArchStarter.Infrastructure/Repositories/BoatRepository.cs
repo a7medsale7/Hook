@@ -14,6 +14,7 @@ public class BoatRepository(ApplicationDbContext context) : IBoatRepository
     public async Task<Boat?> GetByIdAsync(Guid id)
     {
         return await context.Boats
+            .Include(b => b.Images)
             .FirstOrDefaultAsync(b => b.Id == id && !b.IsDeleted);
     }
 

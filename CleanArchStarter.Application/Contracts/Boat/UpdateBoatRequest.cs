@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,4 +15,5 @@ public class UpdateBoatRequest
     public IFormFileCollection? NewImages { get; set; }
     // IDs الصور اللي عايز يمسحها من الداتا بيز (لو المالك قرر يمسح صورة معينة)
     public List<Guid>? ImageIdsToDelete { get; set; }
+    public Guid? MainImageId { get; set; }
 }

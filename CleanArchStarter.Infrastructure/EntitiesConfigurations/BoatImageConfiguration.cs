@@ -13,5 +13,8 @@ public class BoatImageConfiguration : IEntityTypeConfiguration<BoatImage>
         builder.Property(x => x.ImageUrl)
             .IsRequired()
             .HasMaxLength(500);
+
+        builder.Property(x => x.IsMainImage)
+            .HasDefaultValue(false);
     }
 }

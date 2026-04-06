@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,4 +14,5 @@ public class CreateBoatRequest
 
     // لإرسال الصور من الـ Front-end
     public IFormFileCollection? Images { get; set; }
+    public int MainImageIndex { get; set; } = 0;
 }

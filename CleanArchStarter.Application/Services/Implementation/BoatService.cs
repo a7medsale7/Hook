@@ -6,6 +6,8 @@ using Hook.Domain.Abstractions;
 using Hook.Domain.Abstractions.Repositories;
 using Hook.Domain.Entities;
 using Hook.Domain.Enums;
+using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -42,7 +44,13 @@ public class BoatService : IBoatService
             return Result.Failure<BoatResponse>(BoatErrors.NotApproved);
 
         // 2. Upload Images (Multiple)
-        var imageUrls = await _fileService.SaveFilesAsync(request.Images, "uploads/boats");
+        var images = request.Images ?? Enumerable.Empty<IFormFile>();
+        var imageUrls = await _fileService.SaveFilesAsync(images, "uploads/boats");
+        var boatImages = imageUrls.Select((url, index) => new BoatImage 
+        { 
+            ImageUrl = url,
+            IsMainImage = index == request.MainImageIndex
+        }).ToList();
 
         // 3. Create Boat
         var boat = new Boat
@@ -51,13 +59,13 @@ public class BoatService : IBoatService
             Description = request.Description,
             Capacity = request.Capacity,
             OwnerProfileId = ownerProfile.Id,
-            Images = imageUrls.Select(url => new BoatImage { ImageUrl = url }).ToList()
+            Images = boatImages
         };
 
         await _boatRepository.AddAsync(boat);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return Result.Success(ToResponse(boat, ownerProfile));
+        return Result.Success(ToResponse(boat));
     }
 
     public async Task<Result<BoatResponse>> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
@@ -82,7 +90,7 @@ public class BoatService : IBoatService
             return Result.Failure<IEnumerable<BoatResponse>>(BoatErrors.NoOwnerProfile);
 
         var boats = await _boatRepository.GetByOwnerIdAsync(ownerProfile.Id);
-        return Result.Success(boats.Select(b => ToResponse(b, ownerProfile)));
+        return Result.Success(boats.Select(b => ToResponse(b)));
     }
 
     public async Task<Result<BoatResponse>> UpdateAsync(Guid id, string userId, UpdateBoatRequest request, bool isAdmin = false, CancellationToken cancellationToken = default)
@@ -119,6 +127,19 @@ public class BoatService : IBoatService
             {
                 boat.Images.Add(new BoatImage { ImageUrl = url });
             }
+        }
+
+        // 4. Handle Main Image update
+        if (request.MainImageId.HasValue)
+        {
+            foreach (var img in boat.Images)
+            {
+                img.IsMainImage = img.Id == request.MainImageId.Value;
+            }
+        }
+        else if (!boat.Images.Any(i => i.IsMainImage) && boat.Images.Any())
+        {
+            boat.Images.First().IsMainImage = true;
         }
 
         _boatRepository.Update(boat);
@@ -160,15 +181,15 @@ public class BoatService : IBoatService
         return Result.Success();
     }
 
-    private static BoatResponse ToResponse(Boat boat, BoatOwnerProfile? owner = null) => new BoatResponse
+    private BoatResponse ToResponse(Boat boat) => new BoatResponse
     {
         Id = boat.Id,
         Name = boat.Name,
         Description = boat.Description,
         Capacity = boat.Capacity,
         OwnerProfileId = boat.OwnerProfileId,
-        OwnerName = owner != null ? $"{owner.User?.FirstName} {owner.User?.LastName}" : 
-                    (boat.OwnerProfile?.User != null ? $"{boat.OwnerProfile.User.FirstName} {boat.OwnerProfile.User.LastName}" : "Unknown"),
-        ImageUrls = boat.Images.Select(img => img.ImageUrl).ToList()
+        OwnerName = boat.OwnerProfile?.User != null ? $"{boat.OwnerProfile.User.FirstName} {boat.OwnerProfile.User.LastName}" : "Unknown",
+        ImageUrls = boat.Images.Select(i => i.ImageUrl).ToList(),
+        MainImageUrl = boat.Images.FirstOrDefault(i => i.IsMainImage)?.ImageUrl ?? boat.Images.FirstOrDefault()?.ImageUrl
     };
 }

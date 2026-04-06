@@ -47,6 +47,12 @@ public class TripService(
         // 3. Upload Images
         var imageUrls = await _fileService.SaveFilesAsync(request.Images, "uploads/trips");
 
+        var tripsImages = imageUrls.Select((url, index) => new TripImage 
+        { 
+            ImageUrl = url, 
+            IsMainImage = index == request.MainImageIndex 
+        }).ToList();
+
         // 4. Create Trip
         var trip = new Trip
         {
@@ -64,13 +70,15 @@ public class TripService(
             HasSnorkeling = request.HasSnorkeling,
             BoatId = request.BoatId,
             TripManagerId = ownerProfile.Id,
-            Images = imageUrls.Select(url => new TripImage { ImageUrl = url }).ToList()
+            Images = tripsImages
         };
 
         await _tripRepository.AddAsync(trip);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return Result.Success(ToResponse(trip, boat.Name, $"{ownerProfile.User?.FirstName} {ownerProfile.User?.LastName}"));
+        // Fetch details for ToResponse mapping
+        var savedTrip = await _tripRepository.GetByIdWithDetailsAsync(trip.Id);
+        return Result.Success(ToResponse(savedTrip!));
     }
 
     public async Task<Result<TripResponse>> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
@@ -165,6 +173,19 @@ public class TripService(
             }
         }
 
+        // 4. Handle Main Image update
+        if (request.MainImageId.HasValue)
+        {
+            foreach (var img in trip.Images)
+            {
+                img.IsMainImage = img.Id == request.MainImageId.Value;
+            }
+        }
+        else if (!trip.Images.Any(i => i.IsMainImage) && trip.Images.Any())
+        {
+            trip.Images.First().IsMainImage = true;
+        }
+
         _tripRepository.Update(trip);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
@@ -230,7 +251,7 @@ public class TripService(
         return Result.Success();
     }
 
-    private static TripResponse ToResponse(Trip trip, string? boatName = null, string? managerName = null) => new TripResponse(
+    private TripResponse ToResponse(Trip trip) => new TripResponse(
         trip.Id,
         trip.Title,
         trip.ShortDescription,
@@ -245,10 +266,22 @@ public class TripService(
         trip.HasEquipmentRental,
         trip.HasSnorkeling,
         trip.BoatId,
-        boatName ?? trip.Boat?.Name ?? "Unknown",
+        trip.Boat?.Name ?? "Unknown",
         trip.TripManagerId,
-        managerName ?? (trip.TripManager?.User != null ? $"{trip.TripManager.User.FirstName} {trip.TripManager.User.LastName}" : "Unknown"),
+        trip.TripManager?.User != null ? $"{trip.TripManager.User.FirstName} {trip.TripManager.User.LastName}" : "Unknown",
         trip.Images.Select(i => i.ImageUrl).ToList(),
-        trip.TripDates.Select(d => new TripDateResponse(d.Id, d.StartDate, d.EndDate, d.AvailableSeats, d.IsActive)).ToList()
+        trip.Images.FirstOrDefault(i => i.IsMainImage)?.ImageUrl ?? trip.Images.FirstOrDefault()?.ImageUrl,
+        trip.TripDates.Select(d => new TripDateResponse(d.Id, d.StartDate, d.EndDate, d.AvailableSeats, d.IsActive)).ToList(),
+        trip.Boat == null ? null : new Hook.Application.Contracts.Boat.BoatResponse
+        {
+            Id = trip.Boat.Id,
+            Name = trip.Boat.Name,
+            Description = trip.Boat.Description,
+            Capacity = trip.Boat.Capacity,
+            OwnerProfileId = trip.Boat.OwnerProfileId,
+            OwnerName = trip.Boat.OwnerProfile?.User != null ? $"{trip.Boat.OwnerProfile.User.FirstName} {trip.Boat.OwnerProfile.User.LastName}" : "Unknown",
+            ImageUrls = trip.Boat.Images.Select(i => i.ImageUrl).ToList(),
+            MainImageUrl = trip.Boat.Images.FirstOrDefault(i => i.IsMainImage)?.ImageUrl ?? trip.Boat.Images.FirstOrDefault()?.ImageUrl
+        }
     );
 }

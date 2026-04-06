@@ -18,5 +18,6 @@ public record CreateTripRequest(
     bool HasEquipmentRental,
     bool HasSnorkeling,
     Guid BoatId,
-    List<IFormFile> Images
+    List<IFormFile> Images,
+    int MainImageIndex = 0
 );

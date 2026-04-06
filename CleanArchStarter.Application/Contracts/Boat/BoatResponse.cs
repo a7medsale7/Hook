@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,4 +16,5 @@ public class BoatResponse
     public string OwnerName { get; set; } = string.Empty;
     // لستة روابط الصور عشان الـ Front-end يعرضها
     public List<string> ImageUrls { get; set; } = new();
+    public string? MainImageUrl { get; set; }
 }
