@@ -28,6 +28,21 @@ public class FileService(IWebHostEnvironment webHostEnvironment) : IFileService
         return $"/{folderName}/{fileName}";
     }
 
+    public async Task<List<string>> SaveFilesAsync(IFormFileCollection? files, string folderName)
+    {
+        var urls = new List<string>();
+        if (files is null || files.Count == 0)
+            return urls;
+
+        foreach (var file in files)
+        {
+            var url = await SaveFileAsync(file, folderName);
+            urls.Add(url);
+        }
+
+        return urls;
+    }
+
     public void DeleteFile(string? filePath)
     {
         if (string.IsNullOrEmpty(filePath)) return;

@@ -30,6 +30,12 @@ public static class Permissions
     public const string BoatOwner_Delete = "Permissions.BoatOwner.Delete";
     public const string BoatOwner_Restore = "Permissions.BoatOwner.Restore";
 
+    // Boats
+    public const string Boats_View = "Permissions.Boats.View";
+    public const string Boats_Create = "Permissions.Boats.Create";
+    public const string Boats_Update = "Permissions.Boats.Update";
+    public const string Boats_Delete = "Permissions.Boats.Delete";
+
 
 
     public static IList<string?> GetAllPermissions() =>

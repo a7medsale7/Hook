@@ -71,6 +71,7 @@ public static class DependencyInjection
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IRoleRepository, RoleRepository>();
         services.AddScoped<IBoatOwnerRepository, BoatOwnerRepository>();
+        services.AddScoped<IBoatRepository, BoatRepository>();
 
         services.AddExceptionHandler<GlobalExceptionHandler>();
         services.AddProblemDetails();
@@ -92,6 +93,7 @@ public static class DependencyInjection
 
         services.AddScoped<IUserService,UserService>();
         services.AddScoped<IBoatOwnerService, BoatOwnerService>();
+        services.AddScoped<IBoatService, BoatService>();
         return services;
     }
 
