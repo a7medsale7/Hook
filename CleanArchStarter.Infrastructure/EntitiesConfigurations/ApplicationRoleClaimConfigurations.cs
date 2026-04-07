@@ -36,7 +36,10 @@ public class ApplicationRoleClaimConfigurations : IEntityTypeConfiguration<Ident
             Permissions.BoatOwner_Apply, // يقدر يقدم طلب عشان يبقى صاحب مركب
             Permissions.BoatOwner_ViewProfile,
             Permissions.Boats_View, // يقدر يتصفح المراكب عشان يحجز
-            Permissions.Trips_View // يقدر يشوف الرحلات المتاحة
+            Permissions.Trips_View, // يقدر يشوف الرحلات المتاحة
+            Permissions.Bookings_View,
+            Permissions.Bookings_Create,
+            Permissions.Bookings_Cancel
         };
 
         foreach (var permission in userPermissions)
@@ -66,7 +69,10 @@ public class ApplicationRoleClaimConfigurations : IEntityTypeConfiguration<Ident
             Permissions.Trips_View,
             Permissions.Trips_Create,
             Permissions.Trips_Update,
-            Permissions.Trips_Delete
+            Permissions.Trips_Delete,
+            // صلاحيات إدارة الحجوزات الخاصة به
+            Permissions.Bookings_View,
+            Permissions.Bookings_UpdateStatus
         };
 
         foreach (var permission in boatOwnerPermissions)

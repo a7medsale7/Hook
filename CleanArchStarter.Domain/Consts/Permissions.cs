@@ -44,7 +44,12 @@ public static class Permissions
     public const string Trips_Delete = "Permissions.Trips.Delete";
     public const string Trips_Restore = "Permissions.Trips.Restore";
 
-
+    // Bookings
+    public const string Bookings_View = "Permissions.Bookings.View";
+    public const string Bookings_Create = "Permissions.Bookings.Create";
+    public const string Bookings_UpdateStatus = "Permissions.Bookings.UpdateStatus";
+    public const string Bookings_Cancel = "Permissions.Bookings.Cancel";
+    public const string Bookings_ViewAll = "Permissions.Bookings.ViewAll";
 
     public static IList<string?> GetAllPermissions() =>
        typeof(Permissions).GetFields().Select(f => f.GetValue(f) as string).ToList();

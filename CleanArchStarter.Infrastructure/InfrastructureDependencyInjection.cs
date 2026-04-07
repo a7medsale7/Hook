@@ -1,6 +1,8 @@
+using Hook.Domain.Abstractions.Repositories;
 using Hook.Domain.Entities;
 using Hook.Infrastructure.BackgroundJobs;
 using Hook.Infrastructure.Persistence;
+using Hook.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -43,6 +45,7 @@ public static class InfrastructureDependencyInjection
 
         services.AddHybridCache();
 
+        
         services.AddHostedService<TripDateExpiryBackgroundService>();
 
         return services;

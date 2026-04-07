@@ -58,13 +58,13 @@ public class TripRepository(ApplicationDbContext context) : ITripRepository
     public async Task<IEnumerable<Trip>> GetAvailableTripsAsync()
     {
         return await context.Trips
-            .Where(t => !t.IsDeleted && t.TripDates.Any(d => !d.IsDeleted && d.StartDate >= DateTime.UtcNow && d.IsActive))
+            .Where(t => !t.IsDeleted && t.TripDates.Any(d => !d.IsDeleted && d.StartDate >= DateTime.UtcNow && d.IsActive && d.AvailableSeats > 0))
             .Include(t => t.Images)
             .Include(t => t.Boat)
                 .ThenInclude(b => b.Images)
             .Include(t => t.TripManager)
                 .ThenInclude(p => p.User)
-            .Include(t => t.TripDates.Where(d => !d.IsDeleted && d.StartDate >= DateTime.UtcNow && d.IsActive))
+            .Include(t => t.TripDates.Where(d => !d.IsDeleted && d.StartDate >= DateTime.UtcNow && d.IsActive && d.AvailableSeats > 0))
             .ToListAsync();
     }
 

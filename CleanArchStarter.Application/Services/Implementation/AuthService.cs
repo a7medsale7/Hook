@@ -1,6 +1,5 @@
 using Hook.Application.Abstractions.Result;
 using Hangfire;
-using Hook.Application.Abstractions.Result;
 using Hook.Application.Contracts.Auth;
 using Hook.Application.Errors;
 using Hook.Application.Services.Interfaces;
@@ -70,7 +69,7 @@ public class AuthService(UserManager<ApplicationUser> userManager,
                 claim => claim.RoleId,
                 (role, claim) => new { role, claim }
                 )
-            .Where(rc => userroles.Contains(rc.role.Name!) && rc.claim.ClaimValue != Permissions.Type)
+            .Where(rc => userroles.Contains(rc.role.Name!) && rc.claim.ClaimType == Permissions.Type)
             .Select(rc => rc.claim.ClaimValue!)
             .Distinct()
             .ToListAsync(cancellationToken);
@@ -176,7 +175,7 @@ public class AuthService(UserManager<ApplicationUser> userManager,
     ConfirmEmailReqest request,
     CancellationToken cancellationToken)
     {
-        var user = await userManager.FindByIdAsync(request.UserId);
+        var user = await _userManager.FindByIdAsync(request.UserId);
 
         if (user is null)
             return Result.Failure(UserErrors.UserNotFound);
@@ -196,13 +195,13 @@ public class AuthService(UserManager<ApplicationUser> userManager,
             return Result.Failure(UserErrors.InvalidTokenFormat);
         }
 
-        var result = await userManager.ConfirmEmailAsync(user, decodedToken);
+        var result = await _userManager.ConfirmEmailAsync(user, decodedToken);
 
         if (!result.Succeeded)
             return Result.Failure(UserErrors.EmailConfirmationFailed);
 
 
-        await userManager.AddToRoleAsync(user, DefaultRoles.User);
+        await _userManager.AddToRoleAsync(user, DefaultRoles.User);
         return Result.Success();
     }
 
@@ -295,7 +294,7 @@ public class AuthService(UserManager<ApplicationUser> userManager,
                 claim => claim.RoleId,
                 (role, claim) => new { role, claim }
                 )
-            .Where(rc => userroles.Contains(rc.role.Name!) && rc.claim.ClaimValue != Permissions.Type)
+            .Where(rc => userroles.Contains(rc.role.Name!) && rc.claim.ClaimType == Permissions.Type)
             .Select(rc => rc.claim.ClaimValue!)
             .Distinct()
             .ToListAsync(cancellationToken);

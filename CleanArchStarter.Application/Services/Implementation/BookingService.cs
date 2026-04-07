@@ -1,0 +1,266 @@
+using Hook.Application.Abstractions.Result;
+using Hook.Application.Contracts.Booking;
+using Hook.Application.Errors;
+using Hook.Application.Services.Interfaces;
+using Hook.Domain.Abstractions;
+using Hook.Domain.Abstractions.Repositories;
+using Hook.Domain.Entities;
+using Hook.Domain.Enums;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace Hook.Application.Services.Implementation;
+
+public class BookingService(
+    IBookingRepository bookingRepository,
+    ITripDateRepository tripDateRepository,
+    ITripRepository tripRepository,
+    IBoatOwnerRepository boatOwnerRepository,
+    IEmailSender emailSender,
+    IUnitOfWork unitOfWork) : IBookingService
+{
+    private readonly IBookingRepository _bookingRepository = bookingRepository;
+    private readonly ITripDateRepository _tripDateRepository = tripDateRepository;
+    private readonly ITripRepository _tripRepository = tripRepository;
+    private readonly IBoatOwnerRepository _boatOwnerRepository = boatOwnerRepository;
+    private readonly IEmailSender _emailSender = emailSender;
+    private readonly IUnitOfWork _unitOfWork = unitOfWork;
+
+    public async Task<Result<BookingResponse>> CreateBookingAsync(string userId, CreateBookingRequest request, CancellationToken cancellationToken = default)
+    {
+        // 1. Get Trip Date with Trip details
+        var tripDate = await _tripDateRepository.GetByIdAsync(request.TripDateId);
+        if (tripDate is null)
+            return Result.Failure<BookingResponse>(TripErrors.DateNotFound);
+
+        // --- CRITICAL VALIDATIONS (TRIPLE CHECK) ---
+        
+        // Check 1: Inactive or Past Date
+        if (!tripDate.IsActive)
+            return Result.Failure<BookingResponse>(BookingErrors.TripDateInactive);
+
+        if (tripDate.StartDate < DateTime.UtcNow)
+            return Result.Failure<BookingResponse>(BookingErrors.TripDatePassed);
+
+        // Check 2: Seat Availability
+        if (tripDate.AvailableSeats < request.NumberOfParticipants)
+            return Result.Failure<BookingResponse>(BookingErrors.InsufficientSeats);
+
+        // Check 3: Duplicate Booking Prevention
+        if (await _bookingRepository.ExistsForUserAndDateAsync(userId, request.TripDateId))
+            return Result.Failure<BookingResponse>(BookingErrors.AlreadyBooked);
+
+        // 2. Begin Atomic Process
+        var trip = tripDate.Trip;
+        var totalPrice = trip.PricePerPerson * request.NumberOfParticipants;
+
+        var booking = new Booking
+        {
+            UserId = userId,
+            TripDateId = request.TripDateId,
+            NumberOfParticipants = request.NumberOfParticipants,
+            TotalPrice = totalPrice,
+            Status = BookingStatus.Pending,
+            SpecialRequests = request.SpecialRequests
+        };
+
+        var payment = new Payment
+        {
+            BookingId = booking.Id,
+            Amount = totalPrice,
+            Status = PaymentStatus.Pending,
+            PaymentMethod = PaymentMethod.Cash
+        };
+        booking.Payment = payment;
+
+        // Atomic Update: Decrease Available Seats
+        tripDate.AvailableSeats -= request.NumberOfParticipants;
+
+        await _bookingRepository.AddAsync(booking);
+        _tripDateRepository.Update(tripDate);
+        
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        // 3. Notify Admin via Email (Optional but requested)
+        try 
+        {
+            await _emailSender.SendEmailAsync("admin@hook.com", "New Booking Alert", 
+                $"User {userId} has requested a booking for trip '{trip.Title}' on {tripDate.StartDate:f}. Total: {totalPrice} EGP.");
+        }
+        catch { /* Log error but don't fail booking */ }
+
+        // 4. Return result
+        var detailedBooking = await _bookingRepository.GetByIdWithDetailsAsync(booking.Id);
+        return Result.Success(ToResponse(detailedBooking!));
+    }
+
+    public async Task<Result<IEnumerable<BookingResponse>>> GetMyBookingsAsync(string userId, CancellationToken cancellationToken = default)
+    {
+        var bookings = await _bookingRepository.GetByUserIdAsync(userId);
+        return Result.Success(bookings.Select(ToResponse));
+    }
+
+    public async Task<Result<IEnumerable<BookingResponse>>> GetTripBookingsAsync(Guid tripDateId, string userId, CancellationToken cancellationToken = default)
+    {
+        var ownerProfile = await _boatOwnerRepository.GetByUserIdAsync(userId);
+        if (ownerProfile is null)
+            return Result.Failure<IEnumerable<BookingResponse>>(TripErrors.NoBoatAvailable);
+
+        var tripDate = await _tripDateRepository.GetByIdAsync(tripDateId);
+        if (tripDate is null)
+            return Result.Failure<IEnumerable<BookingResponse>>(TripErrors.DateNotFound);
+
+        // Check ownership
+        if (tripDate.Trip.TripManagerId != ownerProfile.Id)
+            return Result.Failure<IEnumerable<BookingResponse>>(TripErrors.Unauthorized);
+
+        var bookings = await _bookingRepository.GetByTripDateIdAsync(tripDateId);
+        return Result.Success(bookings.Select(ToResponse));
+    }
+
+    public async Task<Result<IEnumerable<BookingResponse>>> GetAllBookingsAsync(CancellationToken cancellationToken = default)
+    {
+        var bookings = await _bookingRepository.GetAllWithDetailsAsync();
+        return Result.Success(bookings.Select(ToResponse));
+    }
+
+    public async Task<Result<IEnumerable<BookingResponse>>> GetFilteredBookingsAsync(BookingFilterRequest filter, string? userId = null, Guid? ownerId = null, string? ownerUserId = null, CancellationToken cancellationToken = default)
+    {
+        if (ownerUserId != null && ownerId == null)
+        {
+            var ownerProfile = await _boatOwnerRepository.GetByUserIdAsync(ownerUserId);
+            if (ownerProfile != null)
+                ownerId = ownerProfile.Id;
+        }
+
+        var bookings = await _bookingRepository.GetAllFilteredAsync(
+            filter.Status, 
+            filter.Location, 
+            filter.Date, 
+            userId, 
+            ownerId);
+            
+        return Result.Success(bookings.Select(ToResponse));
+    }
+
+    public async Task<Result<BookingStatsResponse>> GetBookingStatsAsync(string userId, bool isAdmin, CancellationToken cancellationToken = default)
+    {
+        Guid? ownerId = null;
+        if (!isAdmin)
+        {
+            var ownerProfile = await _boatOwnerRepository.GetByUserIdAsync(userId);
+            if (ownerProfile is null)
+                return Result.Failure<BookingStatsResponse>(TripErrors.NoBoatAvailable);
+            ownerId = ownerProfile.Id;
+        }
+
+        // Logic: 
+        // - Admin: userId null, ownerId null (See everything)
+        // - Owner: userId null, ownerId set (See everything on their boats)
+        // - User:  userId set, ownerId null (See only their bookings)
+        string? filterUserId = isAdmin ? null : (ownerId == null ? userId : null);
+
+        var bookings = await _bookingRepository.GetAllFilteredAsync(userId: filterUserId, ownerId: ownerId);
+        
+        var stats = new BookingStatsResponse(
+            TotalBookings: bookings.Count(),
+            PendingBookings: bookings.Count(b => b.Status == BookingStatus.Pending),
+            ApprovedBookings: bookings.Count(b => b.Status == BookingStatus.Confirmed),
+            RejectedBookings: bookings.Count(b => b.Status == BookingStatus.Rejected),
+            CompletedBookings: bookings.Count(b => b.Status == BookingStatus.Completed),
+            CancelledBookings: bookings.Count(b => b.Status == BookingStatus.Cancelled),
+            TotalRevenue: bookings.Where(b => b.Status == BookingStatus.Completed || b.Status == BookingStatus.Confirmed)
+                                  .Sum(b => b.TotalPrice)
+        );
+
+        return Result.Success(stats);
+    }
+
+    public async Task<Result<BookingResponse>> UpdateBookingStatusAsync(Guid id, string userId, UpdateBookingStatusRequest request, bool isAdmin = false, CancellationToken cancellationToken = default)
+    {
+        var booking = await _bookingRepository.GetByIdWithDetailsAsync(id);
+        if (booking is null)
+            return Result.Failure<BookingResponse>(BookingErrors.NotFound);
+
+        // Authorization: Admin or the Boat Owner who manages this trip
+        if (!isAdmin)
+        {
+            var ownerProfile = await _boatOwnerRepository.GetByUserIdAsync(userId);
+            if (ownerProfile is null || booking.TripDate.Trip.TripManagerId != ownerProfile.Id)
+                return Result.Failure<BookingResponse>(BookingErrors.Unauthorized);
+        }
+
+        // Logic check: If rejected, restore seats
+        if (request.Status == BookingStatus.Rejected && booking.Status != BookingStatus.Rejected)
+        {
+            var tripDate = await _tripDateRepository.GetByIdAsync(booking.TripDateId);
+            if (tripDate != null)
+            {
+                tripDate.AvailableSeats += booking.NumberOfParticipants;
+                _tripDateRepository.Update(tripDate);
+            }
+        }
+        
+        booking.Status = request.Status;
+        _bookingRepository.Update(booking);
+        
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        return Result.Success(ToResponse(booking));
+    }
+
+    public async Task<Result> CancelBookingAsync(Guid id, string userId, CancellationToken cancellationToken = default)
+    {
+        var booking = await _bookingRepository.GetByIdWithDetailsAsync(id);
+        if (booking is null)
+            return Result.Failure(BookingErrors.NotFound);
+
+        if (booking.UserId != userId)
+            return Result.Failure(BookingErrors.Unauthorized);
+
+        if (booking.Status == BookingStatus.Cancelled)
+            return Result.Failure(BookingErrors.AlreadyCancelled);
+
+        // Revert seats
+        var tripDate = await _tripDateRepository.GetByIdAsync(booking.TripDateId);
+        if (tripDate != null)
+        {
+            tripDate.AvailableSeats += booking.NumberOfParticipants;
+            _tripDateRepository.Update(tripDate);
+        }
+
+        booking.Status = BookingStatus.Cancelled;
+        _bookingRepository.Update(booking);
+        
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+        
+        return Result.Success();
+    }
+
+    private BookingResponse ToResponse(Booking booking) => new BookingResponse(
+        booking.Id,
+        booking.TripDate.Trip.Title,
+        booking.TripDate.Trip.Images.FirstOrDefault(i => i.IsMainImage)?.ImageUrl ?? booking.TripDate.Trip.Images.FirstOrDefault()?.ImageUrl,
+        booking.TripDate.StartDate,
+        booking.TripDate.EndDate,
+        booking.TripDate.Trip.Boat?.Name ?? "Unknown Boat",
+        booking.NumberOfParticipants,
+        booking.TotalPrice,
+        booking.Status,
+        booking.SpecialRequests,
+        $"{booking.User?.FirstName} {booking.User?.LastName}",
+        booking.User?.PhoneNumber,
+        booking.Payment == null ? null : new PaymentResponse(
+            booking.Payment.Id,
+            booking.Payment.Amount,
+            booking.Payment.Status,
+            booking.Payment.PaymentMethod,
+            booking.Payment.TransactionId,
+            booking.Payment.ReceiptImageUrl
+        )
+    );
+}
