@@ -38,16 +38,25 @@ public class TripsController(ITripService tripService) : ControllerBase
     }
 
     [HttpGet("all")]
-    public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
+    public async Task<IActionResult> GetAll([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10, CancellationToken cancellationToken = default)
     {
-        var result = await _tripService.GetAllAsync(cancellationToken);
+        var result = await _tripService.GetAllAsync(pageNumber, pageSize, cancellationToken);
         return Ok(result.Value);
     }
 
     [HttpGet]
-    public async Task<IActionResult> Search([FromQuery] string? title, [FromQuery] string? location, [FromQuery] DateTime? date, [FromQuery] int? participants, CancellationToken cancellationToken)
+    public async Task<IActionResult> Search(
+        [FromQuery] string? query, 
+        [FromQuery] string? locationName, 
+        [FromQuery] DateTime? date, 
+        [FromQuery] int? participants, 
+        [FromQuery] decimal? minPrice, 
+        [FromQuery] decimal? maxPrice, 
+        [FromQuery] int pageNumber = 1, 
+        [FromQuery] int pageSize = 10, 
+        CancellationToken cancellationToken = default)
     {
-        var result = await _tripService.SearchTripsAsync(title, location, date, participants, cancellationToken);
+        var result = await _tripService.SearchTripsAsync(query, locationName, date, participants, minPrice, maxPrice, pageNumber, pageSize, cancellationToken);
         return Ok(result.Value);
     }
 

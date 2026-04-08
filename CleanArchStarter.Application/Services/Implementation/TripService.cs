@@ -90,15 +90,17 @@ public class TripService(
         return Result.Success(ToResponse(trip));
     }
 
-    public async Task<Result<IEnumerable<TripResponse>>> GetAllAsync(CancellationToken cancellationToken = default)
+    public async Task<Result<IEnumerable<TripResponse>>> GetAllAsync(int pageNumber = 1, int pageSize = 10, CancellationToken cancellationToken = default)
     {
         var trips = await _tripRepository.GetAllAsync();
-        return Result.Success(trips.Select(t => ToResponse(t)));
+        var totalCount = trips.Count();
+        var pagedTrips = trips.Skip((pageNumber - 1) * pageSize).Take(pageSize);
+        return Result.Success(pagedTrips.Select(t => ToResponse(t)));
     }
 
-    public async Task<Result<IEnumerable<TripResponse>>> SearchTripsAsync(string? query, string? location, DateTime? date, int? participants, CancellationToken cancellationToken = default)
+    public async Task<Result<IEnumerable<TripResponse>>> SearchTripsAsync(string? query, string? location, DateTime? date, int? participants, decimal? minPrice, decimal? maxPrice, int pageNumber = 1, int pageSize = 10, CancellationToken cancellationToken = default)
     {
-        var trips = await _tripRepository.GetAvailableTripsAsync();
+        var trips = await _tripRepository.GetAllAsync();
 
         if (!string.IsNullOrEmpty(query))
         {
@@ -115,7 +117,16 @@ public class TripService(
         if (participants.HasValue)
             trips = trips.Where(t => t.MaxParticipants >= participants.Value);
 
-        return Result.Success(trips.Select(t => ToResponse(t)));
+        if (minPrice.HasValue)
+            trips = trips.Where(t => t.PricePerPerson >= minPrice.Value);
+
+        if (maxPrice.HasValue)
+            trips = trips.Where(t => t.PricePerPerson <= maxPrice.Value);
+
+        var totalCount = trips.Count();
+        var pagedTrips = trips.Skip((pageNumber - 1) * pageSize).Take(pageSize);
+
+        return Result.Success(pagedTrips.Select(t => ToResponse(t)));
     }
 
     public async Task<Result<IEnumerable<TripResponse>>> GetMyTripsAsync(string userId, CancellationToken cancellationToken = default)
