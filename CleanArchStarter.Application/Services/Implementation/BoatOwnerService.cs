@@ -52,6 +52,8 @@ public class BoatOwnerService : IBoatOwnerService
             NationalIdPhotoUrl = nationalIdUrl,
             BoatLicenseNumber = request.BoatLicenseNumber,
             BoatLicensePhotoUrl = licenseUrl,
+            InstaPayNumber = request.InstaPayNumber,
+            VodafoneCashNumber = request.VodafoneCashNumber,
             Status = RequestStatus.Pending
         };
 
@@ -181,6 +183,8 @@ public class BoatOwnerService : IBoatOwnerService
         NationalIdPhotoUrl = profile.NationalIdPhotoUrl,
         BoatLicenseNumber = profile.BoatLicenseNumber,
         BoatLicensePhotoUrl = profile.BoatLicensePhotoUrl,
+        InstaPayNumber = profile.InstaPayNumber,
+        VodafoneCashNumber = profile.VodafoneCashNumber,
         Status = profile.Status,
         AdminRejectionReason = profile.AdminRejectionReason,
         CreatedOn = profile.CreatedOn

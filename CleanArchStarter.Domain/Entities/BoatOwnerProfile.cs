@@ -19,6 +19,10 @@ public class BoatOwnerProfile : Auditable
     public string BoatLicenseNumber { get; set; } = string.Empty;
     public string BoatLicensePhotoUrl { get; set; } = string.Empty;
 
+    // Social & Payment Info
+    public string? InstaPayNumber { get; set; }
+    public string? VodafoneCashNumber { get; set; }
+
     public RequestStatus Status { get; set; } = RequestStatus.Pending;
     public string? AdminRejectionReason { get; set; }
 

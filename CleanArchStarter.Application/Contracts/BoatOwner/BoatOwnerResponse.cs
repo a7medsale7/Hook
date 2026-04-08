@@ -13,6 +13,8 @@ public class BoatOwnerResponse
     public string NationalIdPhotoUrl { get; set; } = string.Empty;
     public string BoatLicenseNumber { get; set; } = string.Empty;
     public string BoatLicensePhotoUrl { get; set; } = string.Empty;
+    public string? InstaPayNumber { get; set; }
+    public string? VodafoneCashNumber { get; set; }
     public RequestStatus Status { get; set; }
     public string? AdminRejectionReason { get; set; }
     public DateTime CreatedOn { get; set; }

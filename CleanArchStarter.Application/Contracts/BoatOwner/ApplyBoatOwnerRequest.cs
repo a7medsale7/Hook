@@ -12,4 +12,7 @@ public class ApplyBoatOwnerRequest
     public IFormFile NationalIdImage { get; set; } = null!;
     public string BoatLicenseNumber { get; set; } = string.Empty;
     public IFormFile BoatLicenseImage { get; set; } = null!;
+
+    public string? InstaPayNumber { get; set; }
+    public string? VodafoneCashNumber { get; set; }
 }

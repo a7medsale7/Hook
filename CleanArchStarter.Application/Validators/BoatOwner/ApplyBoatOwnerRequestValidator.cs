@@ -27,5 +27,9 @@ public class ApplyBoatOwnerRequestValidator : AbstractValidator<ApplyBoatOwnerRe
         RuleFor(x => x.BoatLicenseImage)
             .NotNull().WithMessage("Boat license photo is required.")
             .SetValidator(new FileValidator());
+        // 3. Payment Info Validation (at least one is required)
+        RuleFor(x => x)
+            .Must(x => !string.IsNullOrEmpty(x.InstaPayNumber) || !string.IsNullOrEmpty(x.VodafoneCashNumber))
+            .WithMessage("At least one payment method is required (InstaPay number or Vodafone Cash number).");
     }
 }
