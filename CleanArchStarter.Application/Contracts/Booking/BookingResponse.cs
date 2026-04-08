@@ -16,10 +16,10 @@ public record BookingResponse(
     string? SpecialRequests,
     string? UserFullName, // For owner/admin view
     string? UserPhoneNumber,
-    PaymentResponse? Payment
+    BookingPaymentInfo? Payment
 );
 
-public record PaymentResponse(
+public record BookingPaymentInfo(
     Guid Id,
     decimal Amount,
     PaymentStatus Status,

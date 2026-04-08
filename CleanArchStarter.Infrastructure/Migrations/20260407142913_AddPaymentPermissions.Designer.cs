@@ -4,6 +4,7 @@ using Hook.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CleanArchStarter.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260407142913_AddPaymentPermissions")]
+    partial class AddPaymentPermissions
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -956,266 +959,203 @@ namespace CleanArchStarter.Infrastructure.Migrations
                         {
                             Id = 37,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Reviews.View",
-                            RoleId = "3a6ce7a1-2b66-48dd-ba28-3cf7080a3297"
-                        },
-                        new
-                        {
-                            Id = 38,
-                            ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Reviews.Create",
-                            RoleId = "3a6ce7a1-2b66-48dd-ba28-3cf7080a3297"
-                        },
-                        new
-                        {
-                            Id = 39,
-                            ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Reviews.Update",
-                            RoleId = "3a6ce7a1-2b66-48dd-ba28-3cf7080a3297"
-                        },
-                        new
-                        {
-                            Id = 40,
-                            ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Reviews.Delete",
-                            RoleId = "3a6ce7a1-2b66-48dd-ba28-3cf7080a3297"
-                        },
-                        new
-                        {
-                            Id = 41,
-                            ClaimType = "Permissions",
                             ClaimValue = "Permissions.Users.ViewProfile",
                             RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
                         },
                         new
                         {
-                            Id = 42,
+                            Id = 38,
                             ClaimType = "Permissions",
                             ClaimValue = "Permissions.Users.UpdateProfile",
                             RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
                         },
                         new
                         {
-                            Id = 43,
+                            Id = 39,
                             ClaimType = "Permissions",
                             ClaimValue = "Permissions.Users.ChangePassword",
                             RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
                         },
                         new
                         {
-                            Id = 44,
+                            Id = 40,
                             ClaimType = "Permissions",
                             ClaimValue = "Permissions.BoatOwner.Apply",
                             RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
                         },
                         new
                         {
-                            Id = 45,
+                            Id = 41,
                             ClaimType = "Permissions",
                             ClaimValue = "Permissions.BoatOwner.ViewProfile",
                             RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
                         },
                         new
                         {
-                            Id = 46,
+                            Id = 42,
                             ClaimType = "Permissions",
                             ClaimValue = "Permissions.Boats.View",
                             RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
                         },
                         new
                         {
-                            Id = 47,
+                            Id = 43,
                             ClaimType = "Permissions",
                             ClaimValue = "Permissions.Trips.View",
                             RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
                         },
                         new
                         {
-                            Id = 48,
+                            Id = 44,
                             ClaimType = "Permissions",
                             ClaimValue = "Permissions.Bookings.View",
                             RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
                         },
                         new
                         {
-                            Id = 49,
+                            Id = 45,
                             ClaimType = "Permissions",
                             ClaimValue = "Permissions.Bookings.Create",
                             RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
                         },
                         new
                         {
-                            Id = 50,
+                            Id = 46,
                             ClaimType = "Permissions",
                             ClaimValue = "Permissions.Bookings.Cancel",
                             RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
                         },
                         new
                         {
-                            Id = 51,
+                            Id = 47,
                             ClaimType = "Permissions",
                             ClaimValue = "Permissions.Payments.View",
                             RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
                         },
                         new
                         {
-                            Id = 52,
+                            Id = 48,
                             ClaimType = "Permissions",
                             ClaimValue = "Permissions.Payments.UploadReceipt",
                             RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
                         },
                         new
                         {
-                            Id = 53,
-                            ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Reviews.View",
-                            RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
-                        },
-                        new
-                        {
-                            Id = 54,
-                            ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Reviews.Create",
-                            RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
-                        },
-                        new
-                        {
-                            Id = 55,
-                            ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Reviews.Update",
-                            RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
-                        },
-                        new
-                        {
-                            Id = 56,
-                            ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Reviews.Delete",
-                            RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
-                        },
-                        new
-                        {
-                            Id = 57,
+                            Id = 49,
                             ClaimType = "Permissions",
                             ClaimValue = "Permissions.Users.ViewProfile",
                             RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"
                         },
                         new
                         {
-                            Id = 58,
+                            Id = 50,
                             ClaimType = "Permissions",
                             ClaimValue = "Permissions.Users.UpdateProfile",
                             RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"
                         },
                         new
                         {
-                            Id = 59,
+                            Id = 51,
                             ClaimType = "Permissions",
                             ClaimValue = "Permissions.Users.ChangePassword",
                             RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"
                         },
                         new
                         {
-                            Id = 60,
+                            Id = 52,
                             ClaimType = "Permissions",
                             ClaimValue = "Permissions.BoatOwner.ViewProfile",
                             RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"
                         },
                         new
                         {
-                            Id = 61,
+                            Id = 53,
                             ClaimType = "Permissions",
                             ClaimValue = "Permissions.Boats.View",
                             RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"
                         },
                         new
                         {
-                            Id = 62,
+                            Id = 54,
                             ClaimType = "Permissions",
                             ClaimValue = "Permissions.Boats.Create",
                             RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"
                         },
                         new
                         {
-                            Id = 63,
+                            Id = 55,
                             ClaimType = "Permissions",
                             ClaimValue = "Permissions.Boats.Update",
                             RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"
                         },
                         new
                         {
-                            Id = 64,
+                            Id = 56,
                             ClaimType = "Permissions",
                             ClaimValue = "Permissions.Boats.Delete",
                             RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"
                         },
                         new
                         {
-                            Id = 65,
+                            Id = 57,
                             ClaimType = "Permissions",
                             ClaimValue = "Permissions.Trips.View",
                             RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"
                         },
                         new
                         {
-                            Id = 66,
+                            Id = 58,
                             ClaimType = "Permissions",
                             ClaimValue = "Permissions.Trips.Create",
                             RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"
                         },
                         new
                         {
-                            Id = 67,
+                            Id = 59,
                             ClaimType = "Permissions",
                             ClaimValue = "Permissions.Trips.Update",
                             RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"
                         },
                         new
                         {
-                            Id = 68,
+                            Id = 60,
                             ClaimType = "Permissions",
                             ClaimValue = "Permissions.Trips.Delete",
                             RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"
                         },
                         new
                         {
-                            Id = 69,
+                            Id = 61,
                             ClaimType = "Permissions",
                             ClaimValue = "Permissions.Bookings.View",
                             RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"
                         },
                         new
                         {
-                            Id = 70,
+                            Id = 62,
                             ClaimType = "Permissions",
                             ClaimValue = "Permissions.Bookings.UpdateStatus",
                             RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"
                         },
                         new
                         {
-                            Id = 71,
+                            Id = 63,
                             ClaimType = "Permissions",
                             ClaimValue = "Permissions.Payments.View",
                             RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"
                         },
                         new
                         {
-                            Id = 72,
+                            Id = 64,
                             ClaimType = "Permissions",
                             ClaimValue = "Permissions.Payments.Verify",
                             RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"
                         },
                         new
                         {
-                            Id = 73,
+                            Id = 65,
                             ClaimType = "Permissions",
                             ClaimValue = "Permissions.Payments.Stats",
-                            RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"
-                        },
-                        new
-                        {
-                            Id = 74,
-                            ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Reviews.View",
                             RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"
                         });
                 });

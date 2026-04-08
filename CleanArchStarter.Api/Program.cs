@@ -102,6 +102,26 @@ app.UseExceptionHandler("/error"); // Make sure you have a route/controller to h
 app.MapControllers();
 
 // ============================================
+// 4.5?? Schedule Recurring Background Jobs
+// ============================================
+using (var scope = app.Services.CreateScope())
+{
+    var recurringJobManager = scope.ServiceProvider.GetRequiredService<IRecurringJobManager>();
+    
+    // Check for unpaid bookings every hour
+    recurringJobManager.AddOrUpdate<Hook.Infrastructure.BackgroundJobs.UnpaidBookingsCleanupJob>(
+        "unpaid-bookings-cleanup",
+        job => job.ExecuteAsync(),
+        Cron.Hourly);
+
+    // Close past confirmed trips every day at midnight
+    recurringJobManager.AddOrUpdate<Hook.Infrastructure.BackgroundJobs.PastTripsCompletionJob>(
+        "past-trips-completion",
+        job => job.ExecuteAsync(),
+        Cron.Daily);
+}
+
+// ============================================
 // 5?? Run the app
 // ============================================
 app.Run();

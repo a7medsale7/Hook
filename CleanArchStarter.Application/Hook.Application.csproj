@@ -6,6 +6,12 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="Services\HangJobs\**" />
+    <EmbeddedResource Remove="Services\HangJobs\**" />
+    <None Remove="Services\HangJobs\**" />
+  </ItemGroup>
+
 	<ItemGroup>
 		<PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1" />
 		<PackageReference Include="Mapster" Version="7.4.0" />
@@ -18,10 +24,6 @@
   <ItemGroup>
     <ProjectReference Include="..\CleanArchStarter.Domain\Hook.Domain.csproj" />
     <ProjectReference Include="..\CleanArchStarter.Infrastructure\Hook.Infrastructure.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Services\HangJobs\" />
   </ItemGroup>
 
 </Project>

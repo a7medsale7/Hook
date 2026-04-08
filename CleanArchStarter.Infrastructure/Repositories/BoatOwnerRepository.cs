@@ -55,8 +55,17 @@ public class BoatOwnerRepository : IBoatOwnerRepository
             .AnyAsync(p => p.UserId == userId && !p.IsDeleted);
     }
 
+   
     public async Task AddAsync(BoatOwnerProfile profile)
     {
+        var exists = await _context.BoatOwnerProfiles
+            .AnyAsync(x =>
+                x.NationalIdNumber == profile.NationalIdNumber ||
+                x.BoatLicenseNumber == profile.BoatLicenseNumber);
+
+        if (exists)
+            throw new Exception("National ID or Boat License already exists.");
+
         await _context.BoatOwnerProfiles.AddAsync(profile);
     }
 

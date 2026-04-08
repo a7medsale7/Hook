@@ -1,3 +1,4 @@
+using Hangfire;
 using Hook.Application.Abstractions.Result;
 using Hook.Application.Contracts.Booking;
 using Hook.Application.Errors;
@@ -21,6 +22,7 @@ public class BookingService(
     ITripRepository tripRepository,
     IBoatOwnerRepository boatOwnerRepository,
     IEmailSender emailSender,
+    IBackgroundJobClient backgroundJobClient,
     IUnitOfWork unitOfWork) : IBookingService
 {
     private readonly IBookingRepository _bookingRepository = bookingRepository;
@@ -28,6 +30,7 @@ public class BookingService(
     private readonly ITripRepository _tripRepository = tripRepository;
     private readonly IBoatOwnerRepository _boatOwnerRepository = boatOwnerRepository;
     private readonly IEmailSender _emailSender = emailSender;
+    private readonly IBackgroundJobClient _backgroundJobClient = backgroundJobClient;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
     public async Task<Result<BookingResponse>> CreateBookingAsync(string userId, CreateBookingRequest request, CancellationToken cancellationToken = default)
@@ -73,7 +76,7 @@ public class BookingService(
             BookingId = booking.Id,
             Amount = totalPrice,
             Status = PaymentStatus.Pending,
-            PaymentMethod = PaymentMethod.Cash
+            PaymentMethod = request.PaymentMethod
         };
         booking.Payment = payment;
 
@@ -85,13 +88,7 @@ public class BookingService(
         
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        // 3. Notify Admin via Email (Optional but requested)
-        try 
-        {
-            await _emailSender.SendEmailAsync("admin@hook.com", "New Booking Alert", 
-                $"User {userId} has requested a booking for trip '{trip.Title}' on {tripDate.StartDate:f}. Total: {totalPrice} EGP.");
-        }
-        catch { /* Log error but don't fail booking */ }
+
 
         // 4. Return result
         var detailedBooking = await _bookingRepository.GetByIdWithDetailsAsync(booking.Id);
@@ -210,6 +207,30 @@ public class BookingService(
         
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
+        // Notify User
+        try 
+        {
+            if (booking.User?.Email != null && booking.TripDate?.Trip != null)
+            {
+                string userName = $"{booking.User.FirstName} {booking.User.LastName}";
+                if (request.Status == BookingStatus.Confirmed)
+                {
+                    string html = Hook.Domain.Helpers.EmailTemplates.GetBookingConfirmedTemplate(
+                        userName, booking.TripDate.Trip.Title, booking.TripDate.StartDate, booking.TotalPrice);
+                    _backgroundJobClient.Enqueue<IEmailSender>(sender => 
+                        sender.SendEmailAsync(booking.User.Email, "✅ Booking Confirmed!", html));
+                }
+                else if (request.Status == BookingStatus.Rejected)
+                {
+                    string html = Hook.Domain.Helpers.EmailTemplates.GetBookingRejectedTemplate(
+                        userName, booking.TripDate.Trip.Title, "Your booking request was rejected by the owner.");
+                    _backgroundJobClient.Enqueue<IEmailSender>(sender => 
+                        sender.SendEmailAsync(booking.User.Email, "⚠️ Booking Rejected", html));
+                }
+            }
+        }
+        catch { /* Log failure but don't fail */ }
+
         return Result.Success(ToResponse(booking));
     }
 
@@ -254,7 +275,7 @@ public class BookingService(
         booking.SpecialRequests,
         $"{booking.User?.FirstName} {booking.User?.LastName}",
         booking.User?.PhoneNumber,
-        booking.Payment == null ? null : new PaymentResponse(
+        booking.Payment == null ? null : new BookingPaymentInfo(
             booking.Payment.Id,
             booking.Payment.Amount,
             booking.Payment.Status,

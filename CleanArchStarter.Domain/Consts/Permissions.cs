@@ -51,6 +51,19 @@ public static class Permissions
     public const string Bookings_Cancel = "Permissions.Bookings.Cancel";
     public const string Bookings_ViewAll = "Permissions.Bookings.ViewAll";
 
+    // Payments
+    public const string Payments_View = "Permissions.Payments.View";
+    public const string Payments_UploadReceipt = "Permissions.Payments.UploadReceipt";
+    public const string Payments_Verify = "Permissions.Payments.Verify";
+    public const string Payments_ViewAll = "Permissions.Payments.ViewAll";
+    public const string Payments_Stats = "Permissions.Payments.Stats";
+
+    // Reviews
+    public const string Reviews_View = "Permissions.Reviews.View";
+    public const string Reviews_Create = "Permissions.Reviews.Create";
+    public const string Reviews_Update = "Permissions.Reviews.Update";
+    public const string Reviews_Delete = "Permissions.Reviews.Delete";
+
     public static IList<string?> GetAllPermissions() =>
        typeof(Permissions).GetFields().Select(f => f.GetValue(f) as string).ToList();
 }
