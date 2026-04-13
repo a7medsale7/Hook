@@ -17,7 +17,7 @@ public class BookingsController(IBookingService bookingService) : ControllerBase
 {
     private readonly IBookingService _bookingService = bookingService;
 
-    [HttpPost]
+    [HttpPost("admin-user/create")]
     [Authorize(Policy = Permissions.Bookings_Create)]
     public async Task<IActionResult> CreateBooking(CreateBookingRequest request, CancellationToken cancellationToken)
     {
@@ -27,7 +27,7 @@ public class BookingsController(IBookingService bookingService) : ControllerBase
         return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
     }
 
-    [HttpGet("my-bookings")]
+    [HttpGet("admin-user/my-bookings")]
     [Authorize(Policy = Permissions.Bookings_View)]
     public async Task<IActionResult> GetMyBookings(CancellationToken cancellationToken)
     {
@@ -37,7 +37,7 @@ public class BookingsController(IBookingService bookingService) : ControllerBase
         return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
     }
 
-    [HttpGet("search")]
+    [HttpGet("admin-user-boatowner/search")]
     [Authorize(Policy = Permissions.Bookings_View)]
     public async Task<IActionResult> SearchBookings([FromQuery] BookingFilterRequest filter, CancellationToken cancellationToken)
     {
@@ -57,7 +57,7 @@ public class BookingsController(IBookingService bookingService) : ControllerBase
         return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
     }
 
-    [HttpGet("owner/all")]
+    [HttpGet("admin-boatowner/owner/allroles/GetAll")]
     [Authorize(Policy = Permissions.Bookings_UpdateStatus)]
     public async Task<IActionResult> GetOwnerBookings([FromQuery] BookingFilterRequest filter, CancellationToken cancellationToken)
     {
@@ -70,7 +70,7 @@ public class BookingsController(IBookingService bookingService) : ControllerBase
         return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
     }
 
-    [HttpGet("stats")]
+    [HttpGet("admin-user-boatowner/stats")]
     [Authorize(Policy = Permissions.Bookings_View)]
     public async Task<IActionResult> GetStats(CancellationToken cancellationToken)
     {
@@ -81,7 +81,7 @@ public class BookingsController(IBookingService bookingService) : ControllerBase
         return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
     }
 
-    [HttpGet("trip-bookings/{dateId}")]
+    [HttpGet("admin-user-boatowner/trip-bookings/{dateId}")]
     [Authorize(Policy = Permissions.Bookings_View)]
     public async Task<IActionResult> GetTripBookings(Guid dateId, CancellationToken cancellationToken)
     {
@@ -91,7 +91,7 @@ public class BookingsController(IBookingService bookingService) : ControllerBase
         return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
     }
 
-    [HttpGet("all")]
+    [HttpGet("admin/allroles/GetAll")]
     [Authorize(Policy = Permissions.Bookings_ViewAll)]
     public async Task<IActionResult> GetAllBookings(CancellationToken cancellationToken)
     {
@@ -99,7 +99,7 @@ public class BookingsController(IBookingService bookingService) : ControllerBase
         return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
     }
 
-    [HttpPatch("{id}/status")]
+    [HttpPatch("admin-boatowner/update-status/{id}")]
     [Authorize(Policy = Permissions.Bookings_UpdateStatus)]
     public async Task<IActionResult> UpdateStatus(Guid id, UpdateBookingStatusRequest request, CancellationToken cancellationToken)
     {
@@ -109,7 +109,7 @@ public class BookingsController(IBookingService bookingService) : ControllerBase
         return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
     }
 
-    [HttpDelete("{id}/cancel")]
+    [HttpDelete("admin-user/cancel/{id}")]
     [Authorize(Policy = Permissions.Bookings_Cancel)]
     public async Task<IActionResult> CancelBooking(Guid id, CancellationToken cancellationToken)
     {

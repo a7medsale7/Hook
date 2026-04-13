@@ -21,7 +21,7 @@ public class PaymentsController(
     private readonly IPaymentService _paymentService = paymentService;
     private readonly IBoatOwnerRepository _boatOwnerRepository = boatOwnerRepository;
 
-    [HttpGet("my")]
+    [HttpGet("admin-user-boatowner/my")]
     [Authorize(Policy = Permissions.Payments_View)]
     public async Task<IActionResult> GetMyPayments(CancellationToken cancellationToken)
     {
@@ -30,7 +30,7 @@ public class PaymentsController(
         return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
     }
 
-    [HttpPost("{id}/receipt")]
+    [HttpPost("admin-user/upload-receipt/{id}")]
     [Authorize(Policy = Permissions.Payments_UploadReceipt)]
     public async Task<IActionResult> UploadReceipt(Guid id, [FromForm] UploadReceiptRequest request, CancellationToken cancellationToken)
     {
@@ -39,7 +39,7 @@ public class PaymentsController(
         return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
     }
 
-    [HttpPost("{id}/verify")]
+    [HttpPost("admin-boatowner/verify/{id}")]
     [Authorize(Policy = Permissions.Payments_Verify)] 
     public async Task<IActionResult> VerifyPayment(Guid id, VerifyPaymentRequest request, CancellationToken cancellationToken)
     {
@@ -49,7 +49,7 @@ public class PaymentsController(
         return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
     }
 
-    [HttpGet("owner/all")]
+    [HttpGet("admin-boatowner/owner/allroles/GetAll")]
     [Authorize(Policy = Permissions.Payments_View)]
     public async Task<IActionResult> GetOwnerPayments([FromQuery] PaymentFilterRequest filter, CancellationToken cancellationToken)
     {
@@ -63,7 +63,7 @@ public class PaymentsController(
         return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
     }
 
-    [HttpGet("stats")]
+    [HttpGet("admin-boatowner/stats")]
     [Authorize(Policy = Permissions.Payments_Stats)]
     public async Task<IActionResult> GetStats(CancellationToken cancellationToken)
     {

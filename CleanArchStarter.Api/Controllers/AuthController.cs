@@ -10,7 +10,7 @@ public class AuthController(IAuthService authService) : ControllerBase
 {
     private readonly IAuthService authService = authService;
 
-    [HttpPost("")]
+    [HttpPost("allroles/login")]
     public async Task<IActionResult> Login(
         LoginRequest request,
         CancellationToken cancellationToken)
@@ -30,7 +30,7 @@ public class AuthController(IAuthService authService) : ControllerBase
         return Ok(result.Value);
     }
 
-    [HttpPost("refresh")]
+    [HttpPost("allroles/refresh")]
     public async Task<IActionResult> RefreshToken(
         RefreshTokenRequest request,
         CancellationToken cancellationToken)
@@ -50,7 +50,7 @@ public class AuthController(IAuthService authService) : ControllerBase
         return Ok(result.Value);
     }
 
-    [HttpPost("revoke")]
+    [HttpPost("allroles/revoke")]
     public async Task<IActionResult> RevokeToken(
         RefreshTokenRequest request,
         CancellationToken cancellationToken)
@@ -73,7 +73,7 @@ public class AuthController(IAuthService authService) : ControllerBase
         });
     }
 
-    [HttpPost("register")]
+    [HttpPost("allroles/register")]
     public async Task<IActionResult> Register(
         RegisterRequest request,
         CancellationToken cancellationToken)
@@ -95,7 +95,7 @@ public class AuthController(IAuthService authService) : ControllerBase
         });
     }
 
-    [HttpPost("confirm-email")]
+    [HttpPost("allroles/confirm-email")]
     public async Task<IActionResult> ConfirmEmailPost(
         [FromBody] ConfirmEmailReqest request,
         CancellationToken cancellationToken)
@@ -109,7 +109,7 @@ public class AuthController(IAuthService authService) : ControllerBase
             : BadRequest(new { error = result.Error.Description });
     }
 
-    [HttpGet("confirm-email")]
+    [HttpGet("allroles/confirm-email")]
     public async Task<IActionResult> ConfirmEmail(
         [FromQuery] ConfirmEmailReqest request,
         CancellationToken cancellationToken)
@@ -126,7 +126,7 @@ public class AuthController(IAuthService authService) : ControllerBase
 return Redirect(redirectUrl);
     }
 
-    [HttpPost("resend-confirmation-email")]
+[HttpPost("allroles/resend-confirmation-email")]
     public async Task<IActionResult> ResendConfirmationEmail(
         ResendConfirmationEmailReqest request,
         CancellationToken cancellationToken)

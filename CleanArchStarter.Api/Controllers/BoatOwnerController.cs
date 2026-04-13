@@ -13,7 +13,7 @@ public class BoatOwnerController(IBoatOwnerService boatOwnerService) : Controlle
 {
     private readonly IBoatOwnerService _boatOwnerService = boatOwnerService;
 
-    [HttpPost("apply")]
+    [HttpPost("admin-user/apply")]
     [Authorize(Policy = Permissions.BoatOwner_Apply)]
     public async Task<IActionResult> Apply([FromForm] ApplyBoatOwnerRequest request, CancellationToken cancellationToken)
     {
@@ -25,7 +25,7 @@ public class BoatOwnerController(IBoatOwnerService boatOwnerService) : Controlle
         return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
     }
 
-    [HttpGet("profile")]
+    [HttpGet("admin-user-boatowner/profile")]
     [Authorize(Policy = Permissions.BoatOwner_ViewProfile)]
     public async Task<IActionResult> GetProfile(CancellationToken cancellationToken)
     {
@@ -37,7 +37,7 @@ public class BoatOwnerController(IBoatOwnerService boatOwnerService) : Controlle
         return result.IsSuccess ? Ok(result.Value) : NotFound(result.Error);
     }
 
-    [HttpGet("pending")]
+    [HttpGet("admin/pending/GetAll")]
     [Authorize(Roles = DefaultRoles.Admin, Policy = Permissions.BoatOwner_ViewAll)]
     public async Task<IActionResult> GetPendingApplications(CancellationToken cancellationToken)
     {
@@ -45,7 +45,7 @@ public class BoatOwnerController(IBoatOwnerService boatOwnerService) : Controlle
         return Ok(result.Value);
     }
 
-    [HttpGet("all")]
+    [HttpGet("admin/allroles/GetAll")]
     [Authorize(Roles = DefaultRoles.Admin, Policy = Permissions.BoatOwner_ViewAll)]
     public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
     {
@@ -53,7 +53,7 @@ public class BoatOwnerController(IBoatOwnerService boatOwnerService) : Controlle
         return Ok(result.Value);
     }
 
-    [HttpPost("update-status")]
+    [HttpPost("admin/update-status")]
     [Authorize(Roles = DefaultRoles.Admin, Policy = Permissions.BoatOwner_UpdateStatus)]
     public async Task<IActionResult> UpdateStatus([FromBody] UpdateBoatOwnerStatusRequest request, CancellationToken cancellationToken)
     {
@@ -62,7 +62,7 @@ public class BoatOwnerController(IBoatOwnerService boatOwnerService) : Controlle
         return result.IsSuccess ? Ok() : BadRequest(result.Error);
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("admin/delete/{id}")]
     [Authorize(Roles = DefaultRoles.Admin, Policy = Permissions.BoatOwner_Delete)]
     public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
     {
@@ -71,7 +71,7 @@ public class BoatOwnerController(IBoatOwnerService boatOwnerService) : Controlle
         return result.IsSuccess ? Ok() : BadRequest(result.Error);
     }
 
-    [HttpGet("deleted")]
+    [HttpGet("admin/deleted/GetAll")]
     [Authorize(Roles = DefaultRoles.Admin, Policy = Permissions.BoatOwner_ViewAll)]
     public async Task<IActionResult> GetDeleted(CancellationToken cancellationToken)
     {
@@ -79,7 +79,7 @@ public class BoatOwnerController(IBoatOwnerService boatOwnerService) : Controlle
         return Ok(result.Value);
     }
 
-    [HttpPost("restore/{id}")]
+    [HttpPost("admin/restore/{id}")]
     [Authorize(Roles = DefaultRoles.Admin, Policy = Permissions.BoatOwner_Restore)]
     public async Task<IActionResult> Restore(Guid id, CancellationToken cancellationToken)
     {

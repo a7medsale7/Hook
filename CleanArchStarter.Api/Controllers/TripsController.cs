@@ -17,7 +17,7 @@ public class TripsController(ITripService tripService) : ControllerBase
 {
     private readonly ITripService _tripService = tripService;
 
-    [HttpPost]
+    [HttpPost("boatowner/create")]
     [Authorize(Policy = Permissions.Trips_Create)]
     public async Task<IActionResult> Create([FromForm] CreateTripRequest request, CancellationToken cancellationToken)
     {
@@ -29,7 +29,7 @@ public class TripsController(ITripService tripService) : ControllerBase
         return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("allroles/{id}")]
     public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken)
     {
         var result = await _tripService.GetByIdAsync(id, cancellationToken);
@@ -37,14 +37,14 @@ public class TripsController(ITripService tripService) : ControllerBase
         return result.IsSuccess ? Ok(result.Value) : NotFound(result.Error);
     }
 
-    [HttpGet("all")]
+    [HttpGet("allroles/GetAll")]
     public async Task<IActionResult> GetAll([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10, CancellationToken cancellationToken = default)
     {
         var result = await _tripService.GetAllAsync(pageNumber, pageSize, cancellationToken);
         return Ok(result.Value);
     }
 
-    [HttpGet]
+    [HttpGet("allroles/search")]
     public async Task<IActionResult> Search(
         [FromQuery] string? query, 
         [FromQuery] string? locationName, 
@@ -60,7 +60,7 @@ public class TripsController(ITripService tripService) : ControllerBase
         return Ok(result.Value);
     }
 
-    [HttpGet("my-trips")]
+    [HttpGet("user-boatowner/my-trips")]
     [Authorize(Policy = Permissions.Trips_View)]
     public async Task<IActionResult> GetMyTrips(CancellationToken cancellationToken)
     {
@@ -72,7 +72,7 @@ public class TripsController(ITripService tripService) : ControllerBase
         return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
     }
 
-    [HttpPut("{id}")]
+    [HttpPut("boatowner/update/{id}")]
     [Authorize(Policy = Permissions.Trips_Update)]
     public async Task<IActionResult> Update(Guid id, [FromForm] UpdateTripRequest request, CancellationToken cancellationToken)
     {
@@ -85,7 +85,7 @@ public class TripsController(ITripService tripService) : ControllerBase
         return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("boatowner/delete/{id}")]
     [Authorize(Policy = Permissions.Trips_Delete)]
     public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
     {
@@ -98,7 +98,7 @@ public class TripsController(ITripService tripService) : ControllerBase
         return result.IsSuccess ? Ok() : BadRequest(result.Error);
     }
 
-    [HttpPost("{id}/dates")]
+    [HttpPost("boatowner/add-dates/{id}")]
     [Authorize(Policy = Permissions.Trips_Update)]
     public async Task<IActionResult> AddDates(Guid id, [FromBody] AddTripDatesRequest request, CancellationToken cancellationToken)
     {
@@ -110,7 +110,7 @@ public class TripsController(ITripService tripService) : ControllerBase
         return result.IsSuccess ? Ok() : BadRequest(result.Error);
     }
 
-    [HttpPatch("dates/{dateId}")]
+    [HttpPatch("boatowner/toggle-date-status/{dateId}")]
     [Authorize(Policy = Permissions.Trips_Update)]
     public async Task<IActionResult> ToggleDateStatus(Guid dateId, [FromQuery] bool isActive, CancellationToken cancellationToken)
     {

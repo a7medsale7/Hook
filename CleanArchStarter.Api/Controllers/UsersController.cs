@@ -16,7 +16,7 @@ public class UsersController(IUserService userService) : ControllerBase
 
 
 
-    [HttpGet("profile")]
+    [HttpGet("admin-user-boatowner/profile")]
     [Authorize(Policy = Permissions.Users_ViewProfile)]
     public async Task<IActionResult> GetProfile()
     {
@@ -26,7 +26,7 @@ public class UsersController(IUserService userService) : ControllerBase
         return result.IsSuccess ? Ok(result.Value) : NotFound(result.Error);
     }
 
-    [HttpPut("profile")]
+    [HttpPut("admin-user-boatowner/profile")]
     [Authorize(Policy = Permissions.Users_UpdateProfile)]
     public async Task<IActionResult> UpdateProfile([FromForm] UpdateProfileRequest request)
     {
@@ -36,7 +36,7 @@ public class UsersController(IUserService userService) : ControllerBase
         return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
     }
 
-    [HttpPut("change-password")]
+    [HttpPut("admin-user-boatowner/change-password")]
     [Authorize(Policy = Permissions.Users_ChangePassword)]
     public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
     {
@@ -46,7 +46,7 @@ public class UsersController(IUserService userService) : ControllerBase
         return result.IsSuccess ? Ok() : BadRequest(result.Error);
     }
 
-    [HttpGet("all")]
+    [HttpGet("admin/allroles/GetAll")]
     [Authorize(Roles = DefaultRoles.Admin, Policy = Permissions.Users_ViewAll)]
     public async Task<IActionResult> GetAllUsers()
     {
@@ -54,7 +54,7 @@ public class UsersController(IUserService userService) : ControllerBase
         return Ok(result);
     }
 
-    [HttpPost("forgot-password")]
+    [HttpPost("allroles/forgot-password")]
     [AllowAnonymous]
     public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest request)
     {
@@ -63,7 +63,7 @@ public class UsersController(IUserService userService) : ControllerBase
         return Ok(new { message = "If the email address is in the system, a password reset link will be sent to it soon 🙌" });
     }
 
-    [HttpPost("reset-password")]
+    [HttpPost("allroles/reset-password")]
     [AllowAnonymous]
     public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest request)
     {
@@ -71,7 +71,7 @@ public class UsersController(IUserService userService) : ControllerBase
         return result.IsSuccess ? Ok() : BadRequest(result.Error);
     }
 
-    [HttpGet("GetById/{id}")]
+    [HttpGet("admin/get-by-id/{id}")]
     [Authorize(Roles = DefaultRoles.Admin, Policy = Permissions.Users_ViewAll)]
     public async Task<IActionResult> GetUserById([FromRoute] string id)
     {
@@ -80,7 +80,7 @@ public class UsersController(IUserService userService) : ControllerBase
     }
 
 
-    [HttpPost]
+    [HttpPost("admin")]
     [Authorize(Roles = DefaultRoles.Admin, Policy = Permissions.Users_ManageRoles)]
     public async Task<IActionResult> Add([FromBody] CreateUserReqeust request, CancellationToken cancellationToken)
     {
@@ -93,7 +93,7 @@ public class UsersController(IUserService userService) : ControllerBase
 
 
     // 1. ???????? ????? ?????? ???????? ???????
-    [HttpPut("{id}")]
+    [HttpPut("admin/update/{id}")]
     [Authorize(Roles = DefaultRoles.Admin, Policy = Permissions.Users_ManageRoles)]
     public async Task<IActionResult> Update([FromRoute] string id, [FromBody] UpdateUserRequest request, CancellationToken cancellationToken)
     {
@@ -103,7 +103,7 @@ public class UsersController(IUserService userService) : ControllerBase
     }
 
     // 2. ???????? ????? ???? ???????? (?????/?????)
-    [HttpPatch("{id}/toggle-status")]
+    [HttpPatch("admin/toggle-status/{id}")]
     [Authorize(Roles = DefaultRoles.Admin, Policy = Permissions.Users_ManageRoles)]
     public async Task<IActionResult> ToggleStatus([FromRoute] string id)
     {
@@ -113,7 +113,7 @@ public class UsersController(IUserService userService) : ControllerBase
     }
 
     // 3. ???????? ?? ??? ???????? (Unlock)
-    [HttpPatch("{id}/unlock")]
+    [HttpPatch("admin/unlock/{id}")]
     [Authorize(Roles = DefaultRoles.Admin, Policy = Permissions.Users_ManageRoles)]
     public async Task<IActionResult> Unlock([FromRoute] string id)
     {

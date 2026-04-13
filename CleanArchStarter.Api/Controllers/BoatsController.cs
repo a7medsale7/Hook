@@ -13,7 +13,7 @@ public class BoatsController(IBoatService boatService) : ControllerBase
 {
     private readonly IBoatService _boatService = boatService;
 
-    [HttpPost]
+    [HttpPost("boatowner/create")]
     [Authorize(Policy = Permissions.Boats_Create)]
     public async Task<IActionResult> Create([FromForm] CreateBoatRequest request, CancellationToken cancellationToken)
     {
@@ -25,7 +25,7 @@ public class BoatsController(IBoatService boatService) : ControllerBase
         return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("allroles/{id}")]
     public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken)
     {
         var result = await _boatService.GetByIdAsync(id, cancellationToken);
@@ -33,14 +33,14 @@ public class BoatsController(IBoatService boatService) : ControllerBase
         return result.IsSuccess ? Ok(result.Value) : NotFound(result.Error);
     }
 
-    [HttpGet]
+    [HttpGet("allroles/GetAll")]
     public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
     {
         var result = await _boatService.GetAllAsync(cancellationToken);
         return Ok(result.Value);
     }
 
-    [HttpGet("my-boats")]
+    [HttpGet("user-boatowner/my-boats")]
     [Authorize(Policy = Permissions.Boats_View)]
     public async Task<IActionResult> GetMyBoats(CancellationToken cancellationToken)
     {
@@ -52,7 +52,7 @@ public class BoatsController(IBoatService boatService) : ControllerBase
         return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
     }
 
-    [HttpPut("{id}")]
+    [HttpPut("boatowner/update/{id}")]
     [Authorize(Policy = Permissions.Boats_Update)]
     public async Task<IActionResult> Update(Guid id, [FromForm] UpdateBoatRequest request, CancellationToken cancellationToken)
     {
@@ -65,7 +65,7 @@ public class BoatsController(IBoatService boatService) : ControllerBase
         return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("boatowner/delete/{id}")]
     [Authorize(Policy = Permissions.Boats_Delete)]
     public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
     {
@@ -78,7 +78,7 @@ public class BoatsController(IBoatService boatService) : ControllerBase
         return result.IsSuccess ? Ok() : BadRequest(result.Error);
     }
 
-    [HttpPost("restore/{id}")]
+    [HttpPost("admin/restore/{id}")]
     [Authorize(Roles = DefaultRoles.Admin)]
     public async Task<IActionResult> Restore(Guid id, CancellationToken cancellationToken)
     {

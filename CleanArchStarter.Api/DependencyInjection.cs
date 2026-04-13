@@ -23,6 +23,8 @@ using Hook.Domain.Abstractions.Repositories;
 using Hook.Infrastructure.Repositories;
 using Hook.Infrastructure.Authentication.Filters;
 using Hook.Api.Middleware;
+using Microsoft.OpenApi.Models;
+
 
 namespace Hook.Api;
 
@@ -125,12 +127,35 @@ public static class DependencyInjection
     {
         services.AddSwaggerGen(options =>
         {
-            options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+            options.SwaggerDoc("v1", new OpenApiInfo
             {
                 Title = "Fishing Platform API",
                 Version = "v1"
-               
+            });
 
+            options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            {
+                Name = "Authorization",
+                Type = SecuritySchemeType.Http,
+                Scheme = "Bearer",
+                BearerFormat = "JWT",
+                In = ParameterLocation.Header,
+                Description = "Please enter your JWT token here."
+            });
+
+            options.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        }
+                    },
+                    Array.Empty<string>()
+                }
             });
         });
 

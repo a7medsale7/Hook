@@ -16,7 +16,7 @@ public class ReviewsController(IReviewService reviewService) : ControllerBase
 {
     private readonly IReviewService _reviewService = reviewService;
 
-    [HttpPost]
+    [HttpPost("admin-user/create")]
     [Authorize(Policy = Permissions.Reviews_Create)]
     public async Task<IActionResult> Create(CreateReviewRequest request, CancellationToken cancellationToken)
     {
@@ -26,7 +26,7 @@ public class ReviewsController(IReviewService reviewService) : ControllerBase
         return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
     }
 
-    [HttpPut("{id}")]
+    [HttpPut("admin-user/update/{id}")]
     [Authorize(Policy = Permissions.Reviews_Update)]
     public async Task<IActionResult> Update(Guid id, UpdateReviewRequest request, CancellationToken cancellationToken)
     {
@@ -36,7 +36,7 @@ public class ReviewsController(IReviewService reviewService) : ControllerBase
         return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
     }
 
-    [HttpGet("trip/{tripId}")]
+    [HttpGet("allroles/trip/{tripId}")]
     // No permission needed for viewing trip reviews, they are public
     public async Task<IActionResult> GetTripReviews(Guid tripId, CancellationToken cancellationToken)
     {
@@ -44,7 +44,7 @@ public class ReviewsController(IReviewService reviewService) : ControllerBase
         return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
     }
 
-    [HttpGet("my-reviews")]
+    [HttpGet("admin-user-boatowner/my-reviews/GetAll")]
     [Authorize(Policy = Permissions.Reviews_View)]
     public async Task<IActionResult> GetMyReviews(CancellationToken cancellationToken)
     {
@@ -54,7 +54,7 @@ public class ReviewsController(IReviewService reviewService) : ControllerBase
         return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("admin-user/delete/{id}")]
     [Authorize(Policy = Permissions.Reviews_Delete)]
     public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
     {
