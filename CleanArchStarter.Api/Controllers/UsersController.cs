@@ -16,7 +16,7 @@ public class UsersController(IUserService userService) : ControllerBase
 
 
 
-    [HttpGet("admin-user-boatowner/profile")]
+    [HttpGet("allroles/profile")]
     [Authorize(Policy = Permissions.Users_ViewProfile)]
     public async Task<IActionResult> GetProfile()
     {
@@ -26,7 +26,7 @@ public class UsersController(IUserService userService) : ControllerBase
         return result.IsSuccess ? Ok(result.Value) : NotFound(result.Error);
     }
 
-    [HttpPut("admin-user-boatowner/profile")]
+    [HttpPut("allroles/profile")]
     [Authorize(Policy = Permissions.Users_UpdateProfile)]
     public async Task<IActionResult> UpdateProfile([FromForm] UpdateProfileRequest request)
     {
@@ -36,7 +36,7 @@ public class UsersController(IUserService userService) : ControllerBase
         return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
     }
 
-    [HttpPut("admin-user-boatowner/change-password")]
+    [HttpPut("allroles/change-password")]
     [Authorize(Policy = Permissions.Users_ChangePassword)]
     public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
     {

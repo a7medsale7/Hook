@@ -13,7 +13,7 @@ public class BoatOwnerController(IBoatOwnerService boatOwnerService) : Controlle
 {
     private readonly IBoatOwnerService _boatOwnerService = boatOwnerService;
 
-    [HttpPost("admin-user/apply")]
+    [HttpPost("allroles/apply")]
     [Authorize(Policy = Permissions.BoatOwner_Apply)]
     public async Task<IActionResult> Apply([FromForm] ApplyBoatOwnerRequest request, CancellationToken cancellationToken)
     {
@@ -25,7 +25,7 @@ public class BoatOwnerController(IBoatOwnerService boatOwnerService) : Controlle
         return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
     }
 
-    [HttpGet("admin-user-boatowner/profile")]
+    [HttpGet("boatowner/profile")]
     [Authorize(Policy = Permissions.BoatOwner_ViewProfile)]
     public async Task<IActionResult> GetProfile(CancellationToken cancellationToken)
     {
@@ -45,7 +45,7 @@ public class BoatOwnerController(IBoatOwnerService boatOwnerService) : Controlle
         return Ok(result.Value);
     }
 
-    [HttpGet("admin/allroles/GetAll")]
+    [HttpGet("admin/GetAll")]
     [Authorize(Roles = DefaultRoles.Admin, Policy = Permissions.BoatOwner_ViewAll)]
     public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
     {

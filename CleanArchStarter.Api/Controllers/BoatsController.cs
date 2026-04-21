@@ -40,7 +40,7 @@ public class BoatsController(IBoatService boatService) : ControllerBase
         return Ok(result.Value);
     }
 
-    [HttpGet("user-boatowner/my-boats")]
+    [HttpGet("boatowner/my-boats")]
     [Authorize(Policy = Permissions.Boats_View)]
     public async Task<IActionResult> GetMyBoats(CancellationToken cancellationToken)
     {
