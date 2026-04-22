@@ -42,8 +42,8 @@ public class BookingsController(IBookingService bookingService) : ControllerBase
     public async Task<IActionResult> SearchBookings([FromQuery] BookingFilterRequest filter, CancellationToken cancellationToken)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
-        var isAdmin = User.IsInRole("Admin");
-        var isOwner = User.IsInRole("BoatOwner");
+        var isAdmin = User.IsInRole(DefaultRoles.Admin);
+        var isOwner = User.IsInRole(DefaultRoles.BoatOwner);
 
         // Logic: Users see only their bookings. Owners see bookings for their boats. Admins see all.
         // We'll pass correct IDs to the service.
@@ -75,7 +75,7 @@ public class BookingsController(IBookingService bookingService) : ControllerBase
     public async Task<IActionResult> GetStats(CancellationToken cancellationToken)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
-        var isAdmin = User.IsInRole("Admin");
+        var isAdmin = User.IsInRole(DefaultRoles.Admin);
         var result = await _bookingService.GetBookingStatsAsync(userId, isAdmin, cancellationToken);
         
         return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);

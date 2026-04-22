@@ -46,7 +46,7 @@ public class UsersController(IUserService userService) : ControllerBase
         return result.IsSuccess ? Ok() : BadRequest(result.Error);
     }
 
-    [HttpGet("admin/allroles/GetAll")]
+    [HttpGet("admin/GetAll")]
     [Authorize(Roles = DefaultRoles.Admin, Policy = Permissions.Users_ViewAll)]
     public async Task<IActionResult> GetAllUsers()
     {

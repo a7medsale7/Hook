@@ -173,7 +173,7 @@ public class UserService : IUserService
         var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
         
         // 3. Create reset link (Point to Frontend or API helper)
-        var resetLink = $"{originUrl}/reset-password?email={user.Email}&token={encodedToken}";
+        var resetLink = $"{originUrl}/api/Users/allroles/reset-password?email={user.Email}&token={encodedToken}";
         
         // 4. Enqueue email sending job
         BackgroundJob.Enqueue(() => _emailSender.SendEmailAsync(
