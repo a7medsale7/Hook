@@ -185,18 +185,18 @@ public class TripService(
             foreach (var img in imagesToDelete)
             {
                 _fileService.DeleteFile(img.ImageUrl);
-                img.IsDeleted = true; // Use Soft Delete flag manually
+                img.IsDeleted = true;
                 img.IsMainImage = false;
             }
         }
 
-        // 2. Handle New Images
+        // 2. Handle New Images - Use repository AddImageAsync to explicitly mark as Added
         if (request.NewImages != null && request.NewImages.Any())
         {
             var newUrls = await _fileService.SaveFilesAsync(request.NewImages, "uploads/trips");
             foreach (var url in newUrls)
             {
-                trip.Images.Add(new TripImage { ImageUrl = url, TripId = trip.Id });
+                await _tripRepository.AddImageAsync(new TripImage { ImageUrl = url, TripId = trip.Id });
             }
         }
 
@@ -216,19 +216,11 @@ public class TripService(
             activeImages.First().IsMainImage = true;
         }
 
-        try
-        {
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
-        }
-        catch (Microsoft.EntityFrameworkCore.DbUpdateConcurrencyException ex)
-        {
-            foreach (var entry in ex.Entries)
-            {
-                entry.State = Microsoft.EntityFrameworkCore.EntityState.Detached;
-            }
-        }
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return Result.Success(ToResponse(trip));
+        // Reload fresh data from DB to ensure response matches reality
+        var updatedTrip = await _tripRepository.GetByIdWithDetailsAsync(id);
+        return Result.Success(ToResponse(updatedTrip!));
     }
 
     public async Task<Result> SoftDeleteTripAsync(Guid id, string userId, bool isAdmin = false, CancellationToken cancellationToken = default)
@@ -263,7 +255,7 @@ public class TripService(
             {
                 TripId = tripId,
                 StartDate = dateDto.StartDate,
-                EndDate = dateDto.EndDate,
+                EndDate = dateDto.StartDate.AddDays(1),
                 AvailableSeats = dateDto.AvailableSeats,
                 IsActive = true
             };
@@ -308,8 +300,8 @@ public class TripService(
         trip.Boat?.Name ?? "Unknown",
         trip.TripManagerId,
         trip.TripManager?.User != null ? $"{trip.TripManager.User.FirstName} {trip.TripManager.User.LastName}" : "Unknown",
-        trip.Images.Select(i => new TripImageResponse(i.Id, i.ImageUrl, i.IsMainImage)).ToList(),
-        trip.Images.FirstOrDefault(i => i.IsMainImage)?.ImageUrl ?? trip.Images.FirstOrDefault()?.ImageUrl,
+        trip.Images.Where(i => !i.IsDeleted).Select(i => new TripImageResponse(i.Id, i.ImageUrl, i.IsMainImage)).ToList(),
+        trip.Images.Where(i => !i.IsDeleted).FirstOrDefault(i => i.IsMainImage)?.ImageUrl ?? trip.Images.Where(i => !i.IsDeleted).FirstOrDefault()?.ImageUrl,
         trip.TripDates.Select(d => new TripDateResponse(d.Id, d.StartDate, d.EndDate, d.AvailableSeats, d.IsActive)).ToList(),
         trip.Boat == null ? null : new Hook.Application.Contracts.Boat.BoatResponse
         {

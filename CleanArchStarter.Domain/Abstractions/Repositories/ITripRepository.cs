@@ -13,6 +13,7 @@ public interface ITripRepository
     Task<IEnumerable<Trip>> GetByOwnerIdAsync(Guid ownerProfileId);
     Task<IEnumerable<Trip>> GetAvailableTripsAsync(); // Trips with upcoming dates
     Task AddAsync(Trip trip);
+    Task AddImageAsync(TripImage image);
     void Update(Trip trip);
     void Delete(Trip trip);
 }

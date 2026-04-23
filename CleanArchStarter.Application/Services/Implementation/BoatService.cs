@@ -130,18 +130,18 @@ public class BoatService : IBoatService
             foreach (var img in imagesToDelete)
             {
                 _fileService.DeleteFile(img.ImageUrl);
-                img.IsDeleted = true; // Use Soft Delete flag manually to avoid Concurrency bugs
+                img.IsDeleted = true;
                 img.IsMainImage = false;
             }
         }
 
-        // 2. Handle New Images
+        // 2. Handle New Images - Use repository AddImageAsync to explicitly mark as Added
         if (request.NewImages != null && request.NewImages.Any())
         {
             var newUrls = await _fileService.SaveFilesAsync(request.NewImages, "uploads/boats");
             foreach (var url in newUrls)
             {
-                boat.Images.Add(new BoatImage { ImageUrl = url, BoatId = boat.Id });
+                await _boatRepository.AddImageAsync(new BoatImage { ImageUrl = url, BoatId = boat.Id });
             }
         }
 
@@ -162,24 +162,11 @@ public class BoatService : IBoatService
             activeImages.First().IsMainImage = true;
         }
 
-        try
-        {
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
-        }
-        catch (Microsoft.EntityFrameworkCore.DbUpdateConcurrencyException ex)
-        {
-            // Fallback or ignore if the row is already deleted/modified.
-            // In a Soft Delete scenario, if it throws here, the record is either already deleted 
-            // or the state is desynced. We can safely ignore image modifications if they failed 
-            // by returning a fallback response, since soft deletion is idempotent.
-            foreach (var entry in ex.Entries)
-            {
-                // Force detach the conflicting entry so it doesn't block later transactions
-                entry.State = Microsoft.EntityFrameworkCore.EntityState.Detached;
-            }
-        }
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return Result.Success(ToResponse(boat));
+        // Reload fresh data from DB to ensure response matches reality
+        var updatedBoat = await _boatRepository.GetByIdWithDetailsAsync(id);
+        return Result.Success(ToResponse(updatedBoat!));
     }
 
     public async Task<Result> SoftDeleteAsync(Guid id, string userId, bool isAdmin = false, CancellationToken cancellationToken = default)
@@ -223,12 +210,12 @@ public class BoatService : IBoatService
         Capacity = boat.Capacity,
         OwnerProfileId = boat.OwnerProfileId,
         OwnerName = boat.OwnerProfile?.User != null ? $"{boat.OwnerProfile.User.FirstName} {boat.OwnerProfile.User.LastName}" : "Unknown",
-        Images = boat.Images.Select(i => new BoatImageResponse
+        Images = boat.Images.Where(i => !i.IsDeleted).Select(i => new BoatImageResponse
         {
             Id = i.Id,
             ImageUrl = i.ImageUrl,
             IsMainImage = i.IsMainImage
         }).ToList(),
-        MainImageUrl = boat.Images.FirstOrDefault(i => i.IsMainImage)?.ImageUrl ?? boat.Images.FirstOrDefault()?.ImageUrl
+        MainImageUrl = boat.Images.Where(i => !i.IsDeleted).FirstOrDefault(i => i.IsMainImage)?.ImageUrl ?? boat.Images.Where(i => !i.IsDeleted).FirstOrDefault()?.ImageUrl
     };
 }

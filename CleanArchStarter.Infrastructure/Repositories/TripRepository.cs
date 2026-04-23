@@ -73,6 +73,11 @@ public class TripRepository(ApplicationDbContext context) : ITripRepository
         await context.Trips.AddAsync(trip);
     }
 
+    public async Task AddImageAsync(TripImage image)
+    {
+        await context.TripImages.AddAsync(image);
+    }
+
     public void Update(Trip trip)
     {
         context.Trips.Update(trip);
