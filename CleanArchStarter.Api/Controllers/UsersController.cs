@@ -80,7 +80,7 @@ public class UsersController(IUserService userService) : ControllerBase
     }
 
 
-    [HttpPost("admin")]
+    [HttpPost("admin /AddNewUser")]
     [Authorize(Roles = DefaultRoles.Admin, Policy = Permissions.Users_ManageRoles)]
     public async Task<IActionResult> Add([FromBody] CreateUserReqeust request, CancellationToken cancellationToken)
     {

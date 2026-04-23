@@ -16,8 +16,5 @@ public record UpdateTripRequest(
     int MaxParticipants,
     bool IsGuided,
     bool HasEquipmentRental,
-    bool HasSnorkeling,
-    List<Guid>? ImageIdsToDelete,
-    List<IFormFile>? NewImages,
-    Guid? MainImageId
+    bool HasSnorkeling
 );

@@ -57,18 +57,17 @@ public class BookingsController(IBookingService bookingService) : ControllerBase
         return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
     }
 
-    //[HttpGet("boatowner/allroles/GetAll")]
-    //[Authorize(Policy = Permissions.Bookings_UpdateStatus)]
-    //public async Task<IActionResult> GetOwnerBookings([FromQuery] BookingFilterRequest filter, CancellationToken cancellationToken)
-    //{
-    //    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+    [HttpGet("boatowner/GetAll")]
+    [Authorize(Policy = Permissions.Bookings_View)]
+    public async Task<IActionResult> GetOwnerBookings([FromQuery] BookingFilterRequest filter, CancellationToken cancellationToken)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
         
-    //    // We need to pass the ownerId, let the service handle the lookup 
-    //    // Or we can pass the userId to a service method that knows how to find owner bookings
-    //    var result = await _bookingService.GetFilteredBookingsAsync(filter, userId: null, ownerId: null, ownerUserId: userId, cancellationToken: cancellationToken); 
+        // We pass the userId to a service method that knows how to find owner bookings
+        var result = await _bookingService.GetFilteredBookingsAsync(filter, userId: null, ownerId: null, ownerUserId: userId, cancellationToken: cancellationToken); 
         
-    //    return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
-    //}
+        return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
+    }
 
     [HttpGet("boatowner/stats")]
     [Authorize(Policy = Permissions.Bookings_View)]

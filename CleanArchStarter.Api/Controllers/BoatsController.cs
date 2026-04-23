@@ -25,7 +25,7 @@ public class BoatsController(IBoatService boatService) : ControllerBase
         return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
     }
 
-    [HttpGet("allroles/{id}")]
+    [HttpGet("Admin-BoatOwner/{id}")]
     public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken)
     {
         var result = await _boatService.GetByIdAsync(id, cancellationToken);
@@ -33,7 +33,7 @@ public class BoatsController(IBoatService boatService) : ControllerBase
         return result.IsSuccess ? Ok(result.Value) : NotFound(result.Error);
     }
 
-    [HttpGet("allroles/GetAll")]
+    [HttpGet("Admin/GetAll")]
     public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
     {
         var result = await _boatService.GetAllAsync(cancellationToken);
@@ -61,6 +61,19 @@ public class BoatsController(IBoatService boatService) : ControllerBase
 
         var isAdmin = User.IsInRole(DefaultRoles.Admin);
         var result = await _boatService.UpdateAsync(id, userId, request, isAdmin, cancellationToken);
+        
+        return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
+    }
+
+    [HttpPut("boatowner/{id}/images")]
+    [Authorize(Policy = Permissions.Boats_Update)]
+    public async Task<IActionResult> UpdateImages(Guid id, [FromForm] Hook.Application.Contracts.Common.UpdateImagesRequest request, CancellationToken cancellationToken)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userId is null) return Unauthorized();
+
+        var isAdmin = User.IsInRole(DefaultRoles.Admin);
+        var result = await _boatService.UpdateImagesAsync(id, userId, request, isAdmin, cancellationToken);
         
         return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
     }
