@@ -43,6 +43,5 @@ public class ApplicationUserConfiguration : IEntityTypeConfiguration<Application
             EmailConfirmed = true,
             PasswordHash = DefaultUsers.AdminPasswordHash,
         });
-
     }
 }

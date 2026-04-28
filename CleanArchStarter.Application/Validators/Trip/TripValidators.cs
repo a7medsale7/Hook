@@ -44,10 +44,6 @@ public class TripDateRequestValidator : AbstractValidator<TripDateRequest>
             .NotEmpty().WithMessage("Start date is required.")
             .GreaterThan(DateTime.UtcNow).WithMessage("Start date cannot be in the past.");
 
-        RuleFor(x => x.EndDate)
-            .NotEmpty().WithMessage("End date is required.")
-            .GreaterThan(x => x.StartDate).WithMessage("End date must be after the start date.");
-
         RuleFor(x => x.AvailableSeats)
             .GreaterThan(0).WithMessage("Available seats must be at least one.");
     }

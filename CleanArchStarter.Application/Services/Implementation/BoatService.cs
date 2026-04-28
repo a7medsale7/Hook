@@ -108,44 +108,65 @@ public class BoatService : IBoatService
         boat.Description = request.Description;
         boat.Capacity = request.Capacity;
 
-        // 2. Hande Image Deletions
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        return Result.Success(ToResponse(boat));
+    }
+
+    public async Task<Result<BoatResponse>> UpdateImagesAsync(Guid id, string userId, Hook.Application.Contracts.Common.UpdateImagesRequest request, bool isAdmin = false, CancellationToken cancellationToken = default)
+    {
+        var boat = await _boatRepository.GetByIdWithDetailsAsync(id);
+        if (boat is null)
+            return Result.Failure<BoatResponse>(BoatErrors.NotFound);
+
+        // Check ownership (bypass for Admin)
+        if (!isAdmin && boat.OwnerProfile.UserId != userId)
+            return Result.Failure<BoatResponse>(BoatErrors.Unauthorized);
+
+        // 1. Handle Image Deletions
         if (request.ImageIdsToDelete != null && request.ImageIdsToDelete.Any())
         {
             var imagesToDelete = boat.Images.Where(img => request.ImageIdsToDelete.Contains(img.Id)).ToList();
             foreach (var img in imagesToDelete)
             {
                 _fileService.DeleteFile(img.ImageUrl);
-                boat.Images.Remove(img);
+                img.IsDeleted = true;
+                img.IsMainImage = false;
             }
         }
 
-        // 3. Handle New Images
+        // 2. Handle New Images - Use repository AddImageAsync to explicitly mark as Added
         if (request.NewImages != null && request.NewImages.Any())
         {
             var newUrls = await _fileService.SaveFilesAsync(request.NewImages, "uploads/boats");
             foreach (var url in newUrls)
             {
-                boat.Images.Add(new BoatImage { ImageUrl = url });
+                await _boatRepository.AddImageAsync(new BoatImage { ImageUrl = url, BoatId = boat.Id });
             }
         }
 
-        // 4. Handle Main Image update
+        // 3. Handle Main Image update
+        var activeImages = boat.Images.Where(i => !i.IsDeleted).ToList();
+
         if (request.MainImageId.HasValue)
         {
-            foreach (var img in boat.Images)
+            foreach (var img in activeImages)
             {
-                img.IsMainImage = img.Id == request.MainImageId.Value;
+                img.IsMainImage = (img.Id == request.MainImageId.Value);
             }
         }
-        else if (!boat.Images.Any(i => i.IsMainImage) && boat.Images.Any())
+
+        // Ensure at least one image is main
+        if (activeImages.Any() && !activeImages.Any(i => i.IsMainImage))
         {
-            boat.Images.First().IsMainImage = true;
+            activeImages.First().IsMainImage = true;
         }
 
-        _boatRepository.Update(boat);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return Result.Success(ToResponse(boat));
+        // Reload fresh data from DB to ensure response matches reality
+        var updatedBoat = await _boatRepository.GetByIdWithDetailsAsync(id);
+        return Result.Success(ToResponse(updatedBoat!));
     }
 
     public async Task<Result> SoftDeleteAsync(Guid id, string userId, bool isAdmin = false, CancellationToken cancellationToken = default)
@@ -189,7 +210,12 @@ public class BoatService : IBoatService
         Capacity = boat.Capacity,
         OwnerProfileId = boat.OwnerProfileId,
         OwnerName = boat.OwnerProfile?.User != null ? $"{boat.OwnerProfile.User.FirstName} {boat.OwnerProfile.User.LastName}" : "Unknown",
-        ImageUrls = boat.Images.Select(i => i.ImageUrl).ToList(),
-        MainImageUrl = boat.Images.FirstOrDefault(i => i.IsMainImage)?.ImageUrl ?? boat.Images.FirstOrDefault()?.ImageUrl
+        Images = boat.Images.Where(i => !i.IsDeleted).Select(i => new BoatImageResponse
+        {
+            Id = i.Id,
+            ImageUrl = i.ImageUrl,
+            IsMainImage = i.IsMainImage
+        }).ToList(),
+        MainImageUrl = boat.Images.Where(i => !i.IsDeleted).FirstOrDefault(i => i.IsMainImage)?.ImageUrl ?? boat.Images.Where(i => !i.IsDeleted).FirstOrDefault()?.ImageUrl
     };
 }

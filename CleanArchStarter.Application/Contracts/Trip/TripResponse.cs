@@ -21,8 +21,14 @@ public record TripResponse(
     string BoatName,
     Guid TripManagerId,
     string TripManagerName,
-    List<string> ImageUrls,
+    List<TripImageResponse> Images,
     string? MainImageUrl,
     List<TripDateResponse> TripDates,
     Hook.Application.Contracts.Boat.BoatResponse? Boat = null
+);
+
+public record TripImageResponse(
+    Guid Id,
+    string ImageUrl,
+    bool IsMainImage
 );

@@ -14,6 +14,7 @@ public interface IBoatService
     Task<Result<IEnumerable<BoatResponse>>> GetAllAsync(CancellationToken cancellationToken = default);
     Task<Result<IEnumerable<BoatResponse>>> GetMyBoatsAsync(string userId, CancellationToken cancellationToken = default);
     Task<Result<BoatResponse>> UpdateAsync(Guid id, string userId, UpdateBoatRequest request, bool isAdmin = false, CancellationToken cancellationToken = default);
+    Task<Result<BoatResponse>> UpdateImagesAsync(Guid id, string userId, Hook.Application.Contracts.Common.UpdateImagesRequest request, bool isAdmin = false, CancellationToken cancellationToken = default);
     Task<Result> SoftDeleteAsync(Guid id, string userId, bool isAdmin = false, CancellationToken cancellationToken = default);
     Task<Result> RestoreAsync(Guid id, CancellationToken cancellationToken = default);
 }

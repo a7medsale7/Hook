@@ -1,4 +1,4 @@
-﻿using Hook.Domain.Consts;
+using Hook.Domain.Consts;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -18,6 +18,5 @@ public class ApplicationUserRolesConfigurations : IEntityTypeConfiguration<Ident
             UserId = DefaultUsers.AdminId,
             RoleId = DefaultRoles.AdminRoleId
         });
-
     }
 }

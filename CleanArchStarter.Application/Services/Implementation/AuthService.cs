@@ -148,7 +148,7 @@ public class AuthService(UserManager<ApplicationUser> userManager,
         var baseUrl = $"{request?.Scheme}://{request?.Host}";
 
         var confirmationLink =
-            $"{baseUrl}/Auth/confirm-email?userId={user.Id}&code={emailToken}";
+            $"{baseUrl}/Auth/allroles/confirm-email?userId={user.Id}&code={emailToken}";
 
         var emailBody = EmailBodyBuilder.GenerateEmailBody(
             "EmailConfirmation",
@@ -238,7 +238,7 @@ public class AuthService(UserManager<ApplicationUser> userManager,
 
         // 6?? ????? ???? ???????
         var confirmationLink =
-            $"{baseUrl}/Auth/confirm-email?userId={user.Id}&code={encodedToken}";
+            $"{baseUrl}/Auth/allroles/confirm-email?userId={user.Id}&code={encodedToken}";
 
         // 7?? ????? ????? ???????
         var emailBody = EmailBodyBuilder.GenerateEmailBody(

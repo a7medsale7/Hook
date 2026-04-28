@@ -13,6 +13,7 @@ public interface IBoatRepository
     Task<IEnumerable<Boat>> GetAllAsync();
     Task<IEnumerable<Boat>> GetDeletedAsync();
     Task AddAsync(Boat boat);
+    Task AddImageAsync(BoatImage image);
     void Update(Boat boat);
     void Delete(Boat boat);
     Task<bool> ExistsAsync(Guid id);

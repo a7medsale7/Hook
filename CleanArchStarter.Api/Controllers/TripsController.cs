@@ -60,7 +60,7 @@ public class TripsController(ITripService tripService) : ControllerBase
         return Ok(result.Value);
     }
 
-    [HttpGet("user-boatowner/my-trips")]
+    [HttpGet("boatowner/my-trips")]
     [Authorize(Policy = Permissions.Trips_View)]
     public async Task<IActionResult> GetMyTrips(CancellationToken cancellationToken)
     {
@@ -81,6 +81,19 @@ public class TripsController(ITripService tripService) : ControllerBase
 
         var isAdmin = User.IsInRole(DefaultRoles.Admin);
         var result = await _tripService.UpdateTripAsync(id, userId, request, isAdmin, cancellationToken);
+        
+        return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
+    }
+
+    [HttpPut("boatowner/{id}/images")]
+    [Authorize(Policy = Permissions.Trips_Update)]
+    public async Task<IActionResult> UpdateImages(Guid id, [FromForm] Hook.Application.Contracts.Common.UpdateImagesRequest request, CancellationToken cancellationToken)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userId is null) return Unauthorized();
+
+        var isAdmin = User.IsInRole(DefaultRoles.Admin);
+        var result = await _tripService.UpdateImagesAsync(id, userId, request, isAdmin, cancellationToken);
         
         return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
     }

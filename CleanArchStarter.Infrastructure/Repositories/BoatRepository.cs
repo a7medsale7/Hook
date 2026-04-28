@@ -61,6 +61,11 @@ public class BoatRepository(ApplicationDbContext context) : IBoatRepository
         await context.Boats.AddAsync(boat);
     }
 
+    public async Task AddImageAsync(BoatImage image)
+    {
+        await context.BoatImages.AddAsync(image);
+    }
+
     public void Update(Boat boat)
     {
         context.Boats.Update(boat);

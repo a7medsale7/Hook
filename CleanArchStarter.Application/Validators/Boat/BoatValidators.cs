@@ -39,7 +39,6 @@ public class UpdateBoatRequestValidator : AbstractValidator<UpdateBoatRequest>
         RuleFor(x => x.Capacity)
             .GreaterThan(0).WithMessage("Capacity must be at least 1 person.");
 
-        RuleForEach(x => x.NewImages).SetValidator(new BoatImageValidator());
     }
 }
 
