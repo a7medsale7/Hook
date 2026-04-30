@@ -22,4 +22,10 @@ public static class DefaultRoles
     public const string BoatOwner = "BoatOwner";
     public const string BoatOwnerRoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3";
     public const string BoatOwnerConcurrencyStamp = "e6253d46-e8bc-454e-9846-8b4513db68cc";
+
+    //seller
+    public const string Seller = "Seller";
+    public const string SellerRoleId = "6c6e00c1-6b2a-48b7-9d2f-3dfe9b3c0a1b";
+    public const string SellerRoleConcurrencyStamp = "c2b1d0e9-6e7d-4d8f-9a3b-1f2e3d4c5b6a";
+
 }

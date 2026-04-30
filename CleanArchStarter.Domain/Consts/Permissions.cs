@@ -64,6 +64,46 @@ public static class Permissions
     public const string Reviews_Update = "Permissions.Reviews.Update";
     public const string Reviews_Delete = "Permissions.Reviews.Delete";
 
+    //------------------------------Market------------------------------------------
+    //seller
+    public const string Seller_Apply = "Permissions.Seller.Apply";
+    public const string Seller_ViewProfile = "Permissions.Seller.ViewProfile";
+    public const string Seller_ViewAll = "Permissions.Seller.ViewAll";
+    public const string Seller_UpdateStatus = "Permissions.Seller.UpdateStatus";
+    public const string Seller_Delete = "Permissions.Seller.Delete";
+    public const string Seller_Restore = "Permissions.Seller.Restore";
+
+    //products
+    public const string MarketplaceProducts_View = "Permissions.Marketplace.Products.View";
+    public const string MarketplaceProducts_Create = "Permissions.Marketplace.Products.Create";
+    public const string MarketplaceProducts_Update = "Permissions.Marketplace.Products.Update";
+    public const string MarketplaceProducts_Delete = "Permissions.Marketplace.Products.Delete";
+
+    //Orders
+    public const string MarketplaceOrders_Create = "Permissions.Marketplace.Orders.Create";
+    public const string MarketplaceOrders_UpdateStatus = "Permissions.Marketplace.Orders.UpdateStatus";
+    public const string MarketplaceOrders_View = "Permissions.Marketplace.Orders.View";
+    public const string MarketplaceOrders_Cancel = "Permissions.Marketplace.Orders.Cancel";
+    public const string MarketplaceOrders_Stats = "Permissions.Marketplace.Orders.Stats";
+
+    //Cart
+    public const string MarketplaceCart_View = "Permissions.Marketplace.Cart.View";
+    public const string MarketplaceCart_Update = "Permissions.Marketplace.Cart.Update";
+
+    //Reviews (only after purchase)
+    public const string MarketplaceReviews_Create = "Permissions.Marketplace.Reviews.Create";
+    public const string MarketplaceReviews_View = "Permissions.Marketplace.Reviews.View";
+
+    //Admin Management
+    public const string MarketplaceAdmin_ViewSellers = "Permissions.Marketplace.Admin.ViewSellers";
+    public const string MarketplaceAdmin_DeleteSeller = "Permissions.Marketplace.Admin.DeleteSeller";
+    public const string MarketplaceAdmin_ViewProducts = "Permissions.Marketplace.Admin.ViewProducts";
+    public const string MarketplaceAdmin_DeleteProduct = "Permissions.Marketplace.Admin.DeleteProduct";
+
+    //Admin Approvals
+    public const string MarketplaceApprovals_View = "Permissions.Marketplace.Approvals.View";
+    public const string MarketplaceApprovals_Update = "Permissions.Marketplace.Approvals.Update";
+
     public static IList<string?> GetAllPermissions() =>
        typeof(Permissions).GetFields().Select(f => f.GetValue(f) as string).ToList();
 }

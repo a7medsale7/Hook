@@ -33,4 +33,13 @@ public class ApplicationUser : IdentityUser
 
     // علاقة (1 إلى كثير) مع التقييمات التي كتبها المستخدم
     public virtual ICollection<Review> Reviews { get; set; } = new HashSet<Review>();
+
+
+    //-----------------------MarketPlace------------------
+    public virtual SellerProfile? SellerProfile { get; set; }
+    public virtual ICollection<MarketplaceCartItem> MarketplaceCartItems { get; set; } = new HashSet<MarketplaceCartItem>();
+    public virtual ICollection<MarketplaceOrder> MarketplaceOrders { get; set; } = new HashSet<MarketplaceOrder>();
+    public virtual ICollection<MarketplaceReview> MarketplaceReviews { get; set; } = new HashSet<MarketplaceReview>();
+    public virtual ICollection<MarketplaceListingRequest> MarketplaceListingRequests { get; set; } = new HashSet<MarketplaceListingRequest>();
+
 }
