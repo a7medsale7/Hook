@@ -12,7 +12,7 @@ namespace Hook.Domain.Entities
         public Guid Id { get; set; } = Guid.NewGuid();
 
         public Guid OrderId { get; set; } 
-        public virtual MarketplaceOrderItem Order { get; set; } = null!;
+        public virtual MarketplaceOrder Order { get; set; } = null!;
 
         public Guid ProductId { get; set; }
         public virtual MarketplaceProduct Product { get; set; } = null!;

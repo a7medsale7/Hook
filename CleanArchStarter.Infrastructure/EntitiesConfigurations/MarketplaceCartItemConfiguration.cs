@@ -1,0 +1,36 @@
+﻿using Hook.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Hook.Infrastructure.EntitiesConfigurations
+{
+    public class MarketplaceCartItemConfiguration : IEntityTypeConfiguration<MarketplaceCartItem>
+    {
+        public void Configure(EntityTypeBuilder<MarketplaceCartItem> builder) 
+        {
+            builder.HasKey(x => x.Id);
+
+            builder.Property(x => x.BuyerUserId)
+           .IsRequired()
+           .HasMaxLength(450);
+
+            builder.HasOne(x => x.Buyer)
+                .WithMany(u => u.MarketplaceCartItems)
+                .HasForeignKey(x => x.BuyerUserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasOne(x => x.Product)
+                .WithMany()
+                .HasForeignKey(x => x.ProductId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasIndex(x => new { x.BuyerUserId, x.ProductId })
+                .IsUnique();
+        }
+    }
+}

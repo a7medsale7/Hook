@@ -103,7 +103,7 @@ public static class Permissions
     //Admin Approvals
     public const string MarketplaceApprovals_View = "Permissions.Marketplace.Approvals.View";
     public const string MarketplaceApprovals_Update = "Permissions.Marketplace.Approvals.Update";
-
+    //-------------------------------------------------------------------------------------------------------
     public static IList<string?> GetAllPermissions() =>
        typeof(Permissions).GetFields().Select(f => f.GetValue(f) as string).ToList();
 }

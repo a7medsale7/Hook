@@ -147,4 +147,304 @@ public static class EmailTemplates
         </body>
         </html>";
     }
+
+    // Marketplace Emails
+    // =========================
+
+    public static string GetSellerRequestSubmittedTemplate(string userName, string sellerName)
+    {
+        return $@"
+        <html>
+        <head>{BaseStyle}</head>
+        <body>
+            <div class='container'>
+                <div class='header'>
+                    <h1 class='h1'>Seller Request Submitted</h1>
+                </div>
+                <div class='content'>
+                    <p>Hello <strong>{userName}</strong>,</p>
+                    <p>Your request to become a seller (<strong>{sellerName}</strong>) has been submitted successfully and is under review.</p>
+                    <div class='alert-box'>
+                        You will receive another email once the admin approves or rejects your request.
+                    </div>
+                </div>
+                <div class='footer'>
+                    &copy; {DateTime.UtcNow.Year} Hook Fishing Platform. All rights reserved.
+                </div>
+            </div>
+        </body>
+        </html>";
+    }
+
+    public static string GetSellerApprovedTemplate(string userName, string sellerName)
+    {
+        return $@"
+        <html>
+        <head>{BaseStyle}</head>
+        <body>
+            <div class='container'>
+                <div class='header' style='background-color: #28a745;'>
+                    <h1 class='h1'>Congratulations! 🎉</h1>
+                </div>
+                <div class='content'>
+                    <p>Hello <strong>{userName}</strong>,</p>
+                    <p>Your seller request (<strong>{sellerName}</strong>) has been approved. You are now a seller and can add/manage your products immediately.</p>
+                </div>
+                <div class='footer'>
+                    &copy; {DateTime.UtcNow.Year} Hook Fishing Platform. All rights reserved.
+                </div>
+            </div>
+        </body>
+        </html>";
+    }
+
+    public static string GetSellerRejectedTemplate(string userName, string sellerName, string? reason)
+    {
+        var reasonHtml = string.IsNullOrWhiteSpace(reason) ? "" : $"<p><strong>Reason:</strong> {reason}</p>";
+        return $@"
+        <html>
+        <head>{BaseStyle}</head>
+        <body>
+            <div class='container'>
+                <div class='header' style='background-color: #dc3545;'>
+                    <h1 class='h1'>Request Rejected</h1>
+                </div>
+                <div class='content'>
+                    <p>Hello <strong>{userName}</strong>,</p>
+                    <p>Your seller request (<strong>{sellerName}</strong>) has been rejected by admin.</p>
+                    {reasonHtml}
+                </div>
+                <div class='footer'>
+                    &copy; {DateTime.UtcNow.Year} Hook Fishing Platform. All rights reserved.
+                </div>
+            </div>
+        </body>
+        </html>";
+    }
+
+    public static string GetMarketplaceOrderCreatedBuyerTemplate(Hook.Domain.Entities.MarketplaceOrder order)
+    {
+        var itemsHtml = string.Join("", order.Items.Select(i =>
+        {
+            var title = i.Product?.Title ?? "Item";
+            return $"<tr><th>{title}</th><td>{i.Quantity} × {i.UnitPrice} EGP = <strong>{i.LineTotal} EGP</strong></td></tr>";
+        }));
+
+        return $@"
+        <html>
+        <head>{BaseStyle}</head>
+        <body>
+            <div class='container'>
+                <div class='header' style='background-color: #28a745;'>
+                    <h1 class='h1'>Order Created ✅</h1>
+                </div>
+                <div class='content'>
+                    <p>Your marketplace order was created successfully.</p>
+                    <table class='details-table'>
+                        <tr><th>Order Id</th><td>{order.Id}</td></tr>
+                        <tr><th>Status</th><td>{order.Status}</td></tr>
+                        <tr><th>Payment</th><td>{order.PaymentMethod}</td></tr>
+                        <tr><th>Total</th><td><strong>{order.Total} EGP</strong></td></tr>
+                    </table>
+                    <h3>Items</h3>
+                    <table class='details-table'>
+                        {itemsHtml}
+                    </table>
+                    <div class='alert-box'>
+                        Delivery is handled directly by the seller (no shipping company on the platform).
+                    </div>
+                </div>
+                <div class='footer'>
+                    &copy; {DateTime.UtcNow.Year} Hook Fishing Platform. All rights reserved.
+                </div>
+            </div>
+        </body>
+        </html>";
+    }
+
+    public static string GetMarketplaceNewOrderSellerTemplate(Hook.Domain.Entities.MarketplaceOrder order)
+    {
+        var itemsHtml = string.Join("", order.Items.Select(i =>
+        {
+            var title = i.Product?.Title ?? "Item";
+            return $"<tr><th>{title}</th><td>{i.Quantity} × {i.UnitPrice} EGP</td></tr>";
+        }));
+
+        return $@"
+        <html>
+        <head>{BaseStyle}</head>
+        <body>
+            <div class='container'>
+                <div class='header'>
+                    <h1 class='h1'>New Order 📦</h1>
+                </div>
+                <div class='content'>
+                    <p>You have a new marketplace order.</p>
+                    <table class='details-table'>
+                        <tr><th>Order Id</th><td>{order.Id}</td></tr>
+                        <tr><th>Buyer Name</th><td>{order.FirstName} {order.LastName}</td></tr>
+                        <tr><th>Buyer Phone</th><td>{order.ContactPhone}</td></tr>
+                        <tr><th>Buyer Email</th><td>{order.ContactEmail}</td></tr>
+                        <tr><th>Delivery Address</th><td>{order.Governorate}, {order.City}, {order.Address}, {order.PostalCode}</td></tr>
+                        <tr><th>Payment</th><td>{order.PaymentMethod}</td></tr>
+                        <tr><th>Total</th><td><strong>{order.Total} EGP</strong></td></tr>
+                    </table>
+                    <h3>Items</h3>
+                    <table class='details-table'>
+                        {itemsHtml}
+                    </table>
+                    <div class='alert-box'>
+                        You are responsible for delivery (no shipping company integrated).
+                    </div>
+                </div>
+                <div class='footer'>
+                    &copy; {DateTime.UtcNow.Year} Hook Fishing Platform. All rights reserved.
+                </div>
+            </div>
+        </body>
+        </html>";
+    }
+
+    public static string GetMarketplaceOrderOutForDeliveryBuyerTemplate(Hook.Domain.Entities.MarketplaceOrder order)
+    {
+        return $@"
+        <html>
+        <head>{BaseStyle}</head>
+        <body>
+            <div class='container'>
+                <div class='header' style='background-color: #17a2b8;'>
+                    <h1 class='h1'>Out for Delivery 🚚</h1>
+                </div>
+                <div class='content'>
+                    <p>Your order <strong>{order.Id}</strong> is on its way.</p>
+                    <div class='alert-box'>
+                        Once you receive it, open your profile → purchases and click <strong>I received my order</strong>.
+                    </div>
+                </div>
+                <div class='footer'>
+                    &copy; {DateTime.UtcNow.Year} Hook Fishing Platform. All rights reserved.
+                </div>
+            </div>
+        </body>
+        </html>";
+    }
+
+    public static string GetMarketplaceOrderCancelledBuyerTemplate(Hook.Domain.Entities.MarketplaceOrder order, string? reason)
+    {
+        var reasonHtml = string.IsNullOrWhiteSpace(reason) ? "" : $"<p><strong>Reason:</strong> {reason}</p>";
+        return $@"
+        <html>
+        <head>{BaseStyle}</head>
+        <body>
+            <div class='container'>
+                <div class='header' style='background-color: #dc3545;'>
+                    <h1 class='h1'>Order Cancelled ⚠️</h1>
+                </div>
+                <div class='content'>
+                    <p>Your order <strong>{order.Id}</strong> was cancelled by the seller.</p>
+                    {reasonHtml}
+                </div>
+                <div class='footer'>
+                    &copy; {DateTime.UtcNow.Year} Hook Fishing Platform. All rights reserved.
+                </div>
+            </div>
+        </body>
+        </html>";
+    }
+
+    public static string GetMarketplaceOrderDeliveredBuyerTemplate(Hook.Domain.Entities.MarketplaceOrder order)
+    {
+        return $@"
+        <html>
+        <head>{BaseStyle}</head>
+        <body>
+            <div class='container'>
+                <div class='header' style='background-color: #28a745;'>
+                    <h1 class='h1'>Delivered ✅</h1>
+                </div>
+                <div class='content'>
+                    <p>Thank you! Your order <strong>{order.Id}</strong> is marked as delivered.</p>
+                    <div class='alert-box'>
+                        You can now leave a review (stars + comment). Reviews are only available after delivery confirmation.
+                    </div>
+                </div>
+                <div class='footer'>
+                    &copy; {DateTime.UtcNow.Year} Hook Fishing Platform. All rights reserved.
+                </div>
+            </div>
+        </body>
+        </html>";
+    }
+
+    public static string GetMarketplaceOrderDeliveredSellerTemplate(Hook.Domain.Entities.MarketplaceOrder order)
+    {
+        return $@"
+        <html>
+        <head>{BaseStyle}</head>
+        <body>
+            <div class='container'>
+                <div class='header' style='background-color: #28a745;'>
+                    <h1 class='h1'>Order Delivered ✅</h1>
+                </div>
+                <div class='content'>
+                    <p>Order <strong>{order.Id}</strong> was confirmed delivered by the buyer.</p>
+                </div>
+                <div class='footer'>
+                    &copy; {DateTime.UtcNow.Year} Hook Fishing Platform. All rights reserved.
+                </div>
+            </div>
+        </body>
+        </html>";
+    }
+
+    public static string GetMarketplaceListingApprovedTemplate(string userName, string listingTitle)
+    {
+        return $@"
+        <html>
+        <head>{BaseStyle}</head>
+        <body>
+            <div class='container'>
+                <div class='header' style='background-color: #28a745;'>
+                    <h1 class='h1'>Listing Approved ✅</h1>
+                </div>
+                <div class='content'>
+                    <p>Hello <strong>{userName}</strong>,</p>
+                    <p>Your marketplace listing <strong>{listingTitle}</strong> was approved by admin.</p>
+                    <div class='alert-box'>
+                        You now have access to the seller dashboard and can manage orders and products.
+                    </div>
+                </div>
+                <div class='footer'>
+                    &copy; {DateTime.UtcNow.Year} Hook Fishing Platform. All rights reserved.
+                </div>
+            </div>
+        </body>
+        </html>";
+    }
+
+    public static string GetMarketplaceListingRejectedTemplate(string userName, string listingTitle, string? reason)
+    {
+        var reasonHtml = string.IsNullOrWhiteSpace(reason) ? "" : $"<p><strong>Reason:</strong> {reason}</p>";
+        return $@"
+        <html>
+        <head>{BaseStyle}</head>
+        <body>
+            <div class='container'>
+                <div class='header' style='background-color: #dc3545;'>
+                    <h1 class='h1'>Listing Rejected ❌</h1>
+                </div>
+                <div class='content'>
+                    <p>Hello <strong>{userName}</strong>,</p>
+                    <p>Your marketplace listing <strong>{listingTitle}</strong> was rejected by admin.</p>
+                    {reasonHtml}
+                </div>
+                <div class='footer'>
+                    &copy; {DateTime.UtcNow.Year} Hook Fishing Platform. All rights reserved.
+                </div>
+            </div>
+        </body>
+        </html>";
+    }
+
+
 }
