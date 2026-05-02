@@ -37,6 +37,18 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
         builder.Entity<TripDate>().HasQueryFilter(e => !e.IsDeleted);
         builder.Entity<Booking>().HasQueryFilter(e => !e.IsDeleted);
         builder.Entity<Review>().HasQueryFilter(e => !e.IsDeleted);
+
+        // Marketplace
+        builder.Entity<SellerProfile>().HasQueryFilter(e => !e.IsDeleted);
+        builder.Entity<MarketplaceProduct>().HasQueryFilter(e => !e.IsDeleted);
+        builder.Entity<MarketplaceProductImage>().HasQueryFilter(e => !e.IsDeleted);
+        builder.Entity<MarketplaceCartItem>().HasQueryFilter(e => !e.IsDeleted);
+        builder.Entity<MarketplaceOrder>().HasQueryFilter(e => !e.IsDeleted);
+        builder.Entity<MarketplaceOrderItem>().HasQueryFilter(e => !e.IsDeleted);
+        builder.Entity<MarketplaceReview>().HasQueryFilter(e => !e.IsDeleted);
+        builder.Entity<MarketplaceListingRequest>().HasQueryFilter(e => !e.IsDeleted);
+        builder.Entity<MarketplaceListingRequestImage>().HasQueryFilter(e => !e.IsDeleted);
+
     }
 
     public DbSet<BoatOwnerProfile> BoatOwnerProfiles { get; set; }
@@ -48,6 +60,19 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
     public DbSet<Booking> Bookings { get; set; }
     public DbSet<Payment> Payments { get; set; }
     public DbSet<Review> Reviews { get; set; }
+
+    // Marketplace
+    public DbSet<SellerProfile> SellerProfiles { get; set; }
+    public DbSet<MarketplaceProduct> MarketplaceProducts { get; set; }
+    public DbSet<MarketplaceProductImage> MarketplaceProductImages { get; set; }
+    public DbSet<MarketplaceCartItem> MarketplaceCartItems { get; set; }
+    public DbSet<MarketplaceOrder> MarketplaceOrders { get; set; }
+    public DbSet<MarketplaceOrderItem> MarketplaceOrderItems { get; set; }
+    public DbSet<MarketplaceReview> MarketplaceReviews { get; set; }
+    public DbSet<MarketplaceListingRequest> MarketplaceListingRequests { get; set; }
+    public DbSet<MarketplaceListingRequestImage> MarketplaceListingRequestImages { get; set; }
+
+
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {

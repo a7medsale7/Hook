@@ -40,6 +40,14 @@ public class ApplicationRolesConfiguration : IEntityTypeConfiguration<Applicatio
                 IsDefault = false,
             },
 
+            new ApplicationRole
+            {
+                Id = DefaultRoles.SellerRoleId,
+                Name = DefaultRoles.Seller,
+                NormalizedName = DefaultRoles.Seller.ToUpper(),
+                ConcurrencyStamp = DefaultRoles.SellerRoleConcurrencyStamp,
+                IsDefault = false,
+            },
 
             ]);
     }

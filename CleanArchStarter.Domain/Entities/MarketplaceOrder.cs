@@ -13,7 +13,7 @@ namespace Hook.Domain.Entities
         public Guid Id { get; set; } = Guid.NewGuid();
 
         public string BuyerUserId { get; set; } = string.Empty;
-        public virtual ApplicationUser BuyerUser { get; set; } = null!;
+        public virtual ApplicationUser Buyer { get; set; } = null!;
 
         public Guid SellerProfileId { get; set; }
         public virtual SellerProfile SellerProfile { get; set; }= null!;

@@ -30,6 +30,7 @@ public class ApplicationRoleClaimConfigurations : IEntityTypeConfiguration<Ident
         // 2. User Permissions (صلاحيات المستخدم العادي / المستأجر)
         var userPermissions = new List<string>
         {
+            //trips related
             Permissions.Users_ViewProfile,
             Permissions.Users_UpdateProfile,
             Permissions.Users_ChangePassword,
@@ -45,7 +46,23 @@ public class ApplicationRoleClaimConfigurations : IEntityTypeConfiguration<Ident
             Permissions.Reviews_View,
             Permissions.Reviews_Create,
             Permissions.Reviews_Update,
-            Permissions.Reviews_Delete
+            Permissions.Reviews_Delete,
+
+            //Marketplace related
+            Permissions.Seller_Apply, //he can apply to be a seller
+            Permissions.Seller_ViewProfile,
+
+             // Marketplace (Buyer)
+            Permissions.MarketplaceProducts_View,
+            Permissions.MarketplaceCart_View,
+            Permissions.MarketplaceCart_Update,
+            Permissions.MarketplaceOrders_View,
+            Permissions.MarketplaceOrders_Create,
+            Permissions.MarketplaceOrders_Cancel,
+            Permissions.MarketplaceOrders_UpdateStatus, // confirm received after OutForDelivery
+            Permissions.MarketplaceReviews_View,
+            Permissions.MarketplaceReviews_Create
+
         };
 
         foreach (var permission in userPermissions)
@@ -91,6 +108,38 @@ public class ApplicationRoleClaimConfigurations : IEntityTypeConfiguration<Ident
             {
                 Id = claimId++,
                 RoleId = DefaultRoles.BoatOwnerRoleId,
+                ClaimType = Permissions.Type,
+                ClaimValue = permission
+            });
+        }
+
+        // 4. Seller Permissions (Marketplace Seller)
+        var sellerPermissions = new List<string>
+        {
+            Permissions.Users_ViewProfile,
+            Permissions.Users_UpdateProfile,
+            Permissions.Users_ChangePassword,
+            Permissions.Seller_ViewProfile,
+
+            // Marketplace (Seller)
+            Permissions.MarketplaceProducts_View,
+            Permissions.MarketplaceProducts_Create,
+            Permissions.MarketplaceProducts_Update,
+            Permissions.MarketplaceProducts_Delete,
+
+            Permissions.MarketplaceOrders_View,
+            Permissions.MarketplaceOrders_UpdateStatus,
+            Permissions.MarketplaceOrders_Stats,
+
+            Permissions.MarketplaceReviews_View
+        };
+
+        foreach (var permission in sellerPermissions)
+        {
+            allClaims.Add(new IdentityRoleClaim<string>
+            {
+                Id = claimId++,
+                RoleId = DefaultRoles.SellerRoleId,
                 ClaimType = Permissions.Type,
                 ClaimValue = permission
             });
