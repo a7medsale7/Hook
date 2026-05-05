@@ -150,4 +150,16 @@ public class BookingRepository(ApplicationDbContext context) : IBookingRepositor
         booking.IsDeleted = true;
         context.Bookings.Update(booking);
     }
+
+    public void HardDelete(Booking booking)
+    {
+        context.Bookings.Remove(booking);
+    }
+
+    public async Task UpdateCompletedBookingsAsync(System.Threading.CancellationToken cancellationToken = default)
+    {
+        await context.Bookings
+            .Where(b => !b.IsDeleted && b.Status == BookingStatus.Confirmed && b.TripDate.StartDate < DateTime.UtcNow)
+            .ExecuteUpdateAsync(s => s.SetProperty(p => p.Status, BookingStatus.Completed), cancellationToken);
+    }
 }

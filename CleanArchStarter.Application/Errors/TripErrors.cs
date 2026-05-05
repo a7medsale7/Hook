@@ -13,4 +13,6 @@ public static class TripErrors
     public static readonly Error NoDatesProvided = new("Trip.NoDatesProvided", "At least one date must be provided for the schedule.");
     public static readonly Error InvalidDateRange = new("Trip.InvalidDateRange", "The start date must be before the end date.");
     public static readonly Error DateInPast = new("Trip.DateInPast", "The trip start date cannot be in the past.");
+    public static readonly Error DateHasBookings = new("Trip.DateHasBookings", "Cannot delete a trip date that has existing bookings.");
+    public static readonly Error DateHasUnrefundedBookings = new("Trip.DateHasUnrefundedBookings", "Cannot delete trip date. You must refund all payments first.");
 }

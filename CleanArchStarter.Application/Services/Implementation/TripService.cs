@@ -19,6 +19,7 @@ public class TripService(
     ITripDateRepository tripDateRepository,
     IBoatRepository boatRepository,
     IBoatOwnerRepository boatOwnerRepository,
+    IBookingRepository bookingRepository,
     IFileService fileService,
     IUnitOfWork unitOfWork) : ITripService
 {
@@ -26,6 +27,7 @@ public class TripService(
     private readonly ITripDateRepository _tripDateRepository = tripDateRepository;
     private readonly IBoatRepository _boatRepository = boatRepository;
     private readonly IBoatOwnerRepository _boatOwnerRepository = boatOwnerRepository;
+    private readonly IBookingRepository _bookingRepository = bookingRepository;
     private readonly IFileService _fileService = fileService;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
@@ -282,6 +284,37 @@ public class TripService(
         return Result.Success();
     }
 
+    public async Task<Result> DeleteTripDateAsync(Guid dateId, string userId, CancellationToken cancellationToken = default)
+    {
+        var tripDate = await _tripDateRepository.GetByIdAsync(dateId);
+        if (tripDate is null)
+            return Result.Failure(TripErrors.DateNotFound);
+
+        // Ownership check
+        if (tripDate.Trip.TripManager.UserId != userId)
+            return Result.Failure(TripErrors.Unauthorized);
+
+        // Check for bookings
+        var bookings = await _bookingRepository.GetByTripDateIdAsync(dateId);
+        
+        // منع الحذف إذا وجد أي عملية دفع لم يتم ردها (Refunded) أو رفضها (Rejected) أو فشلها (Failed)
+        // هذا يشمل الحجوزات المؤكدة، وحتى الملغاة التي لم يسترد أصحابها أموالهم بعد
+        var unrefundedBookings = bookings.Where(b => 
+            !b.IsDeleted && 
+            b.Payment != null && 
+            b.Payment.Status != PaymentStatus.Refunded && 
+            b.Payment.Status != PaymentStatus.Rejected && 
+            b.Payment.Status != PaymentStatus.Failed).ToList();
+
+        if (unrefundedBookings.Any())
+            return Result.Failure(TripErrors.DateHasUnrefundedBookings);
+
+        _tripDateRepository.HardDelete(tripDate);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        return Result.Success();
+    }
+
     private TripResponse ToResponse(Trip trip) => new TripResponse(
         trip.Id,
         trip.Title,
@@ -303,6 +336,7 @@ public class TripService(
         trip.Images.Where(i => !i.IsDeleted).Select(i => new TripImageResponse(i.Id, i.ImageUrl, i.IsMainImage)).ToList(),
         trip.Images.Where(i => !i.IsDeleted).FirstOrDefault(i => i.IsMainImage)?.ImageUrl ?? trip.Images.Where(i => !i.IsDeleted).FirstOrDefault()?.ImageUrl,
         trip.TripDates.Select(d => new TripDateResponse(d.Id, d.StartDate, d.EndDate, d.AvailableSeats, d.IsActive)).ToList(),
+        trip.TripManager?.User?.ProfilePictureUrl,
         trip.Boat == null ? null : new Hook.Application.Contracts.Boat.BoatResponse
         {
             Id = trip.Boat.Id,

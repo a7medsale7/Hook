@@ -27,7 +27,10 @@ public class TripDateExpiryBackgroundService(
                 using (var scope = scopeFactory.CreateScope())
                 {
                     var tripDateRepository = scope.ServiceProvider.GetRequiredService<ITripDateRepository>();
+                    var bookingRepository = scope.ServiceProvider.GetRequiredService<IBookingRepository>();
+                    
                     await tripDateRepository.UpdateExpiredDatesAsync(stoppingToken);
+                    await bookingRepository.UpdateCompletedBookingsAsync(stoppingToken);
                 }
 
                 logger.LogInformation("Trip Date Expiry process completed successfully.");

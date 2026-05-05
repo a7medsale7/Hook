@@ -2,6 +2,7 @@ using Hook.Domain.Entities;
 using Hook.Domain.Enums;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Hook.Domain.Abstractions.Repositories;
@@ -23,4 +24,6 @@ public interface IBookingRepository
     Task AddAsync(Booking booking);
     void Update(Booking booking);
     void Delete(Booking booking);
+    void HardDelete(Booking booking);
+    Task UpdateCompletedBookingsAsync(CancellationToken cancellationToken = default);
 }

@@ -21,4 +21,5 @@ public interface ITripService
     // TripDate Management
     Task<Result> AddTripDatesAsync(Guid tripId, string userId, AddTripDatesRequest request, CancellationToken cancellationToken = default);
     Task<Result> ToggleTripDateStatusAsync(Guid dateId, string userId, bool isActive, CancellationToken cancellationToken = default);
+    Task<Result> DeleteTripDateAsync(Guid dateId, string userId, CancellationToken cancellationToken = default);
 }

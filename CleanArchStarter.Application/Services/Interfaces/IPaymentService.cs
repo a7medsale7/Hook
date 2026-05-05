@@ -15,4 +15,5 @@ public interface IPaymentService
     Task<Result<PaymentResponse>> UploadReceiptAsync(Guid id, string userId, UploadReceiptRequest request, CancellationToken cancellationToken = default);
     Task<Result<PaymentResponse>> VerifyPaymentAsync(Guid id, string userId, VerifyPaymentRequest request, CancellationToken cancellationToken = default);
     Task<Result<PaymentStatsResponse>> GetFinancialStatsAsync(string? userId = null, Guid? ownerId = null, CancellationToken cancellationToken = default);
+    Task<Result> MarkAsRefundedAsync(Guid id, string userId, CancellationToken cancellationToken = default);
 }

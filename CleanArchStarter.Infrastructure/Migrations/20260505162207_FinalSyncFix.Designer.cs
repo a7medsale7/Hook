@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CleanArchStarter.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260501223011_AddMarketplaceEntities")]
-    partial class AddMarketplaceEntities
+    [Migration("20260505162207_FinalSyncFix")]
+    partial class FinalSyncFix
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -454,7 +454,7 @@ namespace CleanArchStarter.Infrastructure.Migrations
                     b.HasIndex("BuyerUserId", "ProductId")
                         .IsUnique();
 
-                    b.ToTable("MarketplaceCartItem");
+                    b.ToTable("MarketplaceCartItems");
                 });
 
             modelBuilder.Entity("Hook.Domain.Entities.MarketplaceListingRequest", b =>
@@ -516,7 +516,7 @@ namespace CleanArchStarter.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("MarketplaceListingRequest");
+                    b.ToTable("MarketplaceListingRequests");
                 });
 
             modelBuilder.Entity("Hook.Domain.Entities.MarketplaceListingRequestImage", b =>
@@ -556,7 +556,7 @@ namespace CleanArchStarter.Infrastructure.Migrations
 
                     b.HasIndex("ListingRequestId");
 
-                    b.ToTable("MarketplaceListingRequestImage");
+                    b.ToTable("MarketplaceListingRequestImages");
                 });
 
             modelBuilder.Entity("Hook.Domain.Entities.MarketplaceOrder", b =>
@@ -650,7 +650,7 @@ namespace CleanArchStarter.Infrastructure.Migrations
 
                     b.HasIndex("SellerProfileId");
 
-                    b.ToTable("MarketplaceOrder");
+                    b.ToTable("MarketplaceOrders");
                 });
 
             modelBuilder.Entity("Hook.Domain.Entities.MarketplaceOrderItem", b =>
@@ -696,7 +696,7 @@ namespace CleanArchStarter.Infrastructure.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("MarketplaceOrderItem");
+                    b.ToTable("MarketplaceOrderItems");
                 });
 
             modelBuilder.Entity("Hook.Domain.Entities.MarketplaceProduct", b =>
@@ -753,7 +753,7 @@ namespace CleanArchStarter.Infrastructure.Migrations
 
                     b.HasIndex("SellerProfileId");
 
-                    b.ToTable("MarketplaceProduct");
+                    b.ToTable("MarketplaceProducts");
                 });
 
             modelBuilder.Entity("Hook.Domain.Entities.MarketplaceProductImage", b =>
@@ -793,7 +793,7 @@ namespace CleanArchStarter.Infrastructure.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("MarketplaceProductImage");
+                    b.ToTable("MarketplaceProductImages");
                 });
 
             modelBuilder.Entity("Hook.Domain.Entities.MarketplaceReview", b =>
@@ -845,7 +845,7 @@ namespace CleanArchStarter.Infrastructure.Migrations
                     b.HasIndex("BuyerUserId", "ProductId", "OrderId")
                         .IsUnique();
 
-                    b.ToTable("MarketplaceReview");
+                    b.ToTable("MarketplaceReviews");
                 });
 
             modelBuilder.Entity("Hook.Domain.Entities.Payment", b =>
@@ -1026,7 +1026,7 @@ namespace CleanArchStarter.Infrastructure.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("SellerProfile");
+                    b.ToTable("SellerProfiles");
                 });
 
             modelBuilder.Entity("Hook.Domain.Entities.Trip", b =>
@@ -1444,635 +1444,642 @@ namespace CleanArchStarter.Infrastructure.Migrations
                         {
                             Id = 32,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Payments.View",
+                            ClaimValue = "Permissions.Bookings.Delete",
                             RoleId = "3a6ce7a1-2b66-48dd-ba28-3cf7080a3297"
                         },
                         new
                         {
                             Id = 33,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Payments.UploadReceipt",
+                            ClaimValue = "Permissions.Payments.View",
                             RoleId = "3a6ce7a1-2b66-48dd-ba28-3cf7080a3297"
                         },
                         new
                         {
                             Id = 34,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Payments.Verify",
+                            ClaimValue = "Permissions.Payments.UploadReceipt",
                             RoleId = "3a6ce7a1-2b66-48dd-ba28-3cf7080a3297"
                         },
                         new
                         {
                             Id = 35,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Payments.ViewAll",
+                            ClaimValue = "Permissions.Payments.Verify",
                             RoleId = "3a6ce7a1-2b66-48dd-ba28-3cf7080a3297"
                         },
                         new
                         {
                             Id = 36,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Payments.Stats",
+                            ClaimValue = "Permissions.Payments.ViewAll",
                             RoleId = "3a6ce7a1-2b66-48dd-ba28-3cf7080a3297"
                         },
                         new
                         {
                             Id = 37,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Reviews.View",
+                            ClaimValue = "Permissions.Payments.Stats",
                             RoleId = "3a6ce7a1-2b66-48dd-ba28-3cf7080a3297"
                         },
                         new
                         {
                             Id = 38,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Reviews.Create",
+                            ClaimValue = "Permissions.Reviews.View",
                             RoleId = "3a6ce7a1-2b66-48dd-ba28-3cf7080a3297"
                         },
                         new
                         {
                             Id = 39,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Reviews.Update",
+                            ClaimValue = "Permissions.Reviews.Create",
                             RoleId = "3a6ce7a1-2b66-48dd-ba28-3cf7080a3297"
                         },
                         new
                         {
                             Id = 40,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Reviews.Delete",
+                            ClaimValue = "Permissions.Reviews.Update",
                             RoleId = "3a6ce7a1-2b66-48dd-ba28-3cf7080a3297"
                         },
                         new
                         {
                             Id = 41,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Seller.Apply",
+                            ClaimValue = "Permissions.Reviews.Delete",
                             RoleId = "3a6ce7a1-2b66-48dd-ba28-3cf7080a3297"
                         },
                         new
                         {
                             Id = 42,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Seller.ViewProfile",
+                            ClaimValue = "Permissions.Seller.Apply",
                             RoleId = "3a6ce7a1-2b66-48dd-ba28-3cf7080a3297"
                         },
                         new
                         {
                             Id = 43,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Seller.ViewAll",
+                            ClaimValue = "Permissions.Seller.ViewProfile",
                             RoleId = "3a6ce7a1-2b66-48dd-ba28-3cf7080a3297"
                         },
                         new
                         {
                             Id = 44,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Seller.UpdateStatus",
+                            ClaimValue = "Permissions.Seller.ViewAll",
                             RoleId = "3a6ce7a1-2b66-48dd-ba28-3cf7080a3297"
                         },
                         new
                         {
                             Id = 45,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Seller.Delete",
+                            ClaimValue = "Permissions.Seller.UpdateStatus",
                             RoleId = "3a6ce7a1-2b66-48dd-ba28-3cf7080a3297"
                         },
                         new
                         {
                             Id = 46,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Seller.Restore",
+                            ClaimValue = "Permissions.Seller.Delete",
                             RoleId = "3a6ce7a1-2b66-48dd-ba28-3cf7080a3297"
                         },
                         new
                         {
                             Id = 47,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Marketplace.Products.View",
+                            ClaimValue = "Permissions.Seller.Restore",
                             RoleId = "3a6ce7a1-2b66-48dd-ba28-3cf7080a3297"
                         },
                         new
                         {
                             Id = 48,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Marketplace.Products.Create",
+                            ClaimValue = "Permissions.Marketplace.Products.View",
                             RoleId = "3a6ce7a1-2b66-48dd-ba28-3cf7080a3297"
                         },
                         new
                         {
                             Id = 49,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Marketplace.Products.Update",
+                            ClaimValue = "Permissions.Marketplace.Products.Create",
                             RoleId = "3a6ce7a1-2b66-48dd-ba28-3cf7080a3297"
                         },
                         new
                         {
                             Id = 50,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Marketplace.Products.Delete",
+                            ClaimValue = "Permissions.Marketplace.Products.Update",
                             RoleId = "3a6ce7a1-2b66-48dd-ba28-3cf7080a3297"
                         },
                         new
                         {
                             Id = 51,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Marketplace.Orders.Create",
+                            ClaimValue = "Permissions.Marketplace.Products.Delete",
                             RoleId = "3a6ce7a1-2b66-48dd-ba28-3cf7080a3297"
                         },
                         new
                         {
                             Id = 52,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Marketplace.Orders.UpdateStatus",
+                            ClaimValue = "Permissions.Marketplace.Orders.Create",
                             RoleId = "3a6ce7a1-2b66-48dd-ba28-3cf7080a3297"
                         },
                         new
                         {
                             Id = 53,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Marketplace.Orders.View",
+                            ClaimValue = "Permissions.Marketplace.Orders.UpdateStatus",
                             RoleId = "3a6ce7a1-2b66-48dd-ba28-3cf7080a3297"
                         },
                         new
                         {
                             Id = 54,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Marketplace.Orders.Cancel",
+                            ClaimValue = "Permissions.Marketplace.Orders.View",
                             RoleId = "3a6ce7a1-2b66-48dd-ba28-3cf7080a3297"
                         },
                         new
                         {
                             Id = 55,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Marketplace.Orders.Stats",
+                            ClaimValue = "Permissions.Marketplace.Orders.Cancel",
                             RoleId = "3a6ce7a1-2b66-48dd-ba28-3cf7080a3297"
                         },
                         new
                         {
                             Id = 56,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Marketplace.Cart.View",
+                            ClaimValue = "Permissions.Marketplace.Orders.Stats",
                             RoleId = "3a6ce7a1-2b66-48dd-ba28-3cf7080a3297"
                         },
                         new
                         {
                             Id = 57,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Marketplace.Cart.Update",
+                            ClaimValue = "Permissions.Marketplace.Cart.View",
                             RoleId = "3a6ce7a1-2b66-48dd-ba28-3cf7080a3297"
                         },
                         new
                         {
                             Id = 58,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Marketplace.Reviews.Create",
+                            ClaimValue = "Permissions.Marketplace.Cart.Update",
                             RoleId = "3a6ce7a1-2b66-48dd-ba28-3cf7080a3297"
                         },
                         new
                         {
                             Id = 59,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Marketplace.Reviews.View",
+                            ClaimValue = "Permissions.Marketplace.Reviews.Create",
                             RoleId = "3a6ce7a1-2b66-48dd-ba28-3cf7080a3297"
                         },
                         new
                         {
                             Id = 60,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Marketplace.Admin.ViewSellers",
+                            ClaimValue = "Permissions.Marketplace.Reviews.View",
                             RoleId = "3a6ce7a1-2b66-48dd-ba28-3cf7080a3297"
                         },
                         new
                         {
                             Id = 61,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Marketplace.Admin.DeleteSeller",
+                            ClaimValue = "Permissions.Marketplace.Admin.ViewSellers",
                             RoleId = "3a6ce7a1-2b66-48dd-ba28-3cf7080a3297"
                         },
                         new
                         {
                             Id = 62,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Marketplace.Admin.ViewProducts",
+                            ClaimValue = "Permissions.Marketplace.Admin.DeleteSeller",
                             RoleId = "3a6ce7a1-2b66-48dd-ba28-3cf7080a3297"
                         },
                         new
                         {
                             Id = 63,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Marketplace.Admin.DeleteProduct",
+                            ClaimValue = "Permissions.Marketplace.Admin.ViewProducts",
                             RoleId = "3a6ce7a1-2b66-48dd-ba28-3cf7080a3297"
                         },
                         new
                         {
                             Id = 64,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Marketplace.Approvals.View",
+                            ClaimValue = "Permissions.Marketplace.Admin.DeleteProduct",
                             RoleId = "3a6ce7a1-2b66-48dd-ba28-3cf7080a3297"
                         },
                         new
                         {
                             Id = 65,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Marketplace.Approvals.Update",
+                            ClaimValue = "Permissions.Marketplace.Approvals.View",
                             RoleId = "3a6ce7a1-2b66-48dd-ba28-3cf7080a3297"
                         },
                         new
                         {
                             Id = 66,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Users.ViewProfile",
-                            RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
+                            ClaimValue = "Permissions.Marketplace.Approvals.Update",
+                            RoleId = "3a6ce7a1-2b66-48dd-ba28-3cf7080a3297"
                         },
                         new
                         {
                             Id = 67,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Users.UpdateProfile",
+                            ClaimValue = "Permissions.Users.ViewProfile",
                             RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
                         },
                         new
                         {
                             Id = 68,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Users.ChangePassword",
+                            ClaimValue = "Permissions.Users.UpdateProfile",
                             RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
                         },
                         new
                         {
                             Id = 69,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.BoatOwner.Apply",
+                            ClaimValue = "Permissions.Users.ChangePassword",
                             RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
                         },
                         new
                         {
                             Id = 70,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.BoatOwner.ViewProfile",
+                            ClaimValue = "Permissions.BoatOwner.Apply",
                             RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
                         },
                         new
                         {
                             Id = 71,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Boats.View",
+                            ClaimValue = "Permissions.BoatOwner.ViewProfile",
                             RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
                         },
                         new
                         {
                             Id = 72,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Trips.View",
+                            ClaimValue = "Permissions.Boats.View",
                             RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
                         },
                         new
                         {
                             Id = 73,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Bookings.View",
+                            ClaimValue = "Permissions.Trips.View",
                             RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
                         },
                         new
                         {
                             Id = 74,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Bookings.Create",
+                            ClaimValue = "Permissions.Bookings.View",
                             RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
                         },
                         new
                         {
                             Id = 75,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Bookings.Cancel",
+                            ClaimValue = "Permissions.Bookings.Create",
                             RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
                         },
                         new
                         {
                             Id = 76,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Payments.View",
+                            ClaimValue = "Permissions.Bookings.Cancel",
                             RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
                         },
                         new
                         {
                             Id = 77,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Payments.UploadReceipt",
+                            ClaimValue = "Permissions.Payments.View",
                             RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
                         },
                         new
                         {
                             Id = 78,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Reviews.View",
+                            ClaimValue = "Permissions.Payments.UploadReceipt",
                             RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
                         },
                         new
                         {
                             Id = 79,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Reviews.Create",
+                            ClaimValue = "Permissions.Reviews.View",
                             RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
                         },
                         new
                         {
                             Id = 80,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Reviews.Update",
+                            ClaimValue = "Permissions.Reviews.Create",
                             RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
                         },
                         new
                         {
                             Id = 81,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Reviews.Delete",
+                            ClaimValue = "Permissions.Reviews.Update",
                             RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
                         },
                         new
                         {
                             Id = 82,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Seller.Apply",
+                            ClaimValue = "Permissions.Reviews.Delete",
                             RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
                         },
                         new
                         {
                             Id = 83,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Seller.ViewProfile",
+                            ClaimValue = "Permissions.Seller.Apply",
                             RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
                         },
                         new
                         {
                             Id = 84,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Marketplace.Products.View",
+                            ClaimValue = "Permissions.Seller.ViewProfile",
                             RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
                         },
                         new
                         {
                             Id = 85,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Marketplace.Cart.View",
+                            ClaimValue = "Permissions.Marketplace.Products.View",
                             RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
                         },
                         new
                         {
                             Id = 86,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Marketplace.Cart.Update",
+                            ClaimValue = "Permissions.Marketplace.Cart.View",
                             RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
                         },
                         new
                         {
                             Id = 87,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Marketplace.Orders.View",
+                            ClaimValue = "Permissions.Marketplace.Cart.Update",
                             RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
                         },
                         new
                         {
                             Id = 88,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Marketplace.Orders.Create",
+                            ClaimValue = "Permissions.Marketplace.Orders.View",
                             RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
                         },
                         new
                         {
                             Id = 89,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Marketplace.Orders.Cancel",
+                            ClaimValue = "Permissions.Marketplace.Orders.Create",
                             RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
                         },
                         new
                         {
                             Id = 90,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Marketplace.Orders.UpdateStatus",
+                            ClaimValue = "Permissions.Marketplace.Orders.Cancel",
                             RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
                         },
                         new
                         {
                             Id = 91,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Marketplace.Reviews.View",
+                            ClaimValue = "Permissions.Marketplace.Orders.UpdateStatus",
                             RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
                         },
                         new
                         {
                             Id = 92,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Marketplace.Reviews.Create",
+                            ClaimValue = "Permissions.Marketplace.Reviews.View",
                             RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
                         },
                         new
                         {
                             Id = 93,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Users.ViewProfile",
-                            RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"
+                            ClaimValue = "Permissions.Marketplace.Reviews.Create",
+                            RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
                         },
                         new
                         {
                             Id = 94,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Users.UpdateProfile",
+                            ClaimValue = "Permissions.Users.ViewProfile",
                             RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"
                         },
                         new
                         {
                             Id = 95,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Users.ChangePassword",
+                            ClaimValue = "Permissions.Users.UpdateProfile",
                             RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"
                         },
                         new
                         {
                             Id = 96,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.BoatOwner.ViewProfile",
+                            ClaimValue = "Permissions.Users.ChangePassword",
                             RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"
                         },
                         new
                         {
                             Id = 97,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Boats.View",
+                            ClaimValue = "Permissions.BoatOwner.ViewProfile",
                             RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"
                         },
                         new
                         {
                             Id = 98,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Boats.Create",
+                            ClaimValue = "Permissions.Boats.View",
                             RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"
                         },
                         new
                         {
                             Id = 99,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Boats.Update",
+                            ClaimValue = "Permissions.Boats.Create",
                             RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"
                         },
                         new
                         {
                             Id = 100,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Boats.Delete",
+                            ClaimValue = "Permissions.Boats.Update",
                             RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"
                         },
                         new
                         {
                             Id = 101,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Trips.View",
+                            ClaimValue = "Permissions.Boats.Delete",
                             RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"
                         },
                         new
                         {
                             Id = 102,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Trips.Create",
+                            ClaimValue = "Permissions.Trips.View",
                             RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"
                         },
                         new
                         {
                             Id = 103,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Trips.Update",
+                            ClaimValue = "Permissions.Trips.Create",
                             RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"
                         },
                         new
                         {
                             Id = 104,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Trips.Delete",
+                            ClaimValue = "Permissions.Trips.Update",
                             RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"
                         },
                         new
                         {
                             Id = 105,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Bookings.View",
+                            ClaimValue = "Permissions.Trips.Delete",
                             RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"
                         },
                         new
                         {
                             Id = 106,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Bookings.UpdateStatus",
+                            ClaimValue = "Permissions.Bookings.View",
                             RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"
                         },
                         new
                         {
                             Id = 107,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Payments.View",
+                            ClaimValue = "Permissions.Bookings.UpdateStatus",
                             RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"
                         },
                         new
                         {
                             Id = 108,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Payments.Verify",
+                            ClaimValue = "Permissions.Payments.View",
                             RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"
                         },
                         new
                         {
                             Id = 109,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Payments.Stats",
+                            ClaimValue = "Permissions.Payments.Verify",
                             RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"
                         },
                         new
                         {
                             Id = 110,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Reviews.View",
+                            ClaimValue = "Permissions.Payments.Stats",
                             RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"
                         },
                         new
                         {
                             Id = 111,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Users.ViewProfile",
-                            RoleId = "6c6e00c1-6b2a-48b7-9d2f-3dfe9b3c0a1b"
+                            ClaimValue = "Permissions.Reviews.View",
+                            RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"
                         },
                         new
                         {
                             Id = 112,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Users.UpdateProfile",
+                            ClaimValue = "Permissions.Users.ViewProfile",
                             RoleId = "6c6e00c1-6b2a-48b7-9d2f-3dfe9b3c0a1b"
                         },
                         new
                         {
                             Id = 113,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Users.ChangePassword",
+                            ClaimValue = "Permissions.Users.UpdateProfile",
                             RoleId = "6c6e00c1-6b2a-48b7-9d2f-3dfe9b3c0a1b"
                         },
                         new
                         {
                             Id = 114,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Seller.ViewProfile",
+                            ClaimValue = "Permissions.Users.ChangePassword",
                             RoleId = "6c6e00c1-6b2a-48b7-9d2f-3dfe9b3c0a1b"
                         },
                         new
                         {
                             Id = 115,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Marketplace.Products.View",
+                            ClaimValue = "Permissions.Seller.ViewProfile",
                             RoleId = "6c6e00c1-6b2a-48b7-9d2f-3dfe9b3c0a1b"
                         },
                         new
                         {
                             Id = 116,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Marketplace.Products.Create",
+                            ClaimValue = "Permissions.Marketplace.Products.View",
                             RoleId = "6c6e00c1-6b2a-48b7-9d2f-3dfe9b3c0a1b"
                         },
                         new
                         {
                             Id = 117,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Marketplace.Products.Update",
+                            ClaimValue = "Permissions.Marketplace.Products.Create",
                             RoleId = "6c6e00c1-6b2a-48b7-9d2f-3dfe9b3c0a1b"
                         },
                         new
                         {
                             Id = 118,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Marketplace.Products.Delete",
+                            ClaimValue = "Permissions.Marketplace.Products.Update",
                             RoleId = "6c6e00c1-6b2a-48b7-9d2f-3dfe9b3c0a1b"
                         },
                         new
                         {
                             Id = 119,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Marketplace.Orders.View",
+                            ClaimValue = "Permissions.Marketplace.Products.Delete",
                             RoleId = "6c6e00c1-6b2a-48b7-9d2f-3dfe9b3c0a1b"
                         },
                         new
                         {
                             Id = 120,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Marketplace.Orders.UpdateStatus",
+                            ClaimValue = "Permissions.Marketplace.Orders.View",
                             RoleId = "6c6e00c1-6b2a-48b7-9d2f-3dfe9b3c0a1b"
                         },
                         new
                         {
                             Id = 121,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Marketplace.Orders.Stats",
+                            ClaimValue = "Permissions.Marketplace.Orders.UpdateStatus",
                             RoleId = "6c6e00c1-6b2a-48b7-9d2f-3dfe9b3c0a1b"
                         },
                         new
                         {
                             Id = 122,
+                            ClaimType = "Permissions",
+                            ClaimValue = "Permissions.Marketplace.Orders.Stats",
+                            RoleId = "6c6e00c1-6b2a-48b7-9d2f-3dfe9b3c0a1b"
+                        },
+                        new
+                        {
+                            Id = 123,
                             ClaimType = "Permissions",
                             ClaimValue = "Permissions.Marketplace.Reviews.View",
                             RoleId = "6c6e00c1-6b2a-48b7-9d2f-3dfe9b3c0a1b"

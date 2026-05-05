@@ -85,4 +85,13 @@ public class PaymentsController(
         var result = await _paymentService.GetFinancialStatsAsync(filterUserId, ownerId, cancellationToken);
         return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
     }
+
+    [HttpPatch("boatowner/refund/{id}")]
+    [Authorize(Policy = Permissions.Payments_Verify)]
+    public async Task<IActionResult> MarkAsRefunded(Guid id, CancellationToken cancellationToken)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+        var result = await _paymentService.MarkAsRefundedAsync(id, userId, cancellationToken);
+        return result.IsSuccess ? Ok() : BadRequest(result.Error);
+    }
 }

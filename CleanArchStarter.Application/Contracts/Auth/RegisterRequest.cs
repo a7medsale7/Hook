@@ -12,6 +12,7 @@ public class RegisterRequest
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public string Governorate { get; set; }
+    public string? PhoneNumber { get; set; }
 
 
 

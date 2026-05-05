@@ -98,7 +98,7 @@ public class TripsController(ITripService tripService) : ControllerBase
         return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
     }
 
-    [HttpDelete("boatowner/delete/{id}")]
+    [HttpDelete("boatowner/Soft-delete-Date/{id}")]
     [Authorize(Policy = Permissions.Trips_Delete)]
     public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
     {
@@ -131,6 +131,18 @@ public class TripsController(ITripService tripService) : ControllerBase
         if (userId is null) return Unauthorized();
 
         var result = await _tripService.ToggleTripDateStatusAsync(dateId, userId, isActive, cancellationToken);
+        
+        return result.IsSuccess ? Ok() : BadRequest(result.Error);
+    }
+
+    [HttpDelete("boatowner/Hard-delete-date/{dateId}")]
+    [Authorize(Policy = Permissions.Trips_Update)]
+    public async Task<IActionResult> DeleteTripDate(Guid dateId, CancellationToken cancellationToken)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userId is null) return Unauthorized();
+
+        var result = await _tripService.DeleteTripDateAsync(dateId, userId, cancellationToken);
         
         return result.IsSuccess ? Ok() : BadRequest(result.Error);
     }

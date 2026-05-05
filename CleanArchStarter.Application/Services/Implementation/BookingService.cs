@@ -189,6 +189,14 @@ public class BookingService(
             var ownerProfile = await _boatOwnerRepository.GetByUserIdAsync(userId);
             if (ownerProfile is null || booking.TripDate.Trip.TripManagerId != ownerProfile.Id)
                 return Result.Failure<BookingResponse>(BookingErrors.Unauthorized);
+
+            // Restriction 1: Owners cannot set status to Cancelled (reserved for Users/Admin)
+            if (request.Status == BookingStatus.Cancelled)
+                return Result.Failure<BookingResponse>(new Error("Booking.OwnerCannotCancel", "Owners cannot cancel bookings. They can only reject pending ones."));
+
+            // Restriction 2: Owners cannot change a booking that is already Confirmed or Completed
+            if (booking.Status == BookingStatus.Confirmed || booking.Status == BookingStatus.Completed)
+                return Result.Failure<BookingResponse>(new Error("Booking.StatusLocked", "Confirmed or Completed bookings cannot be modified by the owner."));
         }
 
         // Logic check: If rejected, restore seats
@@ -262,6 +270,29 @@ public class BookingService(
         return Result.Success();
     }
 
+    public async Task<Result> HardDeleteBookingAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        var booking = await _bookingRepository.GetByIdWithDetailsAsync(id);
+        if (booking is null)
+            return Result.Failure(BookingErrors.NotFound);
+
+        // If not already cancelled or rejected, revert seats
+        if (booking.Status != BookingStatus.Cancelled && booking.Status != BookingStatus.Rejected)
+        {
+            var tripDate = await _tripDateRepository.GetByIdAsync(booking.TripDateId);
+            if (tripDate != null)
+            {
+                tripDate.AvailableSeats += booking.NumberOfParticipants;
+                _tripDateRepository.Update(tripDate);
+            }
+        }
+
+        _bookingRepository.HardDelete(booking);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        return Result.Success();
+    }
+
     private BookingResponse ToResponse(Booking booking) => new BookingResponse(
         booking.Id,
         booking.TripDate.Trip.Title,
@@ -275,6 +306,7 @@ public class BookingService(
         booking.SpecialRequests,
         $"{booking.User?.FirstName} {booking.User?.LastName}",
         booking.User?.PhoneNumber,
+        booking.User?.Email,
         booking.Payment == null ? null : new BookingPaymentInfo(
             booking.Payment.Id,
             booking.Payment.Amount,

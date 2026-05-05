@@ -16,6 +16,7 @@ public record BookingResponse(
     string? SpecialRequests,
     string? UserFullName, // For owner/admin view
     string? UserPhoneNumber,
+    string? UserEmail,
     BookingPaymentInfo? Payment
 );
 

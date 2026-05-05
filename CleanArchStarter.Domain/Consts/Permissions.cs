@@ -50,6 +50,7 @@ public static class Permissions
     public const string Bookings_UpdateStatus = "Permissions.Bookings.UpdateStatus";
     public const string Bookings_Cancel = "Permissions.Bookings.Cancel";
     public const string Bookings_ViewAll = "Permissions.Bookings.ViewAll";
+    public const string Bookings_Delete = "Permissions.Bookings.Delete";
 
     // Payments
     public const string Payments_View = "Permissions.Payments.View";
@@ -105,5 +106,7 @@ public static class Permissions
     public const string MarketplaceApprovals_Update = "Permissions.Marketplace.Approvals.Update";
     //-------------------------------------------------------------------------------------------------------
     public static IList<string?> GetAllPermissions() =>
-       typeof(Permissions).GetFields().Select(f => f.GetValue(f) as string).ToList();
+        typeof(Permissions).GetFields(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.FlattenHierarchy)
+        .Where(f => f.IsLiteral && !f.IsInitOnly)
+        .Select(f => f.GetValue(null) as string).ToList();
 }

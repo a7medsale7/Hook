@@ -54,6 +54,11 @@ public class TripDateRepository(ApplicationDbContext context) : ITripDateReposit
         context.TripDates.Update(tripDate);
     }
 
+    public void HardDelete(TripDate tripDate)
+    {
+        context.TripDates.Remove(tripDate);
+    }
+
     public async Task<bool> ExistsAsync(Guid id)
     {
         return await context.TripDates.AnyAsync(d => d.Id == id && !d.IsDeleted);

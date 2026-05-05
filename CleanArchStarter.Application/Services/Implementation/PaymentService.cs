@@ -207,6 +207,38 @@ public class PaymentService(
         ));
     }
 
+    public async Task<Result> MarkAsRefundedAsync(Guid id, string userId, CancellationToken cancellationToken = default)
+    {
+        var payment = await _paymentRepository.GetByIdAsync(id);
+        if (payment is null)
+            return Result.Failure(PaymentErrors.NotFound);
+
+        // Authorization: must be the Trip Owner
+        var ownerProfile = await _boatOwnerRepository.GetByUserIdAsync(userId);
+        bool isOwnerOfTrip = ownerProfile != null &&
+                             payment.Booking?.TripDate?.Trip?.TripManagerId == ownerProfile.Id;
+
+        if (!isOwnerOfTrip)
+            return Result.Failure(PaymentErrors.Unauthorized);
+
+        // Can only refund if it was previously completed or pending
+        if (payment.Status == PaymentStatus.Rejected || payment.Status == PaymentStatus.Refunded)
+            return Result.Failure(PaymentErrors.InvalidStatus);
+
+        payment.Status = PaymentStatus.Refunded;
+        
+        if (payment.Booking != null)
+        {
+            payment.Booking.Status = BookingStatus.Cancelled;
+            _bookingRepository.Update(payment.Booking);
+        }
+
+        _paymentRepository.Update(payment);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        return Result.Success();
+    }
+
     private static PaymentResponse MapToResponse(Payment payment) => new(
         payment.Id,
         payment.BookingId ?? Guid.Empty,

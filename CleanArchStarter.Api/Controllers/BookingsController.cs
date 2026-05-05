@@ -117,4 +117,14 @@ public class BookingsController(IBookingService bookingService) : ControllerBase
         
         return result.IsSuccess ? NoContent() : BadRequest(result.Error);
     }
+
+    [HttpDelete("admin/hard-delete/{id}")]
+    [Authorize(Policy = Permissions.Bookings_Delete)]
+    public async Task<IActionResult> HardDeleteBooking(Guid id, CancellationToken cancellationToken)
+    {
+        // Permission check is already done by [Authorize] and Policy
+        var result = await _bookingService.HardDeleteBookingAsync(id, cancellationToken);
+        
+        return result.IsSuccess ? Ok() : BadRequest(result.Error);
+    }
 }

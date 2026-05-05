@@ -17,4 +17,5 @@ public interface IBookingService
     Task<Result<BookingStatsResponse>> GetBookingStatsAsync(string userId, bool isAdmin, CancellationToken cancellationToken = default);
     Task<Result<BookingResponse>> UpdateBookingStatusAsync(Guid id, string userId, UpdateBookingStatusRequest request, bool isAdmin = false, CancellationToken cancellationToken = default);
     Task<Result> CancelBookingAsync(Guid id, string userId, CancellationToken cancellationToken = default);
+    Task<Result> HardDeleteBookingAsync(Guid id, CancellationToken cancellationToken = default);
 }

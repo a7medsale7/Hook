@@ -97,6 +97,7 @@ public class AuthService(UserManager<ApplicationUser> userManager,
             FirstName = user.FirstName,
             LastName = user.LastName,
             Governorate = user.Governorate,
+            PhoneNumber = user.PhoneNumber,
             ProfilePictureUrl = user.ProfilePictureUrl,
             Token = token,
             ExpiresIn = (int)(expiration - DateTime.UtcNow).TotalSeconds,
@@ -124,7 +125,8 @@ public class AuthService(UserManager<ApplicationUser> userManager,
             Email = registerRequest.Email,
             FirstName = registerRequest.FirstName,
             LastName = registerRequest.LastName,
-            Governorate = registerRequest.Governorate
+            Governorate = registerRequest.Governorate,
+            PhoneNumber = registerRequest.PhoneNumber
         };
 
         var result = await _userManager.CreateAsync(user, registerRequest.Password);
@@ -136,8 +138,7 @@ public class AuthService(UserManager<ApplicationUser> userManager,
 
         var emailToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
-        emailToken = WebEncoders.Base64UrlEncode(
-            Encoding.UTF8.GetBytes(emailToken));
+        emailToken = System.Net.WebUtility.UrlEncode(emailToken);
 
         logger.LogInformation(
             "Email confirmation token for user {Email}: {Token}",
@@ -187,11 +188,13 @@ public class AuthService(UserManager<ApplicationUser> userManager,
 
         try
         {
-            decodedToken = Encoding.UTF8.GetString(
-                WebEncoders.Base64UrlDecode(request.Code));
+            // فك التشفير يدوياً لضمان أننا نتعامل مع الرموز الأصلية (+, /, =) 
+            decodedToken = System.Net.WebUtility.UrlDecode(request.Code.Trim());
+            logger.LogInformation("Attempting to confirm email for user {UserId} with token length {Length}", request.UserId, decodedToken.Length);
         }
-        catch
+        catch (Exception ex)
         {
+            logger.LogError(ex, "Error processing token for user {UserId}", request.UserId);
             return Result.Failure(UserErrors.InvalidTokenFormat);
         }
 
@@ -223,9 +226,7 @@ public class AuthService(UserManager<ApplicationUser> userManager,
         // 3?? ????? ???????
         var emailToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
-        // 4?? ????? ???????
-        var encodedToken = WebEncoders.Base64UrlEncode(
-            Encoding.UTF8.GetBytes(emailToken));
+        var encodedToken = System.Net.WebUtility.UrlEncode(emailToken);
 
         // 5?? ????? ??????? ?? ??? logs
         logger.LogInformation(
@@ -318,6 +319,7 @@ public class AuthService(UserManager<ApplicationUser> userManager,
             Name = user.UserName,
             FirstName = user.FirstName,
             LastName = user.LastName,
+            PhoneNumber = user.PhoneNumber,
             Governorate = user.Governorate,
             ProfilePictureUrl = user.ProfilePictureUrl,
             Token = newToken,
