@@ -256,6 +256,12 @@ public class BookingService(
 
         // --- المنطق الجديد ---
         
+        // منع الإلغاء إذا كان الدفع في حالة انتظار التأكيد
+        if (booking.Payment != null && booking.Payment.Status == PaymentStatus.Pending && !string.IsNullOrEmpty(booking.Payment.ReceiptImageUrl))
+        {
+            return Result.Failure(new Error("Booking.PaymentPending", "Please wait for the boat owner to verify your payment first, then you can request a cancellation."));
+        }
+
         // 1. لو الحجز لسه Pending (مستني موافقة أو لسه مدفعش)
         if (booking.Status == BookingStatus.Pending)
         {
