@@ -20,6 +20,7 @@ public class PaymentService(
     IPaymentRepository paymentRepository,
     IBookingRepository bookingRepository,
     IBoatOwnerRepository boatOwnerRepository,
+    ITripDateRepository tripDateRepository,
     IEmailSender emailSender,
     IFileService fileService,
     IBackgroundJobClient backgroundJobClient,
@@ -28,6 +29,7 @@ public class PaymentService(
     private readonly IPaymentRepository _paymentRepository = paymentRepository;
     private readonly IBookingRepository _bookingRepository = bookingRepository;
     private readonly IBoatOwnerRepository _boatOwnerRepository = boatOwnerRepository;
+    private readonly ITripDateRepository _tripDateRepository = tripDateRepository;
     private readonly IEmailSender _emailSender = emailSender;
     private readonly IFileService _fileService = fileService;
     private readonly IBackgroundJobClient _backgroundJobClient = backgroundJobClient;
@@ -230,8 +232,17 @@ public class PaymentService(
         
         if (payment.Booking != null)
         {
+            // 1. تغيير حالة الحجز لـ ملغي
             payment.Booking.Status = BookingStatus.Cancelled;
             _bookingRepository.Update(payment.Booking);
+
+            // 2. استرجاع المقاعد للرحلة
+            var tripDate = await _tripDateRepository.GetByIdAsync(payment.Booking.TripDateId);
+            if (tripDate != null)
+            {
+                tripDate.AvailableSeats += payment.Booking.NumberOfParticipants;
+                _tripDateRepository.Update(tripDate);
+            }
         }
 
         _paymentRepository.Update(payment);

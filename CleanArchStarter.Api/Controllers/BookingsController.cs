@@ -37,6 +37,24 @@ public class BookingsController(IBookingService bookingService) : ControllerBase
         return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
     }
 
+    [HttpGet("user/cancelled-history")]
+    [Authorize(Policy = Permissions.Bookings_View)]
+    public async Task<IActionResult> GetMyCancelledBookings(CancellationToken cancellationToken)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+        var result = await _bookingService.GetMyCancelledBookingsAsync(userId, cancellationToken);
+        return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
+    }
+
+    [HttpGet("boatowner/cancellation-requests")]
+    [Authorize(Policy = Permissions.Bookings_ViewAll)]
+    public async Task<IActionResult> GetCancellationRequests(CancellationToken cancellationToken)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+        var result = await _bookingService.GetCancellationRequestsAsync(userId, cancellationToken);
+        return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
+    }
+
     [HttpGet("allroles/search")]
     [Authorize(Policy = Permissions.Bookings_View)]
     public async Task<IActionResult> SearchBookings([FromQuery] BookingFilterRequest filter, CancellationToken cancellationToken)

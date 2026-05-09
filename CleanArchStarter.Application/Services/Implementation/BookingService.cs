@@ -251,23 +251,61 @@ public class BookingService(
         if (booking.UserId != userId)
             return Result.Failure(BookingErrors.Unauthorized);
 
-        if (booking.Status == BookingStatus.Cancelled)
+        if (booking.Status == BookingStatus.Cancelled || booking.Status == BookingStatus.CancellationRequested)
             return Result.Failure(BookingErrors.AlreadyCancelled);
 
-        // Revert seats
-        var tripDate = await _tripDateRepository.GetByIdAsync(booking.TripDateId);
-        if (tripDate != null)
+        // --- المنطق الجديد ---
+        
+        // 1. لو الحجز لسه Pending (مستني موافقة أو لسه مدفعش)
+        if (booking.Status == BookingStatus.Pending)
         {
-            tripDate.AvailableSeats += booking.NumberOfParticipants;
-            _tripDateRepository.Update(tripDate);
+            // نرجّع الكراسي فوراً
+            var tripDate = await _tripDateRepository.GetByIdAsync(booking.TripDateId);
+            if (tripDate != null)
+            {
+                tripDate.AvailableSeats += booking.NumberOfParticipants;
+                _tripDateRepository.Update(tripDate);
+            }
+
+            booking.Status = BookingStatus.Cancelled;
+            if (booking.Payment != null)
+            {
+                booking.Payment.Status = PaymentStatus.Rejected; // نعتبرها فشلت أو اترفضت
+                booking.Payment.AdminNotes = "Cancelled by user before confirmation";
+            }
+        }
+        // 2. لو الحجز مؤكد (يعني دفع والفلوس اتقبلت)
+        else if (booking.Status == BookingStatus.Confirmed || booking.Status == BookingStatus.Completed)
+        {
+            // نغير الحالة لـ "طلب إلغاء" ونستنى صاحب المركب
+            booking.Status = BookingStatus.CancellationRequested;
+        }
+        else 
+        {
+            return Result.Failure(new Error("Booking.CannotCancel", "This booking cannot be cancelled in its current status."));
         }
 
-        booking.Status = BookingStatus.Cancelled;
         _bookingRepository.Update(booking);
-        
         await _unitOfWork.SaveChangesAsync(cancellationToken);
         
         return Result.Success();
+    }
+
+    public async Task<Result<IEnumerable<BookingResponse>>> GetMyCancelledBookingsAsync(string userId, CancellationToken cancellationToken = default)
+    {
+        var bookings = await _bookingRepository.GetByUserIdAsync(userId);
+        var cancelledOnes = bookings.Where(b => b.Status == BookingStatus.Cancelled || b.Status == BookingStatus.CancellationRequested);
+        return Result.Success(cancelledOnes.Select(ToResponse));
+    }
+
+    public async Task<Result<IEnumerable<BookingResponse>>> GetCancellationRequestsAsync(string userId, CancellationToken cancellationToken = default)
+    {
+        var ownerProfile = await _boatOwnerRepository.GetByUserIdAsync(userId);
+        if (ownerProfile is null)
+            return Result.Failure<IEnumerable<BookingResponse>>(TripErrors.NoBoatAvailable);
+
+        var bookings = await _bookingRepository.GetAllFilteredAsync(status: BookingStatus.CancellationRequested, ownerId: ownerProfile.Id);
+        return Result.Success(bookings.Select(ToResponse));
     }
 
     public async Task<Result> HardDeleteBookingAsync(Guid id, CancellationToken cancellationToken = default)

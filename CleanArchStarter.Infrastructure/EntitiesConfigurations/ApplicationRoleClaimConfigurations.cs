@@ -95,6 +95,7 @@ public class ApplicationRoleClaimConfigurations : IEntityTypeConfiguration<Ident
             Permissions.Trips_Delete,
             // صلاحيات إدارة الحجوزات الخاصة به
             Permissions.Bookings_View,
+            Permissions.Bookings_ViewAll,
             Permissions.Bookings_UpdateStatus,
             Permissions.Payments_View,
             Permissions.Payments_Verify,
