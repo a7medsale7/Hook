@@ -14,6 +14,8 @@ public interface ITripRepository
     Task<IEnumerable<Trip>> GetAvailableTripsAsync(); // Trips with upcoming dates
     Task AddAsync(Trip trip);
     Task AddImageAsync(TripImage image);
+    Task<Trip?> GetDeletedByIdAsync(Guid id);
+    Task<IEnumerable<Trip>> GetDeletedByOwnerIdAsync(Guid ownerProfileId);
     void Update(Trip trip);
     void Delete(Trip trip);
 }

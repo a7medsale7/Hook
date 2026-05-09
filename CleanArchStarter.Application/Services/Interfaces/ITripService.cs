@@ -17,6 +17,8 @@ public interface ITripService
     Task<Result<TripResponse>> UpdateTripAsync(Guid id, string userId, UpdateTripRequest request, bool isAdmin = false, CancellationToken cancellationToken = default);
     Task<Result<TripResponse>> UpdateImagesAsync(Guid id, string userId, Hook.Application.Contracts.Common.UpdateImagesRequest request, bool isAdmin = false, CancellationToken cancellationToken = default);
     Task<Result> SoftDeleteTripAsync(Guid id, string userId, bool isAdmin = false, CancellationToken cancellationToken = default);
+    Task<Result> RestoreTripAsync(Guid id, string userId, CancellationToken cancellationToken = default);
+    Task<Result<IEnumerable<TripResponse>>> GetMyDeletedTripsAsync(string userId, CancellationToken cancellationToken = default);
     
     // TripDate Management
     Task<Result> AddTripDatesAsync(Guid tripId, string userId, AddTripDatesRequest request, CancellationToken cancellationToken = default);

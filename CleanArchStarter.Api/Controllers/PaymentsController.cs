@@ -21,7 +21,15 @@ public class PaymentsController(
     private readonly IPaymentService _paymentService = paymentService;
     private readonly IBoatOwnerRepository _boatOwnerRepository = boatOwnerRepository;
 
-    [HttpGet("user-boatowner/my")]
+    [HttpGet("user-boatowner/{id}")]
+    [Authorize(Policy = Permissions.Payments_View)]
+    public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken)
+    {
+        var result = await _paymentService.GetByIdAsync(id, cancellationToken);
+        return result.IsSuccess ? Ok(result.Value) : NotFound(result.Error);
+    }
+
+    [HttpGet("user/my-payments")]
     [Authorize(Policy = Permissions.Payments_View)]
     public async Task<IActionResult> GetMyPayments(CancellationToken cancellationToken)
     {

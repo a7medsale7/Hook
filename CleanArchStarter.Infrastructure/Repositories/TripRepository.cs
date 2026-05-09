@@ -88,4 +88,23 @@ public class TripRepository(ApplicationDbContext context) : ITripRepository
         trip.IsDeleted = true;
         context.Trips.Update(trip);
     }
+
+    public async Task<Trip?> GetDeletedByIdAsync(Guid id)
+    {
+        return await context.Trips
+            .IgnoreQueryFilters()
+            .Include(t => t.TripManager)
+            .FirstOrDefaultAsync(t => t.Id == id && t.IsDeleted);
+    }
+
+    public async Task<IEnumerable<Trip>> GetDeletedByOwnerIdAsync(Guid ownerProfileId)
+    {
+        return await context.Trips
+            .IgnoreQueryFilters()
+            .Where(t => t.TripManagerId == ownerProfileId && t.IsDeleted)
+            .Include(t => t.Images)
+            .Include(t => t.Boat)
+            .Include(t => t.TripDates)
+            .ToListAsync();
+    }
 }

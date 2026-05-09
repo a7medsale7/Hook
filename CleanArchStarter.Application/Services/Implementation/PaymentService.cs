@@ -203,7 +203,8 @@ public class PaymentService(
             TotalRevenue: list.Where(p => p.Status == PaymentStatus.Completed).Sum(p => p.Amount),
             PendingVerification: list.Count(p => p.Status == PaymentStatus.Pending && !string.IsNullOrEmpty(p.ReceiptImageUrl)),
             ApprovedPayments: list.Count(p => p.Status == PaymentStatus.Completed),
-            RejectedPayments: list.Count(p => p.Status == PaymentStatus.Rejected)
+            RejectedPayments: list.Count(p => p.Status == PaymentStatus.Rejected),
+            RefundedPayments: list.Count(p => p.Status == PaymentStatus.Refunded)
         ));
     }
 

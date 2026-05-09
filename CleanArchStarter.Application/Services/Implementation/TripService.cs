@@ -242,6 +242,32 @@ public class TripService(
         return Result.Success();
     }
 
+    public async Task<Result> RestoreTripAsync(Guid id, string userId, CancellationToken cancellationToken = default)
+    {
+        var trip = await _tripRepository.GetDeletedByIdAsync(id);
+        if (trip is null)
+            return Result.Failure(TripErrors.NotFound);
+
+        if (trip.TripManager.UserId != userId)
+            return Result.Failure(TripErrors.Unauthorized);
+
+        trip.IsDeleted = false;
+        _tripRepository.Update(trip);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        return Result.Success();
+    }
+
+    public async Task<Result<IEnumerable<TripResponse>>> GetMyDeletedTripsAsync(string userId, CancellationToken cancellationToken = default)
+    {
+        var ownerProfile = await _boatOwnerRepository.GetByUserIdAsync(userId);
+        if (ownerProfile is null)
+            return Result.Failure<IEnumerable<TripResponse>>(TripErrors.NoBoatAvailable);
+
+        var trips = await _tripRepository.GetDeletedByOwnerIdAsync(ownerProfile.Id);
+        return Result.Success(trips.Select(t => ToResponse(t)));
+    }
+
     public async Task<Result> AddTripDatesAsync(Guid tripId, string userId, AddTripDatesRequest request, CancellationToken cancellationToken = default)
     {
         var tripWithDetails = await _tripRepository.GetByIdWithDetailsAsync(tripId);
@@ -277,6 +303,20 @@ public class TripService(
         if (tripDate.Trip.TripManager.UserId != userId)
             return Result.Failure(TripErrors.Unauthorized);
 
+        if (!isActive)
+        {
+            var bookings = await _bookingRepository.GetByTripDateIdAsync(dateId);
+            var unrefundedBookings = bookings.Where(b => 
+                !b.IsDeleted && 
+                b.Payment != null && 
+                b.Payment.Status != PaymentStatus.Refunded && 
+                b.Payment.Status != PaymentStatus.Rejected && 
+                b.Payment.Status != PaymentStatus.Failed).ToList();
+
+            if (unrefundedBookings.Any())
+                return Result.Failure(TripErrors.DateHasUnrefundedBookings);
+        }
+
         tripDate.IsActive = isActive;
         _tripDateRepository.Update(tripDate);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
@@ -309,7 +349,15 @@ public class TripService(
         if (unrefundedBookings.Any())
             return Result.Failure(TripErrors.DateHasUnrefundedBookings);
 
+        // 1. مسح كل الحجوزات المرتبطة (وبالتالي سيتم مسح المدفوعات تلقائياً)
+        foreach (var booking in bookings)
+        {
+            _bookingRepository.HardDelete(booking);
+        }
+
+        // 2. مسح التاريخ نهائياً
         _tripDateRepository.HardDelete(tripDate);
+        
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return Result.Success();

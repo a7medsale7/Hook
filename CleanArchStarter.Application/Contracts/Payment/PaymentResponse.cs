@@ -19,5 +19,6 @@ public record PaymentStatsResponse(
     decimal TotalRevenue,
     int PendingVerification,
     int ApprovedPayments,
-    int RejectedPayments
+    int RejectedPayments,
+    int RefundedPayments
 );

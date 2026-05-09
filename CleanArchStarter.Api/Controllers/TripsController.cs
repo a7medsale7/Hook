@@ -98,7 +98,7 @@ public class TripsController(ITripService tripService) : ControllerBase
         return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
     }
 
-    [HttpDelete("boatowner/Soft-delete-Date/{id}")]
+    [HttpDelete("boatowner/Soft-delete-Trip/{id}")]
     [Authorize(Policy = Permissions.Trips_Delete)]
     public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
     {
@@ -109,6 +109,30 @@ public class TripsController(ITripService tripService) : ControllerBase
         var result = await _tripService.SoftDeleteTripAsync(id, userId, isAdmin, cancellationToken);
         
         return result.IsSuccess ? Ok() : BadRequest(result.Error);
+    }
+
+    [HttpPost("boatowner/Restore-Trip/{id}")]
+    [Authorize(Policy = Permissions.Trips_Update)]
+    public async Task<IActionResult> Restore(Guid id, CancellationToken cancellationToken)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userId is null) return Unauthorized();
+
+        var result = await _tripService.RestoreTripAsync(id, userId, cancellationToken);
+        
+        return result.IsSuccess ? Ok() : BadRequest(result.Error);
+    }
+
+    [HttpGet("boatowner/Deleted-Trips")]
+    [Authorize(Policy = Permissions.Trips_View)]
+    public async Task<IActionResult> GetMyDeletedTrips(CancellationToken cancellationToken)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userId is null) return Unauthorized();
+
+        var result = await _tripService.GetMyDeletedTripsAsync(userId, cancellationToken);
+        
+        return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
     }
 
     [HttpPost("boatowner/add-dates/{id}")]
