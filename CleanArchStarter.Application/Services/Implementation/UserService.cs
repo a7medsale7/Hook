@@ -170,9 +170,8 @@ public class UserService : IUserService
         var token = await _userManager.GeneratePasswordResetTokenAsync(user);
 
         // 3. Create reset link
-        var encodedEmail = System.Net.WebUtility.UrlEncode(user.Email!);
-        var encodedToken = System.Net.WebUtility.UrlEncode(token);
-        var resetLink = $"{originUrl}/api/Users/allroles/reset-password?email={encodedEmail}&token={encodedToken}";
+        var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
+        var resetLink = $"{originUrl}/api/Users/allroles/reset-password?email={user.Email}&token={encodedToken}";
         
         // 4. Enqueue email sending job
         BackgroundJob.Enqueue(() => _emailSender.SendEmailAsync(
@@ -189,8 +188,10 @@ public class UserService : IUserService
             return Result.Failure(UserErrors.UserNotFound);
         try
         {
-            // Use the token directly from the request
-            var result = await _userManager.ResetPasswordAsync(user, request.Token, request.NewPassword);
+            // Decode the token using WebEncoders
+            var decodedToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(request.Token));
+            
+            var result = await _userManager.ResetPasswordAsync(user, decodedToken, request.NewPassword);
             if (!result.Succeeded)
                 return Result.Failure(UserErrors.InvalidToken);
             return Result.Success();

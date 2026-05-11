@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Text;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
@@ -137,8 +138,7 @@ public class AuthService(UserManager<ApplicationUser> userManager,
                 string.Join(", ", result.Errors.Select(e => e.Description))));
 
         var emailToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-
-        emailToken = System.Net.WebUtility.UrlEncode(emailToken);
+        emailToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(emailToken));
 
         logger.LogInformation(
             "Email confirmation token for user {Email}: {Token}",
@@ -188,13 +188,12 @@ public class AuthService(UserManager<ApplicationUser> userManager,
 
         try
         {
-            // فك التشفير يدوياً لضمان أننا نتعامل مع الرموز الأصلية (+, /, =) 
-            decodedToken = System.Net.WebUtility.UrlDecode(request.Code.Trim());
-            logger.LogInformation("Attempting to confirm email for user {UserId} with token length {Length}", request.UserId, decodedToken.Length);
+            decodedToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(request.Code));
+            logger.LogInformation("Attempting to confirm email for user {UserId}", request.UserId);
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Error processing token for user {UserId}", request.UserId);
+            logger.LogError(ex, "Error decoding token for user {UserId}", request.UserId);
             return Result.Failure(UserErrors.InvalidTokenFormat);
         }
 
@@ -225,8 +224,7 @@ public class AuthService(UserManager<ApplicationUser> userManager,
 
         // 3?? ????? ???????
         var emailToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-
-        var encodedToken = System.Net.WebUtility.UrlEncode(emailToken);
+        var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(emailToken));
 
         // 5?? ????? ??????? ?? ??? logs
         logger.LogInformation(
