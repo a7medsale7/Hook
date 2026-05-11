@@ -79,11 +79,17 @@ public static class DependencyInjection
         services.AddScoped<IBookingRepository, BookingRepository>();
         services.AddScoped<IPaymentRepository, PaymentRepository>();
         services.AddScoped<IReviewRepository, ReviewRepository>();
+        services.AddScoped<IMarketplaceProductRepository, MarketplaceProductRepository>();
+        services.AddScoped<IMarketplaceCartRepository, MarketplaceCartRepository>();
+        services.AddScoped<IMarketplaceOrderRepository, MarketplaceOrderRepository>();
+        services.AddScoped<ISellerProfileRepository, SellerProfileRepository>();
+        services.AddScoped<IMarketplaceReviewRepository, MarketplaceReviewRepository>();
+        services.AddScoped<IMarketplaceListingRequestRepository, MarketplaceListingRequestRepository>();
 
         services.AddExceptionHandler<GlobalExceptionHandler>();
         services.AddProblemDetails();
 
-        
+
 
 
         return services;
@@ -98,13 +104,22 @@ public static class DependencyInjection
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IRoleService, RoleService>();
 
-        services.AddScoped<IUserService,UserService>();
+        services.AddScoped<IUserService, UserService>();
         services.AddScoped<IBoatOwnerService, BoatOwnerService>();
+        services.AddScoped<ISellerService, SellerService>();
         services.AddScoped<IBoatService, BoatService>();
         services.AddScoped<ITripService, TripService>();
         services.AddScoped<IBookingService, BookingService>();
         services.AddScoped<IPaymentService, PaymentService>();
         services.AddScoped<IReviewService, ReviewService>();
+        services.AddScoped<IMarketplaceProductService, MarketplaceProductService>();
+        services.AddScoped<IMarketplaceSellerProductService, MarketplaceSellerProductService>();
+        services.AddScoped<IMarketplaceCartService, MarketplaceCartService>();
+        services.AddScoped<IMarketplaceOrderService, MarketplaceOrderService>();
+        services.AddScoped<IMarketplaceReviewService, MarketplaceReviewService>();
+        services.AddScoped<IMarketplaceSellerService, MarketplaceSellerService>();
+        services.AddScoped<IMarketplaceAnalyticsService, MarketplaceAnalyticsService>();
+        services.AddScoped<IMarketplaceAdminManagementService, MarketplaceAdminManagementService>();
         return services;
     }
 
