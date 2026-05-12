@@ -400,6 +400,9 @@ public class TripService(
                 IsMainImage = i.IsMainImage
             }).ToList(),
             MainImageUrl = trip.Boat.Images.FirstOrDefault(i => i.IsMainImage)?.ImageUrl ?? trip.Boat.Images.FirstOrDefault()?.ImageUrl
-        }
+        },
+        trip.TripManager?.InstaPayNumber,
+        trip.TripManager?.VodafoneCashNumber,
+        trip.TripManager?.User?.PhoneNumber
     );
 }

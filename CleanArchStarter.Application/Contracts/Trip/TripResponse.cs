@@ -25,7 +25,10 @@ public record TripResponse(
     string? MainImageUrl,
     List<TripDateResponse> TripDates,
     string? TripManagerImageUrl = null,
-    Hook.Application.Contracts.Boat.BoatResponse? Boat = null
+    Hook.Application.Contracts.Boat.BoatResponse? Boat = null,
+    string? InstaPayNumber = null,
+    string? VodafoneCashNumber = null,
+    string? TripManagerPhoneNumber = null
 );
 
 public record TripImageResponse(
