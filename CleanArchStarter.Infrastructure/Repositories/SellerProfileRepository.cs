@@ -1,4 +1,4 @@
-﻿using Hook.Domain.Abstractions.Repositories;
+using Hook.Domain.Abstractions.Repositories;
 using Hook.Domain.Entities;
 using Hook.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -16,7 +16,9 @@ namespace Hook.Infrastructure.Repositories
 
         public async Task<bool> HasProfileAsync(string userId)
         {
-            return await context.SellerProfiles.AnyAsync(p => p.UserId == userId && !p.IsDeleted);
+            return await context.SellerProfiles
+                .IgnoreQueryFilters()
+                .AnyAsync(p => p.UserId == userId);
         }
 
         public async Task<SellerProfile?> GetByUserIdAsync(string userId)
