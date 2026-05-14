@@ -7,15 +7,13 @@ using System.Threading.Tasks;
 
 namespace Hook.Application.Contracts.Seller
 {
-    public class ApplySellerRequest
+    public class UpdateSellerProfileRequest
     {
         public string SellerName { get; set; } = string.Empty;
         public string PhoneNumber { get; set; } = string.Empty;
         public string Governorate { get; set; } = string.Empty;
         public string City { get; set; } = string.Empty;
         public string Address { get; set; } = string.Empty;
-        public IFormFile NationalIdImage { get; set; } = null!;
         public IFormFile? StoreImage { get; set; }
     }
-
 }

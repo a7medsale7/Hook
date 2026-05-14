@@ -1,4 +1,4 @@
-﻿using Hook.Application.Contracts.Seller;
+using Hook.Application.Contracts.Seller;
 using Hook.Application.Services.Interfaces;
 using Hook.Domain.Consts;
 using Microsoft.AspNetCore.Authorization;
@@ -34,6 +34,17 @@ namespace Hook.Api.Controllers
 
             var result = await _sellerService.GetProfileAsync(userId, cancellationToken);
             return result.IsSuccess ? Ok(result.Value) : NotFound(result.Error);
+        }
+
+        [HttpPut("update-profile")]
+        [Authorize(Policy = Permissions.Seller_ViewProfile)]
+        public async Task<IActionResult> UpdateProfile([FromForm] UpdateSellerProfileRequest request, CancellationToken cancellationToken)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId is null) return Unauthorized();
+
+            var result = await _sellerService.UpdateProfileAsync(userId, request, cancellationToken);
+            return result.IsSuccess ? Ok() : BadRequest(result.Error);
         }
 
         [HttpGet("admin/pending/GetAll")]

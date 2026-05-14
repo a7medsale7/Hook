@@ -1,4 +1,4 @@
-﻿using Hook.Domain.Entities;
+using Hook.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -41,6 +41,9 @@ namespace Hook.Infrastructure.EntitiesConfigurations
 
             builder.Property(x => x.NationalIdPhotoUrl)
                 .IsRequired()
+                .HasMaxLength(2048);
+
+            builder.Property(x => x.StoreImageUrl)
                 .HasMaxLength(2048);
 
             builder.HasOne(x => x.User)
