@@ -1,4 +1,4 @@
-﻿using Hook.Domain.Entities.Base;
+using Hook.Domain.Entities.Base;
 using Hook.Domain.Enums;
 using System;
 using System.Collections.Generic;
@@ -20,6 +20,7 @@ namespace Hook.Domain.Entities
         public string City { get; set; } = string.Empty;
         public string Address { get; set; } = string.Empty;
         public string NationalIdPhotoUrl { get; set; } = string.Empty;
+        public string? StoreImageUrl { get; set; }
 
         public RequestStatus Status { get; set; } = RequestStatus.Pending;
         public string? AdminRejectionReason { get; set; }

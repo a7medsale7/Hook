@@ -1,4 +1,4 @@
-﻿using Hook.Domain.Enums;
+using Hook.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +20,7 @@ namespace Hook.Application.Contracts.Seller
         public string City { get; set; } = string.Empty;
         public string Address { get; set; } = string.Empty;
         public string NationalIdPhotoUrl { get; set; } = string.Empty;
+        public string? StoreImageUrl { get; set; }
 
         public RequestStatus Status { get; set; }
         public string? AdminRejectionReason { get; set; }

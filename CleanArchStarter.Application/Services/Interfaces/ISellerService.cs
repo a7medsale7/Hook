@@ -1,4 +1,4 @@
-﻿using Hook.Application.Abstractions.Result;
+using Hook.Application.Abstractions.Result;
 using Hook.Application.Contracts.Seller;
 using System;
 using System.Collections.Generic;
@@ -12,6 +12,7 @@ namespace Hook.Application.Services.Interfaces
     {
         Task<Result<SellerResponse>> ApplyAsync(string userId, ApplySellerRequest request, CancellationToken cancellationToken = default);
         Task<Result<SellerResponse>> GetProfileAsync(string userId, CancellationToken cancellationToken = default);
+        Task<Result> UpdateProfileAsync(string userId, UpdateSellerProfileRequest request, CancellationToken cancellationToken = default);
         Task<Result<IEnumerable<SellerResponse>>> GetPendingApplicationsAsync(CancellationToken cancellationToken = default);
         Task<Result<IEnumerable<SellerResponse>>> GetAllAsync(CancellationToken cancellationToken = default);
         Task<Result> UpdateStatusAsync(UpdateSellerStatusRequest request, CancellationToken cancellationToken = default);

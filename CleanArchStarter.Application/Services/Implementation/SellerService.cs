@@ -1,4 +1,4 @@
-﻿using Hangfire;
+using Hangfire;
 using Hook.Application.Abstractions.Result;
 using Hook.Application.Contracts.Seller;
 using Hook.Application.Errors;
@@ -52,6 +52,11 @@ namespace Hook.Application.Services.Implementation
                 return Result.Failure<SellerResponse>(new Error("Seller.UserNotFound", "User not found."));
 
             var nationalIdUrl = await _fileService.SaveFileAsync(request.NationalIdImage, "sellers/national-ids");
+            string? storeImageUrl = null;
+            if (request.StoreImage is not null)
+            {
+                storeImageUrl = await _fileService.SaveFileAsync(request.StoreImage, "sellers/stores");
+            }
 
             var profile = new SellerProfile
             {
@@ -62,6 +67,7 @@ namespace Hook.Application.Services.Implementation
                 City = request.City,
                 Address = request.Address,
                 NationalIdPhotoUrl = nationalIdUrl,
+                StoreImageUrl = storeImageUrl,
                 Status = RequestStatus.Pending
             };
 
@@ -85,6 +91,36 @@ namespace Hook.Application.Services.Implementation
                 return Result.Failure<SellerResponse>(SellerErrors.ProfileNotFound);
 
             return Result.Success(ToResponse(profile));
+        }
+
+        public async Task<Result> UpdateProfileAsync(string userId, UpdateSellerProfileRequest request, CancellationToken cancellationToken = default)
+        {
+            var profile = await _sellerProfileRepository.GetByUserIdAsync(userId);
+            if (profile is null)
+                return Result.Failure(SellerErrors.ProfileNotFound);
+
+            if (profile.Status != RequestStatus.Approved)
+                return Result.Failure(new Error("Seller.NotApproved", "Only approved sellers can update their profile."));
+
+            profile.SellerName = request.SellerName;
+            profile.PhoneNumber = request.PhoneNumber;
+            profile.Governorate = request.Governorate;
+            profile.City = request.City;
+            profile.Address = request.Address;
+
+            if (request.StoreImage is not null)
+            {
+                if (!string.IsNullOrEmpty(profile.StoreImageUrl))
+                {
+                    _fileService.DeleteFile(profile.StoreImageUrl);
+                }
+                profile.StoreImageUrl = await _fileService.SaveFileAsync(request.StoreImage, "sellers/stores");
+            }
+
+            _sellerProfileRepository.Update(profile);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            return Result.Success();
         }
 
         public async Task<Result<IEnumerable<SellerResponse>>> GetPendingApplicationsAsync(CancellationToken cancellationToken = default)
@@ -201,6 +237,7 @@ namespace Hook.Application.Services.Implementation
             City = profile.City,
             Address = profile.Address,
             NationalIdPhotoUrl = profile.NationalIdPhotoUrl,
+            StoreImageUrl = profile.StoreImageUrl,
             Status = profile.Status,
             AdminRejectionReason = profile.AdminRejectionReason,
             CreatedOn = profile.CreatedOn
