@@ -1,4 +1,4 @@
-﻿using Hook.Application.Abstractions.Result;
+using Hook.Application.Abstractions.Result;
 using Hook.Application.Contracts.Marketplace.Products;
 using Hook.Application.Errors;
 using Hook.Application.Services.Interfaces;
@@ -109,7 +109,6 @@ namespace Hook.Application.Services.Implementation
                 }
             }
 
-            _productRepository.Update(product);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
             return Result.Success();
         }
