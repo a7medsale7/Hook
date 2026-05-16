@@ -109,7 +109,9 @@ namespace Hook.Application.Services.Implementation
                 }
             }
 
+            _productRepository.Update(product);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
+
             return Result.Success();
         }
 

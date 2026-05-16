@@ -41,7 +41,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
         // Marketplace
         builder.Entity<SellerProfile>().HasQueryFilter(e => !e.IsDeleted);
         builder.Entity<MarketplaceProduct>().HasQueryFilter(e => !e.IsDeleted);
-        builder.Entity<MarketplaceProductImage>().HasQueryFilter(e => !e.IsDeleted);
+
         builder.Entity<MarketplaceCartItem>().HasQueryFilter(e => !e.IsDeleted);
         builder.Entity<MarketplaceOrder>().HasQueryFilter(e => !e.IsDeleted);
         builder.Entity<MarketplaceOrderItem>().HasQueryFilter(e => !e.IsDeleted);
