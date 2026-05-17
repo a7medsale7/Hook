@@ -96,7 +96,10 @@ namespace Hook.Application.Services.Implementation
                     img.IsDeleted = true;
                 }
 
-                product.Images.Clear();
+                // IMPORTANT: Do NOT call product.Images.Clear(); here.
+                // Clearing the collection causes EF Core to try to orphan the children (setting ProductId to null),
+                // which throws an error because ProductId is non-nullable. 
+                // Since we set IsDeleted = true above, they are already soft-deleted and will be filtered out.
 
                 for (var i = 0; i < request.NewImages.Count; i++)
                 {
@@ -109,7 +112,10 @@ namespace Hook.Application.Services.Implementation
                 }
             }
 
-            _productRepository.Update(product);
+            // IMPORTANT: Do NOT call _productRepository.Update(product);
+            // Since "product" is already tracked by EF Core, calling Update forces EF to scan the entire graph
+            // and mark the new images (which already have Guid IDs initialized) as Modified instead of Added,
+            // resulting in a DbUpdateConcurrencyException.
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Result.Success();

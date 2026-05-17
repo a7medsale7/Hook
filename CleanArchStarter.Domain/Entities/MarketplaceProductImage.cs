@@ -1,4 +1,4 @@
-﻿using Hook.Domain.Entities.Base;
+using Hook.Domain.Entities.Base;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +9,7 @@ namespace Hook.Domain.Entities
 {
     public class MarketplaceProductImage : Auditable
     {
-        public Guid Id { get; set; } = Guid.NewGuid();
+        public Guid Id { get; set; }
         public Guid ProductId { get; set; }
         public virtual MarketplaceProduct Product { get; set; } = null!;
 
