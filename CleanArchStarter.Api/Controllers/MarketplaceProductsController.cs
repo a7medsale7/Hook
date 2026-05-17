@@ -1,4 +1,4 @@
-﻿using Hook.Application.Contracts.Marketplace.Products;
+using Hook.Application.Contracts.Marketplace.Products;
 using Hook.Application.Services.Interfaces;
 using Hook.Domain.Consts;
 using Microsoft.AspNetCore.Authorization;
@@ -12,7 +12,7 @@ namespace Hook.Api.Controllers
     public class MarketplaceProductsController(IMarketplaceProductService productService) : ControllerBase
     {
         [HttpGet("allroles/search")]
-        [Authorize(Policy = Permissions.MarketplaceProducts_View)]
+        [AllowAnonymous]
         public async Task<IActionResult> Search([FromQuery] MarketplaceProductFilterRequest filter, CancellationToken cancellationToken)
         {
             var result = await productService.SearchAsync(filter, cancellationToken);
@@ -20,7 +20,7 @@ namespace Hook.Api.Controllers
         }
 
         [HttpGet("allroles/{id:guid}")]
-        [Authorize(Policy = Permissions.MarketplaceProducts_View)]
+        [AllowAnonymous]
         public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken)
         {
             var result = await productService.GetByIdAsync(id, cancellationToken);
