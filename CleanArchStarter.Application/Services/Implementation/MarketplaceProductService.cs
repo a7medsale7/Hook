@@ -1,4 +1,4 @@
-﻿using Hook.Application.Abstractions.Result;
+using Hook.Application.Abstractions.Result;
 using Hook.Application.Contracts.Marketplace.Products;
 using Hook.Application.Errors;
 using Hook.Application.Services.Interfaces;
@@ -75,10 +75,11 @@ namespace Hook.Application.Services.Implementation
                 product.Condition,
                 product.Category,
                 product.StockQuantity,
-                product.SellerProfile?.User != null
-                    ? $"{product.SellerProfile.User.FirstName} {product.SellerProfile.User.LastName}".Trim()
+                product.SellerProfile != null && !string.IsNullOrWhiteSpace(product.SellerProfile.SellerName)
+                    ? product.SellerProfile.SellerName
                     : "Unknown",
                 product.SellerProfileId,
+                product.SellerProfile?.StoreImageUrl,
                 product.Images.OrderByDescending(i => i.IsMainImage).Select(i => i.ImageUrl).ToList(),
                 reviews,
                 avgRating,

@@ -1,4 +1,4 @@
-﻿using Hook.Domain.Enums;
+using Hook.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +17,7 @@ namespace Hook.Application.Contracts.Marketplace.Products
     int StockQuantity,
     string SellerName,
     Guid SellerProfileId,
+    string? SellerImageUrl,
     IReadOnlyList<string> ImageUrls,
     IReadOnlyList<MarketplaceReviewResponse> Reviews,
     decimal AverageRating,
