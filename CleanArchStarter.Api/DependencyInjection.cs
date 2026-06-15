@@ -2,6 +2,7 @@ using Hook.Application;
 using Hook.Application.Services.Implementation;
 using Hook.Application.Services.Interfaces;
 using Hook.Infrastructure;
+using Hook.Api.Hubs;
 using Hook.Infrastructure.Authentication;
 using Hook.Infrastructure.Mail;
 using Hook.Application.Abstractions;
@@ -120,6 +121,16 @@ public static class DependencyInjection
         services.AddScoped<IMarketplaceSellerService, MarketplaceSellerService>();
         services.AddScoped<IMarketplaceAnalyticsService, MarketplaceAnalyticsService>();
         services.AddScoped<IMarketplaceAdminManagementService, MarketplaceAdminManagementService>();
+
+        // 🎣 Community Module Services
+        services.AddScoped<ICommunityService, CommunityService>();
+        services.AddScoped<IEventService, EventService>();
+        services.AddScoped<IComplaintService, ComplaintService>();
+        services.AddScoped<IFeedService, FeedService>();
+        services.AddScoped<INotificationService, NotificationService>();
+        services.AddScoped<INotificationHubService, NotificationHubService>();
+        services.AddScoped<ICommunityHomeService, CommunityHomeService>();
+
         return services;
     }
 
@@ -131,6 +142,7 @@ public static class DependencyInjection
     {
         services.AddControllers();
         services.AddEndpointsApiExplorer();
+        services.AddSignalR();
         return services;
     }
 

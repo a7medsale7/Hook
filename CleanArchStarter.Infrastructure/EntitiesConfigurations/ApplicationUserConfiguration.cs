@@ -29,19 +29,35 @@ public class ApplicationUserConfiguration : IEntityTypeConfiguration<Application
 
         //default admin user seeding
 
-        builder.HasData(new ApplicationUser
-        {
-            Id = DefaultUsers.AdminId,
-            FirstName = "Admin",
-            LastName = "Account",
-            Email = DefaultUsers.AdminEmail,
-            NormalizedEmail = DefaultUsers.AdminEmail.ToUpper(),
-            UserName = DefaultUsers.AdminEmail,
-            NormalizedUserName = DefaultUsers.AdminEmail.ToUpper(),
-            SecurityStamp = DefaultUsers.AdminSecurityStamp,
-            ConcurrencyStamp = DefaultUsers.AdminConcurrencyStamp,
-            EmailConfirmed = true,
-            PasswordHash = DefaultUsers.AdminPasswordHash,
-        });
+        builder.HasData(
+            new ApplicationUser
+            {
+                Id = DefaultUsers.AdminId,
+                FirstName = "Admin",
+                LastName = "Account",
+                Email = DefaultUsers.AdminEmail,
+                NormalizedEmail = DefaultUsers.AdminEmail.ToUpper(),
+                UserName = DefaultUsers.AdminEmail,
+                NormalizedUserName = DefaultUsers.AdminEmail.ToUpper(),
+                SecurityStamp = DefaultUsers.AdminSecurityStamp,
+                ConcurrencyStamp = DefaultUsers.AdminConcurrencyStamp,
+                EmailConfirmed = true,
+                PasswordHash = DefaultUsers.AdminPasswordHash,
+            },
+            new ApplicationUser
+            {
+                Id = DefaultUsers.ComplaintAdminId,
+                FirstName = "Complaint",
+                LastName = "Admin",
+                Email = DefaultUsers.ComplaintAdminEmail,
+                NormalizedEmail = DefaultUsers.ComplaintAdminEmail.ToUpper(),
+                UserName = DefaultUsers.ComplaintAdminEmail,
+                NormalizedUserName = DefaultUsers.ComplaintAdminEmail.ToUpper(),
+                SecurityStamp = DefaultUsers.ComplaintAdminSecurityStamp,
+                ConcurrencyStamp = DefaultUsers.ComplaintAdminConcurrencyStamp,
+                EmailConfirmed = true,
+                PasswordHash = DefaultUsers.ComplaintAdminPasswordHash,
+            }
+        );
     }
 }

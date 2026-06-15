@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -27,5 +27,10 @@ public static class DefaultRoles
     public const string Seller = "Seller";
     public const string SellerRoleId = "6c6e00c1-6b2a-48b7-9d2f-3dfe9b3c0a1b";
     public const string SellerRoleConcurrencyStamp = "c2b1d0e9-6e7d-4d8f-9a3b-1f2e3d4c5b6a";
+
+    // CommunityAdmin
+    public const string CommunityAdmin = "CommunityAdmin";
+    public const string CommunityAdminRoleId = "8a2f4c3a-1b2c-3d4e-5f6a-7b8c9d0e1f2a";
+    public const string CommunityAdminRoleConcurrencyStamp = "b1c2d3e4-f5a6-7b8c-9d0e-1f2a3b4c5d6e";
 
 }

@@ -1,4 +1,4 @@
-﻿using Hook.Application.Abstractions.Result;
+using Hook.Application.Abstractions.Result;
 using Hook.Application.Contracts.Users;
 using Microsoft.AspNetCore.Identity.Data;
 using System;
@@ -12,7 +12,7 @@ public interface IUserService
 {
     Task<IEnumerable<UserResponse>> GetAllAsync(CancellationToken cancellationToken = default);
     Task<Result<UserResponse>> GetAsync(string id);
-    Task<Result<UserProfileResponse>> GetProfileAsync(string userId);
+    Task<Result<UserProfileResponse>> GetProfileAsync(string userId, string currentUserId);
     Task<Result<UserProfileResponse>> UpdateProfileAsync(string userId, UpdateProfileRequest request);
     Task<Result> ChangePasswordAsync(string userId, ChangePasswordRequest request);
     Task<Result> ForgotPasswordAsync(Contracts.Users.ForgotPasswordRequest request, string originUrl);
@@ -23,4 +23,7 @@ public interface IUserService
     Task<Result> UpdateAsync(string id, UpdateUserRequest request, CancellationToken cancellationToken = default);
     Task<Result> ToggleStatus(string id);
     Task<Result> Unlock(string id);
+
+    Task<Result<IEnumerable<UserFollowResponse>>> GetFollowersAsync(string userId, string currentUserId, CancellationToken cancellationToken = default);
+    Task<Result<IEnumerable<UserFollowResponse>>> GetFollowingAsync(string userId, string currentUserId, CancellationToken cancellationToken = default);
 }

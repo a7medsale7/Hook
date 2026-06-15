@@ -36,7 +36,7 @@ builder.Services.AddCors(options =>
 var app = builder.Build();
 
 // ============================================
-// 3?? Apply EF Core Migrations automatically
+// 3?? Apply EF Core Migrations automatically & Seed Data
 // ============================================
 using (var scope = app.Services.CreateScope())
 {
@@ -44,15 +44,13 @@ using (var scope = app.Services.CreateScope())
     try
     {
         var context = services.GetRequiredService<ApplicationDbContext>();
-        if (context.Database.GetPendingMigrations().Any())
-        {
-            context.Database.Migrate();
-        }
+        context.Database.Migrate();
+        await Hook.Infrastructure.Persistence.DatabaseSeeder.SeedAsync(context);
     }
     catch (Exception ex)
     {
         var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "An error occurred while migrating the database.");
+        logger.LogError(ex, "An error occurred while migrating or seeding the database.");
     }
 }
 
@@ -101,6 +99,9 @@ app.UseExceptionHandler("/error"); // Make sure you have a route/controller to h
 // Map API controllers
 app.MapControllers();
 
+// Map SignalR Hubs
+app.MapHub<Hook.Api.Hubs.NotificationHub>("/notificationHub");
+
 // ============================================
 // 4.5?? Schedule Recurring Background Jobs
 // ============================================
@@ -119,6 +120,12 @@ using (var scope = app.Services.CreateScope())
         "past-trips-completion",
         job => job.ExecuteAsync(),
         Cron.Daily);
+
+    // Close expired community events every hour
+    recurringJobManager.AddOrUpdate<Hook.Infrastructure.BackgroundJobs.ExpiredEventsCleanupJob>(
+        "expired-events-cleanup",
+        job => job.ExecuteAsync(),
+        Cron.Hourly);
 }
 
 // ============================================

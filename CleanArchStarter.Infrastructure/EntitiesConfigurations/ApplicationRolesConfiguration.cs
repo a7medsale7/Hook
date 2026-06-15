@@ -1,4 +1,4 @@
-﻿using Hook.Domain.Consts;
+using Hook.Domain.Consts;
 using Hook.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -46,6 +46,15 @@ public class ApplicationRolesConfiguration : IEntityTypeConfiguration<Applicatio
                 Name = DefaultRoles.Seller,
                 NormalizedName = DefaultRoles.Seller.ToUpper(),
                 ConcurrencyStamp = DefaultRoles.SellerRoleConcurrencyStamp,
+                IsDefault = false,
+            },
+
+            new ApplicationRole
+            {
+                Id = DefaultRoles.CommunityAdminRoleId,
+                Name = DefaultRoles.CommunityAdmin,
+                NormalizedName = DefaultRoles.CommunityAdmin.ToUpper(),
+                ConcurrencyStamp = DefaultRoles.CommunityAdminRoleConcurrencyStamp,
                 IsDefault = false,
             },
 

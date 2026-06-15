@@ -49,6 +49,14 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
         builder.Entity<MarketplaceListingRequest>().HasQueryFilter(e => !e.IsDeleted);
         builder.Entity<MarketplaceListingRequestImage>().HasQueryFilter(e => !e.IsDeleted);
 
+        // Community Module Soft Delete Filters
+        builder.Entity<FishingLocation>().HasQueryFilter(e => !e.IsDeleted);
+        builder.Entity<Post>().HasQueryFilter(e => !e.IsDeleted);
+        builder.Entity<PostImage>().HasQueryFilter(e => !e.IsDeleted);
+        builder.Entity<FishingEvent>().HasQueryFilter(e => !e.IsDeleted);
+        builder.Entity<EventParticipant>().HasQueryFilter(e => !e.IsDeleted);
+        builder.Entity<Complaint>().HasQueryFilter(e => !e.IsDeleted);
+        builder.Entity<PostComment>().HasQueryFilter(e => !e.IsDeleted);
     }
 
     public DbSet<BoatOwnerProfile> BoatOwnerProfiles { get; set; }
@@ -71,6 +79,21 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
     public DbSet<MarketplaceReview> MarketplaceReviews { get; set; }
     public DbSet<MarketplaceListingRequest> MarketplaceListingRequests { get; set; }
     public DbSet<MarketplaceListingRequestImage> MarketplaceListingRequestImages { get; set; }
+
+    // Community Module DbSets
+    public DbSet<FishingLocation> FishingLocations { get; set; }
+    public DbSet<Post> Posts { get; set; }
+    public DbSet<PostImage> PostImages { get; set; }
+    public DbSet<FishingEvent> FishingEvents { get; set; }
+    public DbSet<EventParticipant> EventParticipants { get; set; }
+    public DbSet<Complaint> Complaints { get; set; }
+    public DbSet<ComplaintSupport> ComplaintSupports { get; set; }
+    public DbSet<PostLike> PostLikes { get; set; }
+    public DbSet<PostComment> PostComments { get; set; }
+    public DbSet<Notification> Notifications { get; set; }
+    public DbSet<SavedPost> SavedPosts { get; set; }
+    public DbSet<UserFollow> UserFollows { get; set; }
+    public DbSet<PostReport> PostReports { get; set; }
 
 
 

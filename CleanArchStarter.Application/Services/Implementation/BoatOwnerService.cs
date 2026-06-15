@@ -8,6 +8,7 @@ using Hook.Domain.Entities;
 using Hook.Domain.Enums;
 using Hook.Domain.Consts;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,17 +21,20 @@ public class BoatOwnerService : IBoatOwnerService
     private readonly IFileService _fileService;
     private readonly IUnitOfWork _unitOfWork;
     private readonly UserManager<ApplicationUser> _userManager;
+    private readonly IEmailSender _emailSender;
 
     public BoatOwnerService(
         IBoatOwnerRepository boatOwnerRepository,
         IFileService fileService,
         IUnitOfWork unitOfWork,
-        UserManager<ApplicationUser> userManager)
+        UserManager<ApplicationUser> userManager,
+        IEmailSender emailSender)
     {
         _boatOwnerRepository = boatOwnerRepository;
         _fileService = fileService;
         _unitOfWork = unitOfWork;
         _userManager = userManager;
+        _emailSender = emailSender;
     }
 
     public async Task<Result<BoatOwnerResponse>> ApplyAsync(string userId, ApplyBoatOwnerRequest request, CancellationToken cancellationToken = default)
@@ -118,6 +122,25 @@ public class BoatOwnerService : IBoatOwnerService
 
         _boatOwnerRepository.Update(profile);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        // Send Email Notification
+        var userToEmail = profile.User;
+        if (userToEmail is not null && !string.IsNullOrWhiteSpace(userToEmail.Email))
+        {
+            string subject = request.IsApproved ? "Hook: Boat Owner Application Approved" : "Hook: Boat Owner Application Rejected";
+            string message = request.IsApproved
+                ? $"Dear {userToEmail.FirstName},<br/><br/>Congratulations! Your application to become a Boat Owner has been approved. You can now start adding your boats and trips."
+                : $"Dear {userToEmail.FirstName},<br/><br/>We regret to inform you that your application to become a Boat Owner has been rejected.<br/><br/>Reason: {request.RejectionReason}";
+
+            try
+            {
+                await _emailSender.SendEmailAsync(userToEmail.Email, subject, message);
+            }
+            catch
+            {
+                // Ignore email failure so the application status update still succeeds
+            }
+        }
 
         return Result.Success();
     }

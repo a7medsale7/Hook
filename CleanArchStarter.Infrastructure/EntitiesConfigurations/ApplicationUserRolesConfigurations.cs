@@ -13,10 +13,17 @@ public class ApplicationUserRolesConfigurations : IEntityTypeConfiguration<Ident
 {
     public void Configure(EntityTypeBuilder<IdentityUserRole<string>> builder)
     {
-        builder.HasData(new IdentityUserRole<string>
-        {
-            UserId = DefaultUsers.AdminId,
-            RoleId = DefaultRoles.AdminRoleId
-        });
+        builder.HasData(
+            new IdentityUserRole<string>
+            {
+                UserId = DefaultUsers.AdminId,
+                RoleId = DefaultRoles.AdminRoleId
+            },
+            new IdentityUserRole<string>
+            {
+                UserId = DefaultUsers.ComplaintAdminId,
+                RoleId = DefaultRoles.CommunityAdminRoleId
+            }
+        );
     }
 }

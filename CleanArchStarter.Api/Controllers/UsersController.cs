@@ -22,7 +22,17 @@ public class UsersController(IUserService userService) : ControllerBase
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         if (userId is null) return Unauthorized();
-        var result = await _userService.GetProfileAsync(userId);
+        var result = await _userService.GetProfileAsync(userId, userId);
+        return result.IsSuccess ? Ok(result.Value) : NotFound(result.Error);
+    }
+
+    [HttpGet("allroles/profile/{userId}")]
+    [Authorize(Policy = Permissions.Users_ViewProfile)]
+    public async Task<IActionResult> GetProfileById([FromRoute] string userId)
+    {
+        var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (currentUserId is null) return Unauthorized();
+        var result = await _userService.GetProfileAsync(userId, currentUserId);
         return result.IsSuccess ? Ok(result.Value) : NotFound(result.Error);
     }
 
@@ -348,5 +358,47 @@ public class UsersController(IUserService userService) : ControllerBase
         return result.IsSuccess ? Ok() : BadRequest(result.Error);
     }
 
+    [HttpGet("{userId}/followers")]
+    [Authorize(Policy = Permissions.Users_ViewProfile)]
+    public async Task<IActionResult> GetFollowers([FromRoute] string userId, CancellationToken cancellationToken)
+    {
+        var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (currentUserId is null) return Unauthorized();
 
+        var result = await _userService.GetFollowersAsync(userId, currentUserId, cancellationToken);
+        return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
+    }
+
+    [HttpGet("{userId}/following")]
+    [Authorize(Policy = Permissions.Users_ViewProfile)]
+    public async Task<IActionResult> GetFollowing([FromRoute] string userId, CancellationToken cancellationToken)
+    {
+        var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (currentUserId is null) return Unauthorized();
+
+        var result = await _userService.GetFollowingAsync(userId, currentUserId, cancellationToken);
+        return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
+    }
+
+    [HttpGet("my-followers")]
+    [Authorize(Policy = Permissions.Users_ViewProfile)]
+    public async Task<IActionResult> GetMyFollowers(CancellationToken cancellationToken)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userId is null) return Unauthorized();
+
+        var result = await _userService.GetFollowersAsync(userId, userId, cancellationToken);
+        return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
+    }
+
+    [HttpGet("my-following")]
+    [Authorize(Policy = Permissions.Users_ViewProfile)]
+    public async Task<IActionResult> GetMyFollowing(CancellationToken cancellationToken)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userId is null) return Unauthorized();
+
+        var result = await _userService.GetFollowingAsync(userId, userId, cancellationToken);
+        return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
+    }
 }

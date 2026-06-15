@@ -90,6 +90,15 @@ namespace CleanArchStarter.Infrastructure.Migrations
                             IsDeleted = false,
                             Name = "Seller",
                             NormalizedName = "SELLER"
+                        },
+                        new
+                        {
+                            Id = "8a2f4c3a-1b2c-3d4e-5f6a-7b8c9d0e1f2a",
+                            ConcurrencyStamp = "b1c2d3e4-f5a6-7b8c-9d0e-1f2a3b4c5d6e",
+                            IsDefault = false,
+                            IsDeleted = false,
+                            Name = "CommunityAdmin",
+                            NormalizedName = "COMMUNITYADMIN"
                         });
                 });
 
@@ -199,6 +208,25 @@ namespace CleanArchStarter.Infrastructure.Migrations
                             SecurityStamp = "CFFCC4EEB0EE4D608E7CEFFE61FFDBD2",
                             TwoFactorEnabled = false,
                             UserName = "AdminAccount@gmail.com"
+                        },
+                        new
+                        {
+                            Id = "c7a8b9c0-1d2e-3f4a-5b6c-7d8e9f0a1b2c",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "b5a4c3d2-e1f0-4a9b-8c7d-6e5f4d3c2b1a",
+                            Email = "complaintadmin@hook.com",
+                            EmailConfirmed = true,
+                            FirstName = "Complaint",
+                            IsDisabled = false,
+                            LastName = "Admin",
+                            LockoutEnabled = false,
+                            NormalizedEmail = "COMPLAINTADMIN@HOOK.COM",
+                            NormalizedUserName = "COMPLAINTADMIN@HOOK.COM",
+                            PasswordHash = "AQAAAAIAAYagAAAAEDZ2h6sin7MY4jaCkLZ14ouGEAkMnGEl+CJAnncaPMHLcJwuv7Dk0w8470nceXMYQg==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "A7B8C9D0E1F234567890ABCDEF123456",
+                            TwoFactorEnabled = false,
+                            UserName = "complaintadmin@hook.com"
                         });
                 });
 
@@ -409,6 +437,491 @@ namespace CleanArchStarter.Infrastructure.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Bookings");
+                });
+
+            modelBuilder.Entity("Hook.Domain.Entities.Complaint", b =>
+                {
+                    b.Property<Guid>("PostId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("AdminNotes")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<string>("CreatedById")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SupportCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UpdatedById")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("PostId");
+
+                    b.ToTable("Complaints");
+                });
+
+            modelBuilder.Entity("Hook.Domain.Entities.ComplaintSupport", b =>
+                {
+                    b.Property<Guid>("ComplaintId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("ComplaintId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ComplaintSupports");
+                });
+
+            modelBuilder.Entity("Hook.Domain.Entities.EventParticipant", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CreatedById")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("EventId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("JoinedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UpdatedById")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EventId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("EventParticipants");
+                });
+
+            modelBuilder.Entity("Hook.Domain.Entities.FishingEvent", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CreatedById")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("CurrentParticipants")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("EventDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("MaxParticipants")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("PostId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UpdatedById")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PostId")
+                        .IsUnique();
+
+                    b.ToTable("FishingEvents");
+                });
+
+            modelBuilder.Entity("Hook.Domain.Entities.FishingLocation", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CreatedById")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Governorate")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<double>("Latitude")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Longitude")
+                        .HasColumnType("float");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<string>("UpdatedById")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("FishingLocations");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0000-000000000001"),
+                            CreatedById = "System",
+                            CreatedOn = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Governorate = "Cairo",
+                            IsDeleted = false,
+                            Latitude = 0.0,
+                            Longitude = 0.0,
+                            Name = "القاهرة"
+                        },
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0000-000000000002"),
+                            CreatedById = "System",
+                            CreatedOn = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Governorate = "Alexandria",
+                            IsDeleted = false,
+                            Latitude = 0.0,
+                            Longitude = 0.0,
+                            Name = "الإسكندرية"
+                        },
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0000-000000000003"),
+                            CreatedById = "System",
+                            CreatedOn = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Governorate = "Giza",
+                            IsDeleted = false,
+                            Latitude = 0.0,
+                            Longitude = 0.0,
+                            Name = "الجيزة"
+                        },
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0000-000000000004"),
+                            CreatedById = "System",
+                            CreatedOn = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Governorate = "Port Said",
+                            IsDeleted = false,
+                            Latitude = 0.0,
+                            Longitude = 0.0,
+                            Name = "بورسعيد"
+                        },
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0000-000000000005"),
+                            CreatedById = "System",
+                            CreatedOn = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Governorate = "Suez",
+                            IsDeleted = false,
+                            Latitude = 0.0,
+                            Longitude = 0.0,
+                            Name = "السويس"
+                        },
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0000-000000000006"),
+                            CreatedById = "System",
+                            CreatedOn = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Governorate = "Damietta",
+                            IsDeleted = false,
+                            Latitude = 0.0,
+                            Longitude = 0.0,
+                            Name = "دمياط"
+                        },
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0000-000000000007"),
+                            CreatedById = "System",
+                            CreatedOn = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Governorate = "Dakahlia",
+                            IsDeleted = false,
+                            Latitude = 0.0,
+                            Longitude = 0.0,
+                            Name = "الدقهلية"
+                        },
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0000-000000000008"),
+                            CreatedById = "System",
+                            CreatedOn = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Governorate = "Sharkia",
+                            IsDeleted = false,
+                            Latitude = 0.0,
+                            Longitude = 0.0,
+                            Name = "الشرقية"
+                        },
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0000-000000000009"),
+                            CreatedById = "System",
+                            CreatedOn = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Governorate = "Gharbia",
+                            IsDeleted = false,
+                            Latitude = 0.0,
+                            Longitude = 0.0,
+                            Name = "الغربية"
+                        },
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0000-000000000010"),
+                            CreatedById = "System",
+                            CreatedOn = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Governorate = "Kafr El Sheikh",
+                            IsDeleted = false,
+                            Latitude = 0.0,
+                            Longitude = 0.0,
+                            Name = "كفر الشيخ"
+                        },
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0000-000000000011"),
+                            CreatedById = "System",
+                            CreatedOn = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Governorate = "Monufia",
+                            IsDeleted = false,
+                            Latitude = 0.0,
+                            Longitude = 0.0,
+                            Name = "المنوفية"
+                        },
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0000-000000000012"),
+                            CreatedById = "System",
+                            CreatedOn = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Governorate = "Beheira",
+                            IsDeleted = false,
+                            Latitude = 0.0,
+                            Longitude = 0.0,
+                            Name = "البحيرة"
+                        },
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0000-000000000013"),
+                            CreatedById = "System",
+                            CreatedOn = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Governorate = "Qalyubia",
+                            IsDeleted = false,
+                            Latitude = 0.0,
+                            Longitude = 0.0,
+                            Name = "القليوبية"
+                        },
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0000-000000000014"),
+                            CreatedById = "System",
+                            CreatedOn = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Governorate = "Ismailia",
+                            IsDeleted = false,
+                            Latitude = 0.0,
+                            Longitude = 0.0,
+                            Name = "الإسماعيلية"
+                        },
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0000-000000000015"),
+                            CreatedById = "System",
+                            CreatedOn = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Governorate = "Faiyum",
+                            IsDeleted = false,
+                            Latitude = 0.0,
+                            Longitude = 0.0,
+                            Name = "الفيوم"
+                        },
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0000-000000000016"),
+                            CreatedById = "System",
+                            CreatedOn = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Governorate = "Beni Suef",
+                            IsDeleted = false,
+                            Latitude = 0.0,
+                            Longitude = 0.0,
+                            Name = "بني سويف"
+                        },
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0000-000000000017"),
+                            CreatedById = "System",
+                            CreatedOn = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Governorate = "Minya",
+                            IsDeleted = false,
+                            Latitude = 0.0,
+                            Longitude = 0.0,
+                            Name = "المنيا"
+                        },
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0000-000000000018"),
+                            CreatedById = "System",
+                            CreatedOn = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Governorate = "Assiut",
+                            IsDeleted = false,
+                            Latitude = 0.0,
+                            Longitude = 0.0,
+                            Name = "أسيوط"
+                        },
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0000-000000000019"),
+                            CreatedById = "System",
+                            CreatedOn = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Governorate = "Sohag",
+                            IsDeleted = false,
+                            Latitude = 0.0,
+                            Longitude = 0.0,
+                            Name = "سوهاج"
+                        },
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0000-000000000020"),
+                            CreatedById = "System",
+                            CreatedOn = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Governorate = "Qena",
+                            IsDeleted = false,
+                            Latitude = 0.0,
+                            Longitude = 0.0,
+                            Name = "قنا"
+                        },
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0000-000000000021"),
+                            CreatedById = "System",
+                            CreatedOn = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Governorate = "Luxor",
+                            IsDeleted = false,
+                            Latitude = 0.0,
+                            Longitude = 0.0,
+                            Name = "الأقصر"
+                        },
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0000-000000000022"),
+                            CreatedById = "System",
+                            CreatedOn = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Governorate = "Aswan",
+                            IsDeleted = false,
+                            Latitude = 0.0,
+                            Longitude = 0.0,
+                            Name = "أسوان"
+                        },
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0000-000000000023"),
+                            CreatedById = "System",
+                            CreatedOn = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Governorate = "Red Sea",
+                            IsDeleted = false,
+                            Latitude = 0.0,
+                            Longitude = 0.0,
+                            Name = "البحر الأحمر"
+                        },
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0000-000000000024"),
+                            CreatedById = "System",
+                            CreatedOn = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Governorate = "New Valley",
+                            IsDeleted = false,
+                            Latitude = 0.0,
+                            Longitude = 0.0,
+                            Name = "الوادي الجديد"
+                        },
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0000-000000000025"),
+                            CreatedById = "System",
+                            CreatedOn = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Governorate = "Matrouh",
+                            IsDeleted = false,
+                            Latitude = 0.0,
+                            Longitude = 0.0,
+                            Name = "مطروح"
+                        },
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0000-000000000026"),
+                            CreatedById = "System",
+                            CreatedOn = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Governorate = "North Sinai",
+                            IsDeleted = false,
+                            Latitude = 0.0,
+                            Longitude = 0.0,
+                            Name = "شمال سيناء"
+                        },
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0000-000000000027"),
+                            CreatedById = "System",
+                            CreatedOn = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Governorate = "South Sinai",
+                            IsDeleted = false,
+                            Latitude = 0.0,
+                            Longitude = 0.0,
+                            Name = "جنوب سيناء"
+                        });
                 });
 
             modelBuilder.Entity("Hook.Domain.Entities.MarketplaceCartItem", b =>
@@ -845,6 +1358,43 @@ namespace CleanArchStarter.Infrastructure.Migrations
                     b.ToTable("MarketplaceReviews");
                 });
 
+            modelBuilder.Entity("Hook.Domain.Entities.Notification", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ActorUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Message")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("ReferenceId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ActorUserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Notifications");
+                });
+
             modelBuilder.Entity("Hook.Domain.Entities.Payment", b =>
                 {
                     b.Property<Guid>("Id")
@@ -900,6 +1450,195 @@ namespace CleanArchStarter.Infrastructure.Migrations
                     b.ToTable("Payments");
                 });
 
+            modelBuilder.Entity("Hook.Domain.Entities.Post", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Category")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CommentsCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.Property<string>("CreatedById")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("LikesCount")
+                        .HasColumnType("int");
+
+                    b.Property<Guid?>("LocationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("OriginalPostId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("ReportsCount")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SharesCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UpdatedById")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LocationId");
+
+                    b.HasIndex("OriginalPostId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Posts");
+                });
+
+            modelBuilder.Entity("Hook.Domain.Entities.PostComment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CommentText")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<string>("CreatedById")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid?>("ParentCommentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("PostId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("UpdatedById")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ParentCommentId");
+
+                    b.HasIndex("PostId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("PostComments");
+                });
+
+            modelBuilder.Entity("Hook.Domain.Entities.PostImage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CreatedById")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid>("PostId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("UpdatedById")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PostId");
+
+                    b.ToTable("PostImages");
+                });
+
+            modelBuilder.Entity("Hook.Domain.Entities.PostLike", b =>
+                {
+                    b.Property<Guid>("PostId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("PostId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("PostLikes");
+                });
+
+            modelBuilder.Entity("Hook.Domain.Entities.PostReport", b =>
+                {
+                    b.Property<Guid>("PostId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.HasKey("PostId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("PostReports");
+                });
+
             modelBuilder.Entity("Hook.Domain.Entities.Review", b =>
                 {
                     b.Property<Guid>("Id")
@@ -953,6 +1692,24 @@ namespace CleanArchStarter.Infrastructure.Migrations
                         {
                             t.HasCheckConstraint("CK_Review_Rating", "Rating >= 1 AND Rating <= 5");
                         });
+                });
+
+            modelBuilder.Entity("Hook.Domain.Entities.SavedPost", b =>
+                {
+                    b.Property<Guid>("PostId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("SavedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("PostId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("SavedPosts");
                 });
 
             modelBuilder.Entity("Hook.Domain.Entities.SellerProfile", b =>
@@ -1197,6 +1954,24 @@ namespace CleanArchStarter.Infrastructure.Migrations
                     b.HasIndex("TripId");
 
                     b.ToTable("TripImages");
+                });
+
+            modelBuilder.Entity("Hook.Domain.Entities.UserFollow", b =>
+                {
+                    b.Property<string>("FollowerId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("FollowingId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("FollowedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("FollowerId", "FollowingId");
+
+                    b.HasIndex("FollowingId");
+
+                    b.ToTable("UserFollows");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -1690,407 +2465,827 @@ namespace CleanArchStarter.Infrastructure.Migrations
                         {
                             Id = 67,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Users.ViewProfile",
-                            RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
+                            ClaimValue = "Permissions.Community.Posts.Create",
+                            RoleId = "3a6ce7a1-2b66-48dd-ba28-3cf7080a3297"
                         },
                         new
                         {
                             Id = 68,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Users.UpdateProfile",
-                            RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
+                            ClaimValue = "Permissions.Community.Posts.Update",
+                            RoleId = "3a6ce7a1-2b66-48dd-ba28-3cf7080a3297"
                         },
                         new
                         {
                             Id = 69,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Users.ChangePassword",
-                            RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
+                            ClaimValue = "Permissions.Community.Posts.Delete",
+                            RoleId = "3a6ce7a1-2b66-48dd-ba28-3cf7080a3297"
                         },
                         new
                         {
                             Id = 70,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.BoatOwner.Apply",
-                            RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
+                            ClaimValue = "Permissions.Community.Posts.Like",
+                            RoleId = "3a6ce7a1-2b66-48dd-ba28-3cf7080a3297"
                         },
                         new
                         {
                             Id = 71,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.BoatOwner.ViewProfile",
-                            RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
+                            ClaimValue = "Permissions.Community.Posts.Save",
+                            RoleId = "3a6ce7a1-2b66-48dd-ba28-3cf7080a3297"
                         },
                         new
                         {
                             Id = 72,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Boats.View",
-                            RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
+                            ClaimValue = "Permissions.Community.Posts.Report",
+                            RoleId = "3a6ce7a1-2b66-48dd-ba28-3cf7080a3297"
                         },
                         new
                         {
                             Id = 73,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Trips.View",
-                            RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
+                            ClaimValue = "Permissions.Community.Comments.Add",
+                            RoleId = "3a6ce7a1-2b66-48dd-ba28-3cf7080a3297"
                         },
                         new
                         {
                             Id = 74,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Bookings.View",
-                            RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
+                            ClaimValue = "Permissions.Community.Comments.Delete",
+                            RoleId = "3a6ce7a1-2b66-48dd-ba28-3cf7080a3297"
                         },
                         new
                         {
                             Id = 75,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Bookings.Create",
-                            RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
+                            ClaimValue = "Permissions.Community.User.Follow",
+                            RoleId = "3a6ce7a1-2b66-48dd-ba28-3cf7080a3297"
                         },
                         new
                         {
                             Id = 76,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Bookings.Cancel",
-                            RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
+                            ClaimValue = "Permissions.Community.Events.Join",
+                            RoleId = "3a6ce7a1-2b66-48dd-ba28-3cf7080a3297"
                         },
                         new
                         {
                             Id = 77,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Payments.View",
-                            RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
+                            ClaimValue = "Permissions.Community.Events.Participants.View",
+                            RoleId = "3a6ce7a1-2b66-48dd-ba28-3cf7080a3297"
                         },
                         new
                         {
                             Id = 78,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Payments.UploadReceipt",
-                            RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
+                            ClaimValue = "Permissions.Community.Feed.View",
+                            RoleId = "3a6ce7a1-2b66-48dd-ba28-3cf7080a3297"
                         },
                         new
                         {
                             Id = 79,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Reviews.View",
-                            RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
+                            ClaimValue = "Permissions.Community.Notifications.View",
+                            RoleId = "3a6ce7a1-2b66-48dd-ba28-3cf7080a3297"
                         },
                         new
                         {
                             Id = 80,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Reviews.Create",
-                            RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
+                            ClaimValue = "Permissions.Community.Complaints.Support",
+                            RoleId = "3a6ce7a1-2b66-48dd-ba28-3cf7080a3297"
                         },
                         new
                         {
                             Id = 81,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Reviews.Update",
-                            RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
+                            ClaimValue = "Permissions.Community.Admin.Complaints.View",
+                            RoleId = "3a6ce7a1-2b66-48dd-ba28-3cf7080a3297"
                         },
                         new
                         {
                             Id = 82,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Reviews.Delete",
-                            RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
+                            ClaimValue = "Permissions.Community.Admin.Complaints.Resolve",
+                            RoleId = "3a6ce7a1-2b66-48dd-ba28-3cf7080a3297"
                         },
                         new
                         {
                             Id = 83,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Seller.Apply",
+                            ClaimValue = "Permissions.Users.ViewProfile",
                             RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
                         },
                         new
                         {
                             Id = 84,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Seller.ViewProfile",
+                            ClaimValue = "Permissions.Users.UpdateProfile",
                             RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
                         },
                         new
                         {
                             Id = 85,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Marketplace.Products.View",
+                            ClaimValue = "Permissions.Users.ChangePassword",
                             RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
                         },
                         new
                         {
                             Id = 86,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Marketplace.Cart.View",
+                            ClaimValue = "Permissions.BoatOwner.Apply",
                             RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
                         },
                         new
                         {
                             Id = 87,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Marketplace.Cart.Update",
+                            ClaimValue = "Permissions.BoatOwner.ViewProfile",
                             RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
                         },
                         new
                         {
                             Id = 88,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Marketplace.Orders.View",
+                            ClaimValue = "Permissions.Boats.View",
                             RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
                         },
                         new
                         {
                             Id = 89,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Marketplace.Orders.Create",
+                            ClaimValue = "Permissions.Trips.View",
                             RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
                         },
                         new
                         {
                             Id = 90,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Marketplace.Orders.Cancel",
+                            ClaimValue = "Permissions.Bookings.View",
                             RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
                         },
                         new
                         {
                             Id = 91,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Marketplace.Orders.UpdateStatus",
+                            ClaimValue = "Permissions.Bookings.Create",
                             RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
                         },
                         new
                         {
                             Id = 92,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Marketplace.Reviews.View",
+                            ClaimValue = "Permissions.Bookings.Cancel",
                             RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
                         },
                         new
                         {
                             Id = 93,
                             ClaimType = "Permissions",
-                            ClaimValue = "Permissions.Marketplace.Reviews.Create",
+                            ClaimValue = "Permissions.Payments.View",
                             RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
                         },
                         new
                         {
                             Id = 94,
                             ClaimType = "Permissions",
+                            ClaimValue = "Permissions.Payments.UploadReceipt",
+                            RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
+                        },
+                        new
+                        {
+                            Id = 95,
+                            ClaimType = "Permissions",
+                            ClaimValue = "Permissions.Reviews.View",
+                            RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
+                        },
+                        new
+                        {
+                            Id = 96,
+                            ClaimType = "Permissions",
+                            ClaimValue = "Permissions.Reviews.Create",
+                            RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
+                        },
+                        new
+                        {
+                            Id = 97,
+                            ClaimType = "Permissions",
+                            ClaimValue = "Permissions.Reviews.Update",
+                            RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
+                        },
+                        new
+                        {
+                            Id = 98,
+                            ClaimType = "Permissions",
+                            ClaimValue = "Permissions.Reviews.Delete",
+                            RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
+                        },
+                        new
+                        {
+                            Id = 99,
+                            ClaimType = "Permissions",
+                            ClaimValue = "Permissions.Seller.Apply",
+                            RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
+                        },
+                        new
+                        {
+                            Id = 100,
+                            ClaimType = "Permissions",
+                            ClaimValue = "Permissions.Seller.ViewProfile",
+                            RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
+                        },
+                        new
+                        {
+                            Id = 101,
+                            ClaimType = "Permissions",
+                            ClaimValue = "Permissions.Marketplace.Products.View",
+                            RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
+                        },
+                        new
+                        {
+                            Id = 102,
+                            ClaimType = "Permissions",
+                            ClaimValue = "Permissions.Marketplace.Cart.View",
+                            RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
+                        },
+                        new
+                        {
+                            Id = 103,
+                            ClaimType = "Permissions",
+                            ClaimValue = "Permissions.Marketplace.Cart.Update",
+                            RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
+                        },
+                        new
+                        {
+                            Id = 104,
+                            ClaimType = "Permissions",
+                            ClaimValue = "Permissions.Marketplace.Orders.View",
+                            RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
+                        },
+                        new
+                        {
+                            Id = 105,
+                            ClaimType = "Permissions",
+                            ClaimValue = "Permissions.Marketplace.Orders.Create",
+                            RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
+                        },
+                        new
+                        {
+                            Id = 106,
+                            ClaimType = "Permissions",
+                            ClaimValue = "Permissions.Marketplace.Orders.Cancel",
+                            RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
+                        },
+                        new
+                        {
+                            Id = 107,
+                            ClaimType = "Permissions",
+                            ClaimValue = "Permissions.Marketplace.Orders.UpdateStatus",
+                            RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
+                        },
+                        new
+                        {
+                            Id = 108,
+                            ClaimType = "Permissions",
+                            ClaimValue = "Permissions.Marketplace.Reviews.View",
+                            RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
+                        },
+                        new
+                        {
+                            Id = 109,
+                            ClaimType = "Permissions",
+                            ClaimValue = "Permissions.Marketplace.Reviews.Create",
+                            RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
+                        },
+                        new
+                        {
+                            Id = 110,
+                            ClaimType = "Permissions",
+                            ClaimValue = "Permissions.Community.Posts.Create",
+                            RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
+                        },
+                        new
+                        {
+                            Id = 111,
+                            ClaimType = "Permissions",
+                            ClaimValue = "Permissions.Community.Posts.Update",
+                            RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
+                        },
+                        new
+                        {
+                            Id = 112,
+                            ClaimType = "Permissions",
+                            ClaimValue = "Permissions.Community.Posts.Delete",
+                            RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
+                        },
+                        new
+                        {
+                            Id = 113,
+                            ClaimType = "Permissions",
+                            ClaimValue = "Permissions.Community.Posts.Like",
+                            RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
+                        },
+                        new
+                        {
+                            Id = 114,
+                            ClaimType = "Permissions",
+                            ClaimValue = "Permissions.Community.Posts.Save",
+                            RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
+                        },
+                        new
+                        {
+                            Id = 115,
+                            ClaimType = "Permissions",
+                            ClaimValue = "Permissions.Community.Posts.Report",
+                            RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
+                        },
+                        new
+                        {
+                            Id = 116,
+                            ClaimType = "Permissions",
+                            ClaimValue = "Permissions.Community.Comments.Add",
+                            RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
+                        },
+                        new
+                        {
+                            Id = 117,
+                            ClaimType = "Permissions",
+                            ClaimValue = "Permissions.Community.Comments.Delete",
+                            RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
+                        },
+                        new
+                        {
+                            Id = 118,
+                            ClaimType = "Permissions",
+                            ClaimValue = "Permissions.Community.User.Follow",
+                            RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
+                        },
+                        new
+                        {
+                            Id = 119,
+                            ClaimType = "Permissions",
+                            ClaimValue = "Permissions.Community.Events.Join",
+                            RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
+                        },
+                        new
+                        {
+                            Id = 120,
+                            ClaimType = "Permissions",
+                            ClaimValue = "Permissions.Community.Events.Participants.View",
+                            RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
+                        },
+                        new
+                        {
+                            Id = 121,
+                            ClaimType = "Permissions",
+                            ClaimValue = "Permissions.Community.Feed.View",
+                            RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
+                        },
+                        new
+                        {
+                            Id = 122,
+                            ClaimType = "Permissions",
+                            ClaimValue = "Permissions.Community.Notifications.View",
+                            RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
+                        },
+                        new
+                        {
+                            Id = 123,
+                            ClaimType = "Permissions",
+                            ClaimValue = "Permissions.Community.Complaints.Support",
+                            RoleId = "b9a61ca4-01bb-4a4f-8ccc-ca5dd59b42f9"
+                        },
+                        new
+                        {
+                            Id = 124,
+                            ClaimType = "Permissions",
                             ClaimValue = "Permissions.Users.ViewProfile",
                             RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"
                         },
                         new
                         {
-                            Id = 95,
+                            Id = 125,
                             ClaimType = "Permissions",
                             ClaimValue = "Permissions.Users.UpdateProfile",
                             RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"
                         },
                         new
                         {
-                            Id = 96,
+                            Id = 126,
                             ClaimType = "Permissions",
                             ClaimValue = "Permissions.Users.ChangePassword",
                             RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"
                         },
                         new
                         {
-                            Id = 97,
+                            Id = 127,
                             ClaimType = "Permissions",
                             ClaimValue = "Permissions.BoatOwner.ViewProfile",
                             RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"
                         },
                         new
                         {
-                            Id = 98,
+                            Id = 128,
                             ClaimType = "Permissions",
                             ClaimValue = "Permissions.Boats.View",
                             RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"
                         },
                         new
                         {
-                            Id = 99,
+                            Id = 129,
                             ClaimType = "Permissions",
                             ClaimValue = "Permissions.Boats.Create",
                             RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"
                         },
                         new
                         {
-                            Id = 100,
+                            Id = 130,
                             ClaimType = "Permissions",
                             ClaimValue = "Permissions.Boats.Update",
                             RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"
                         },
                         new
                         {
-                            Id = 101,
+                            Id = 131,
                             ClaimType = "Permissions",
                             ClaimValue = "Permissions.Boats.Delete",
                             RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"
                         },
                         new
                         {
-                            Id = 102,
+                            Id = 132,
                             ClaimType = "Permissions",
                             ClaimValue = "Permissions.Trips.View",
                             RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"
                         },
                         new
                         {
-                            Id = 103,
+                            Id = 133,
                             ClaimType = "Permissions",
                             ClaimValue = "Permissions.Trips.Create",
                             RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"
                         },
                         new
                         {
-                            Id = 104,
+                            Id = 134,
                             ClaimType = "Permissions",
                             ClaimValue = "Permissions.Trips.Update",
                             RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"
                         },
                         new
                         {
-                            Id = 105,
+                            Id = 135,
                             ClaimType = "Permissions",
                             ClaimValue = "Permissions.Trips.Delete",
                             RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"
                         },
                         new
                         {
-                            Id = 106,
+                            Id = 136,
                             ClaimType = "Permissions",
                             ClaimValue = "Permissions.Bookings.View",
                             RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"
                         },
                         new
                         {
-                            Id = 107,
+                            Id = 137,
                             ClaimType = "Permissions",
                             ClaimValue = "Permissions.Bookings.ViewAll",
                             RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"
                         },
                         new
                         {
-                            Id = 108,
+                            Id = 138,
                             ClaimType = "Permissions",
                             ClaimValue = "Permissions.Bookings.UpdateStatus",
                             RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"
                         },
                         new
                         {
-                            Id = 109,
+                            Id = 139,
                             ClaimType = "Permissions",
                             ClaimValue = "Permissions.Payments.View",
                             RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"
                         },
                         new
                         {
-                            Id = 110,
+                            Id = 140,
                             ClaimType = "Permissions",
                             ClaimValue = "Permissions.Payments.Verify",
                             RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"
                         },
                         new
                         {
-                            Id = 111,
+                            Id = 141,
                             ClaimType = "Permissions",
                             ClaimValue = "Permissions.Payments.Stats",
                             RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"
                         },
                         new
                         {
-                            Id = 112,
+                            Id = 142,
                             ClaimType = "Permissions",
                             ClaimValue = "Permissions.Reviews.View",
                             RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"
                         },
                         new
                         {
-                            Id = 113,
+                            Id = 143,
+                            ClaimType = "Permissions",
+                            ClaimValue = "Permissions.Community.Posts.Create",
+                            RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"
+                        },
+                        new
+                        {
+                            Id = 144,
+                            ClaimType = "Permissions",
+                            ClaimValue = "Permissions.Community.Posts.Update",
+                            RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"
+                        },
+                        new
+                        {
+                            Id = 145,
+                            ClaimType = "Permissions",
+                            ClaimValue = "Permissions.Community.Posts.Delete",
+                            RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"
+                        },
+                        new
+                        {
+                            Id = 146,
+                            ClaimType = "Permissions",
+                            ClaimValue = "Permissions.Community.Posts.Like",
+                            RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"
+                        },
+                        new
+                        {
+                            Id = 147,
+                            ClaimType = "Permissions",
+                            ClaimValue = "Permissions.Community.Posts.Save",
+                            RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"
+                        },
+                        new
+                        {
+                            Id = 148,
+                            ClaimType = "Permissions",
+                            ClaimValue = "Permissions.Community.Posts.Report",
+                            RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"
+                        },
+                        new
+                        {
+                            Id = 149,
+                            ClaimType = "Permissions",
+                            ClaimValue = "Permissions.Community.Comments.Add",
+                            RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"
+                        },
+                        new
+                        {
+                            Id = 150,
+                            ClaimType = "Permissions",
+                            ClaimValue = "Permissions.Community.Comments.Delete",
+                            RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"
+                        },
+                        new
+                        {
+                            Id = 151,
+                            ClaimType = "Permissions",
+                            ClaimValue = "Permissions.Community.User.Follow",
+                            RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"
+                        },
+                        new
+                        {
+                            Id = 152,
+                            ClaimType = "Permissions",
+                            ClaimValue = "Permissions.Community.Events.Join",
+                            RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"
+                        },
+                        new
+                        {
+                            Id = 153,
+                            ClaimType = "Permissions",
+                            ClaimValue = "Permissions.Community.Events.Participants.View",
+                            RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"
+                        },
+                        new
+                        {
+                            Id = 154,
+                            ClaimType = "Permissions",
+                            ClaimValue = "Permissions.Community.Feed.View",
+                            RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"
+                        },
+                        new
+                        {
+                            Id = 155,
+                            ClaimType = "Permissions",
+                            ClaimValue = "Permissions.Community.Notifications.View",
+                            RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"
+                        },
+                        new
+                        {
+                            Id = 156,
+                            ClaimType = "Permissions",
+                            ClaimValue = "Permissions.Community.Complaints.Support",
+                            RoleId = "42bf2b74-278d-453f-acd7-52d09bbcdcb3"
+                        },
+                        new
+                        {
+                            Id = 157,
                             ClaimType = "Permissions",
                             ClaimValue = "Permissions.Users.ViewProfile",
                             RoleId = "6c6e00c1-6b2a-48b7-9d2f-3dfe9b3c0a1b"
                         },
                         new
                         {
-                            Id = 114,
+                            Id = 158,
                             ClaimType = "Permissions",
                             ClaimValue = "Permissions.Users.UpdateProfile",
                             RoleId = "6c6e00c1-6b2a-48b7-9d2f-3dfe9b3c0a1b"
                         },
                         new
                         {
-                            Id = 115,
+                            Id = 159,
                             ClaimType = "Permissions",
                             ClaimValue = "Permissions.Users.ChangePassword",
                             RoleId = "6c6e00c1-6b2a-48b7-9d2f-3dfe9b3c0a1b"
                         },
                         new
                         {
-                            Id = 116,
+                            Id = 160,
                             ClaimType = "Permissions",
                             ClaimValue = "Permissions.Seller.ViewProfile",
                             RoleId = "6c6e00c1-6b2a-48b7-9d2f-3dfe9b3c0a1b"
                         },
                         new
                         {
-                            Id = 117,
+                            Id = 161,
                             ClaimType = "Permissions",
                             ClaimValue = "Permissions.Marketplace.Products.View",
                             RoleId = "6c6e00c1-6b2a-48b7-9d2f-3dfe9b3c0a1b"
                         },
                         new
                         {
-                            Id = 118,
+                            Id = 162,
                             ClaimType = "Permissions",
                             ClaimValue = "Permissions.Marketplace.Products.Create",
                             RoleId = "6c6e00c1-6b2a-48b7-9d2f-3dfe9b3c0a1b"
                         },
                         new
                         {
-                            Id = 119,
+                            Id = 163,
                             ClaimType = "Permissions",
                             ClaimValue = "Permissions.Marketplace.Products.Update",
                             RoleId = "6c6e00c1-6b2a-48b7-9d2f-3dfe9b3c0a1b"
                         },
                         new
                         {
-                            Id = 120,
+                            Id = 164,
                             ClaimType = "Permissions",
                             ClaimValue = "Permissions.Marketplace.Products.Delete",
                             RoleId = "6c6e00c1-6b2a-48b7-9d2f-3dfe9b3c0a1b"
                         },
                         new
                         {
-                            Id = 121,
+                            Id = 165,
                             ClaimType = "Permissions",
                             ClaimValue = "Permissions.Marketplace.Orders.View",
                             RoleId = "6c6e00c1-6b2a-48b7-9d2f-3dfe9b3c0a1b"
                         },
                         new
                         {
-                            Id = 122,
+                            Id = 166,
                             ClaimType = "Permissions",
                             ClaimValue = "Permissions.Marketplace.Orders.UpdateStatus",
                             RoleId = "6c6e00c1-6b2a-48b7-9d2f-3dfe9b3c0a1b"
                         },
                         new
                         {
-                            Id = 123,
+                            Id = 167,
                             ClaimType = "Permissions",
                             ClaimValue = "Permissions.Marketplace.Orders.Stats",
                             RoleId = "6c6e00c1-6b2a-48b7-9d2f-3dfe9b3c0a1b"
                         },
                         new
                         {
-                            Id = 124,
+                            Id = 168,
                             ClaimType = "Permissions",
                             ClaimValue = "Permissions.Marketplace.Reviews.View",
                             RoleId = "6c6e00c1-6b2a-48b7-9d2f-3dfe9b3c0a1b"
+                        },
+                        new
+                        {
+                            Id = 169,
+                            ClaimType = "Permissions",
+                            ClaimValue = "Permissions.Community.Posts.Create",
+                            RoleId = "6c6e00c1-6b2a-48b7-9d2f-3dfe9b3c0a1b"
+                        },
+                        new
+                        {
+                            Id = 170,
+                            ClaimType = "Permissions",
+                            ClaimValue = "Permissions.Community.Posts.Update",
+                            RoleId = "6c6e00c1-6b2a-48b7-9d2f-3dfe9b3c0a1b"
+                        },
+                        new
+                        {
+                            Id = 171,
+                            ClaimType = "Permissions",
+                            ClaimValue = "Permissions.Community.Posts.Delete",
+                            RoleId = "6c6e00c1-6b2a-48b7-9d2f-3dfe9b3c0a1b"
+                        },
+                        new
+                        {
+                            Id = 172,
+                            ClaimType = "Permissions",
+                            ClaimValue = "Permissions.Community.Posts.Like",
+                            RoleId = "6c6e00c1-6b2a-48b7-9d2f-3dfe9b3c0a1b"
+                        },
+                        new
+                        {
+                            Id = 173,
+                            ClaimType = "Permissions",
+                            ClaimValue = "Permissions.Community.Posts.Save",
+                            RoleId = "6c6e00c1-6b2a-48b7-9d2f-3dfe9b3c0a1b"
+                        },
+                        new
+                        {
+                            Id = 174,
+                            ClaimType = "Permissions",
+                            ClaimValue = "Permissions.Community.Posts.Report",
+                            RoleId = "6c6e00c1-6b2a-48b7-9d2f-3dfe9b3c0a1b"
+                        },
+                        new
+                        {
+                            Id = 175,
+                            ClaimType = "Permissions",
+                            ClaimValue = "Permissions.Community.Comments.Add",
+                            RoleId = "6c6e00c1-6b2a-48b7-9d2f-3dfe9b3c0a1b"
+                        },
+                        new
+                        {
+                            Id = 176,
+                            ClaimType = "Permissions",
+                            ClaimValue = "Permissions.Community.Comments.Delete",
+                            RoleId = "6c6e00c1-6b2a-48b7-9d2f-3dfe9b3c0a1b"
+                        },
+                        new
+                        {
+                            Id = 177,
+                            ClaimType = "Permissions",
+                            ClaimValue = "Permissions.Community.User.Follow",
+                            RoleId = "6c6e00c1-6b2a-48b7-9d2f-3dfe9b3c0a1b"
+                        },
+                        new
+                        {
+                            Id = 178,
+                            ClaimType = "Permissions",
+                            ClaimValue = "Permissions.Community.Events.Join",
+                            RoleId = "6c6e00c1-6b2a-48b7-9d2f-3dfe9b3c0a1b"
+                        },
+                        new
+                        {
+                            Id = 179,
+                            ClaimType = "Permissions",
+                            ClaimValue = "Permissions.Community.Events.Participants.View",
+                            RoleId = "6c6e00c1-6b2a-48b7-9d2f-3dfe9b3c0a1b"
+                        },
+                        new
+                        {
+                            Id = 180,
+                            ClaimType = "Permissions",
+                            ClaimValue = "Permissions.Community.Feed.View",
+                            RoleId = "6c6e00c1-6b2a-48b7-9d2f-3dfe9b3c0a1b"
+                        },
+                        new
+                        {
+                            Id = 181,
+                            ClaimType = "Permissions",
+                            ClaimValue = "Permissions.Community.Notifications.View",
+                            RoleId = "6c6e00c1-6b2a-48b7-9d2f-3dfe9b3c0a1b"
+                        },
+                        new
+                        {
+                            Id = 182,
+                            ClaimType = "Permissions",
+                            ClaimValue = "Permissions.Community.Complaints.Support",
+                            RoleId = "6c6e00c1-6b2a-48b7-9d2f-3dfe9b3c0a1b"
+                        },
+                        new
+                        {
+                            Id = 183,
+                            ClaimType = "Permissions",
+                            ClaimValue = "Permissions.Community.Admin.Complaints.View",
+                            RoleId = "8a2f4c3a-1b2c-3d4e-5f6a-7b8c9d0e1f2a"
+                        },
+                        new
+                        {
+                            Id = 184,
+                            ClaimType = "Permissions",
+                            ClaimValue = "Permissions.Community.Admin.Complaints.Resolve",
+                            RoleId = "8a2f4c3a-1b2c-3d4e-5f6a-7b8c9d0e1f2a"
                         });
                 });
 
@@ -2160,6 +3355,11 @@ namespace CleanArchStarter.Infrastructure.Migrations
                         {
                             UserId = "877a5585-4894-4f4b-8989-f45476063ce1",
                             RoleId = "3a6ce7a1-2b66-48dd-ba28-3cf7080a3297"
+                        },
+                        new
+                        {
+                            UserId = "c7a8b9c0-1d2e-3f4a-5b6c-7d8e9f0a1b2c",
+                            RoleId = "8a2f4c3a-1b2c-3d4e-5f6a-7b8c9d0e1f2a"
                         });
                 });
 
@@ -2270,6 +3470,66 @@ namespace CleanArchStarter.Infrastructure.Migrations
                     b.Navigation("TripDate");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Hook.Domain.Entities.Complaint", b =>
+                {
+                    b.HasOne("Hook.Domain.Entities.Post", "Post")
+                        .WithOne("ComplaintDetails")
+                        .HasForeignKey("Hook.Domain.Entities.Complaint", "PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Post");
+                });
+
+            modelBuilder.Entity("Hook.Domain.Entities.ComplaintSupport", b =>
+                {
+                    b.HasOne("Hook.Domain.Entities.Complaint", "Complaint")
+                        .WithMany("Supports")
+                        .HasForeignKey("ComplaintId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Hook.Domain.Entities.ApplicationUser", "User")
+                        .WithMany("ComplaintSupports")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Complaint");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Hook.Domain.Entities.EventParticipant", b =>
+                {
+                    b.HasOne("Hook.Domain.Entities.FishingEvent", "Event")
+                        .WithMany("Participants")
+                        .HasForeignKey("EventId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Hook.Domain.Entities.ApplicationUser", "User")
+                        .WithMany("EventParticipations")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Event");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Hook.Domain.Entities.FishingEvent", b =>
+                {
+                    b.HasOne("Hook.Domain.Entities.Post", "Post")
+                        .WithOne("EventDetails")
+                        .HasForeignKey("Hook.Domain.Entities.FishingEvent", "PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Post");
                 });
 
             modelBuilder.Entity("Hook.Domain.Entities.MarketplaceCartItem", b =>
@@ -2400,6 +3660,24 @@ namespace CleanArchStarter.Infrastructure.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("Hook.Domain.Entities.Notification", b =>
+                {
+                    b.HasOne("Hook.Domain.Entities.ApplicationUser", "ActorUser")
+                        .WithMany()
+                        .HasForeignKey("ActorUserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Hook.Domain.Entities.ApplicationUser", "User")
+                        .WithMany("Notifications")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ActorUser");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Hook.Domain.Entities.Payment", b =>
                 {
                     b.HasOne("Hook.Domain.Entities.Booking", "Booking")
@@ -2408,6 +3686,106 @@ namespace CleanArchStarter.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Booking");
+                });
+
+            modelBuilder.Entity("Hook.Domain.Entities.Post", b =>
+                {
+                    b.HasOne("Hook.Domain.Entities.FishingLocation", "Location")
+                        .WithMany()
+                        .HasForeignKey("LocationId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("Hook.Domain.Entities.Post", "OriginalPost")
+                        .WithMany("SharedPosts")
+                        .HasForeignKey("OriginalPostId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Hook.Domain.Entities.ApplicationUser", "User")
+                        .WithMany("Posts")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Location");
+
+                    b.Navigation("OriginalPost");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Hook.Domain.Entities.PostComment", b =>
+                {
+                    b.HasOne("Hook.Domain.Entities.PostComment", "ParentComment")
+                        .WithMany("Replies")
+                        .HasForeignKey("ParentCommentId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Hook.Domain.Entities.Post", "Post")
+                        .WithMany("Comments")
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Hook.Domain.Entities.ApplicationUser", "User")
+                        .WithMany("PostComments")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("ParentComment");
+
+                    b.Navigation("Post");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Hook.Domain.Entities.PostImage", b =>
+                {
+                    b.HasOne("Hook.Domain.Entities.Post", "Post")
+                        .WithMany("Images")
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Post");
+                });
+
+            modelBuilder.Entity("Hook.Domain.Entities.PostLike", b =>
+                {
+                    b.HasOne("Hook.Domain.Entities.Post", "Post")
+                        .WithMany("Likes")
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Hook.Domain.Entities.ApplicationUser", "User")
+                        .WithMany("PostLikes")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Post");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Hook.Domain.Entities.PostReport", b =>
+                {
+                    b.HasOne("Hook.Domain.Entities.Post", "Post")
+                        .WithMany()
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Hook.Domain.Entities.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Post");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Hook.Domain.Entities.Review", b =>
@@ -2433,6 +3811,25 @@ namespace CleanArchStarter.Infrastructure.Migrations
                     b.Navigation("Booking");
 
                     b.Navigation("Trip");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Hook.Domain.Entities.SavedPost", b =>
+                {
+                    b.HasOne("Hook.Domain.Entities.Post", "Post")
+                        .WithMany()
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Hook.Domain.Entities.ApplicationUser", "User")
+                        .WithMany("SavedPosts")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Post");
 
                     b.Navigation("User");
                 });
@@ -2487,6 +3884,25 @@ namespace CleanArchStarter.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Trip");
+                });
+
+            modelBuilder.Entity("Hook.Domain.Entities.UserFollow", b =>
+                {
+                    b.HasOne("Hook.Domain.Entities.ApplicationUser", "Follower")
+                        .WithMany("Followings")
+                        .HasForeignKey("FollowerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Hook.Domain.Entities.ApplicationUser", "Following")
+                        .WithMany("Followers")
+                        .HasForeignKey("FollowingId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Follower");
+
+                    b.Navigation("Following");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -2546,6 +3962,14 @@ namespace CleanArchStarter.Infrastructure.Migrations
 
                     b.Navigation("Bookings");
 
+                    b.Navigation("ComplaintSupports");
+
+                    b.Navigation("EventParticipations");
+
+                    b.Navigation("Followers");
+
+                    b.Navigation("Followings");
+
                     b.Navigation("MarketplaceCartItems");
 
                     b.Navigation("MarketplaceListingRequests");
@@ -2554,7 +3978,17 @@ namespace CleanArchStarter.Infrastructure.Migrations
 
                     b.Navigation("MarketplaceReviews");
 
+                    b.Navigation("Notifications");
+
+                    b.Navigation("PostComments");
+
+                    b.Navigation("PostLikes");
+
+                    b.Navigation("Posts");
+
                     b.Navigation("Reviews");
+
+                    b.Navigation("SavedPosts");
 
                     b.Navigation("SellerProfile");
                 });
@@ -2580,6 +4014,16 @@ namespace CleanArchStarter.Infrastructure.Migrations
                     b.Navigation("Reviews");
                 });
 
+            modelBuilder.Entity("Hook.Domain.Entities.Complaint", b =>
+                {
+                    b.Navigation("Supports");
+                });
+
+            modelBuilder.Entity("Hook.Domain.Entities.FishingEvent", b =>
+                {
+                    b.Navigation("Participants");
+                });
+
             modelBuilder.Entity("Hook.Domain.Entities.MarketplaceListingRequest", b =>
                 {
                     b.Navigation("Images");
@@ -2595,6 +4039,26 @@ namespace CleanArchStarter.Infrastructure.Migrations
                     b.Navigation("Images");
 
                     b.Navigation("Reviews");
+                });
+
+            modelBuilder.Entity("Hook.Domain.Entities.Post", b =>
+                {
+                    b.Navigation("Comments");
+
+                    b.Navigation("ComplaintDetails");
+
+                    b.Navigation("EventDetails");
+
+                    b.Navigation("Images");
+
+                    b.Navigation("Likes");
+
+                    b.Navigation("SharedPosts");
+                });
+
+            modelBuilder.Entity("Hook.Domain.Entities.PostComment", b =>
+                {
+                    b.Navigation("Replies");
                 });
 
             modelBuilder.Entity("Hook.Domain.Entities.SellerProfile", b =>

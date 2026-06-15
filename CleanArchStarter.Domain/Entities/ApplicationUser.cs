@@ -42,4 +42,15 @@ public class ApplicationUser : IdentityUser
     public virtual ICollection<MarketplaceReview> MarketplaceReviews { get; set; } = new HashSet<MarketplaceReview>();
     public virtual ICollection<MarketplaceListingRequest> MarketplaceListingRequests { get; set; } = new HashSet<MarketplaceListingRequest>();
 
+    // 🎣 ------------------Community Module------------------
+    public virtual ICollection<Post> Posts { get; set; } = new HashSet<Post>();
+    public virtual ICollection<PostComment> PostComments { get; set; } = new HashSet<PostComment>();
+    public virtual ICollection<PostLike> PostLikes { get; set; } = new HashSet<PostLike>();
+    public virtual ICollection<SavedPost> SavedPosts { get; set; } = new HashSet<SavedPost>();
+    public virtual ICollection<EventParticipant> EventParticipations { get; set; } = new HashSet<EventParticipant>();
+    public virtual ICollection<ComplaintSupport> ComplaintSupports { get; set; } = new HashSet<ComplaintSupport>();
+    public virtual ICollection<Notification> Notifications { get; set; } = new HashSet<Notification>();
+
+    public virtual ICollection<UserFollow> Followers { get; set; } = new HashSet<UserFollow>();
+    public virtual ICollection<UserFollow> Followings { get; set; } = new HashSet<UserFollow>();
 }

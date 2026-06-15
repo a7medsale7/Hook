@@ -14,4 +14,14 @@ public class UserProfileResponse
     public string? Governorate { get; set; }
     public string? Bio { get; set; }
     public string? ProfilePictureUrl { get; set; }
+
+    // Community Stats
+    public int FollowersCount { get; set; }
+    public int FollowingCount { get; set; }
+    public int SavedPostsCount { get; set; }
+    public int LikedPostsCount { get; set; }
+    public int SupportedComplaintsCount { get; set; }
+    public int PostsCount { get; set; }
+    public string RankTitle { get; set; } = string.Empty;
+    public bool? IsFollowing { get; set; }
 }

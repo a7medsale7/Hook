@@ -61,8 +61,23 @@ public class ApplicationRoleClaimConfigurations : IEntityTypeConfiguration<Ident
             Permissions.MarketplaceOrders_Cancel,
             Permissions.MarketplaceOrders_UpdateStatus, // confirm received after OutForDelivery
             Permissions.MarketplaceReviews_View,
-            Permissions.MarketplaceReviews_Create
+            Permissions.MarketplaceReviews_Create,
 
+            // Community (User)
+            Permissions.Community_Posts_Create,
+            Permissions.Community_Posts_Update,
+            Permissions.Community_Posts_Delete,
+            Permissions.Community_Posts_Like,
+            Permissions.Community_Posts_Save,
+            Permissions.Community_Posts_Report,
+            Permissions.Community_Comments_Add,
+            Permissions.Community_Comments_Delete,
+            Permissions.Community_User_Follow,
+            Permissions.Community_Events_Join,
+            Permissions.Community_Events_Participants_View,
+            Permissions.Community_Feed_View,
+            Permissions.Community_Notifications_View,
+            Permissions.Community_Complaints_Support
         };
 
         foreach (var permission in userPermissions)
@@ -100,7 +115,23 @@ public class ApplicationRoleClaimConfigurations : IEntityTypeConfiguration<Ident
             Permissions.Payments_View,
             Permissions.Payments_Verify,
             Permissions.Payments_Stats,
-            Permissions.Reviews_View
+            Permissions.Reviews_View,
+
+            // Community (BoatOwner)
+            Permissions.Community_Posts_Create,
+            Permissions.Community_Posts_Update,
+            Permissions.Community_Posts_Delete,
+            Permissions.Community_Posts_Like,
+            Permissions.Community_Posts_Save,
+            Permissions.Community_Posts_Report,
+            Permissions.Community_Comments_Add,
+            Permissions.Community_Comments_Delete,
+            Permissions.Community_User_Follow,
+            Permissions.Community_Events_Join,
+            Permissions.Community_Events_Participants_View,
+            Permissions.Community_Feed_View,
+            Permissions.Community_Notifications_View,
+            Permissions.Community_Complaints_Support
         };
 
         foreach (var permission in boatOwnerPermissions)
@@ -132,7 +163,23 @@ public class ApplicationRoleClaimConfigurations : IEntityTypeConfiguration<Ident
             Permissions.MarketplaceOrders_UpdateStatus,
             Permissions.MarketplaceOrders_Stats,
 
-            Permissions.MarketplaceReviews_View
+            Permissions.MarketplaceReviews_View,
+
+            // Community (Seller)
+            Permissions.Community_Posts_Create,
+            Permissions.Community_Posts_Update,
+            Permissions.Community_Posts_Delete,
+            Permissions.Community_Posts_Like,
+            Permissions.Community_Posts_Save,
+            Permissions.Community_Posts_Report,
+            Permissions.Community_Comments_Add,
+            Permissions.Community_Comments_Delete,
+            Permissions.Community_User_Follow,
+            Permissions.Community_Events_Join,
+            Permissions.Community_Events_Participants_View,
+            Permissions.Community_Feed_View,
+            Permissions.Community_Notifications_View,
+            Permissions.Community_Complaints_Support
         };
 
         foreach (var permission in sellerPermissions)
@@ -141,6 +188,24 @@ public class ApplicationRoleClaimConfigurations : IEntityTypeConfiguration<Ident
             {
                 Id = claimId++,
                 RoleId = DefaultRoles.SellerRoleId,
+                ClaimType = Permissions.Type,
+                ClaimValue = permission
+            });
+        }
+
+        // 5. CommunityAdmin Permissions
+        var communityAdminPermissions = new List<string>
+        {
+            Permissions.CommunityAdmin_Complaints_View,
+            Permissions.CommunityAdmin_Complaints_Resolve
+        };
+
+        foreach (var permission in communityAdminPermissions)
+        {
+            allClaims.Add(new IdentityRoleClaim<string>
+            {
+                Id = claimId++,
+                RoleId = DefaultRoles.CommunityAdminRoleId,
                 ClaimType = Permissions.Type,
                 ClaimValue = permission
             });

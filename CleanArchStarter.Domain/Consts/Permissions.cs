@@ -104,6 +104,26 @@ public static class Permissions
     //Admin Approvals
     public const string MarketplaceApprovals_View = "Permissions.Marketplace.Approvals.View";
     public const string MarketplaceApprovals_Update = "Permissions.Marketplace.Approvals.Update";
+    
+    //------------------------------Community------------------------------------------
+    public const string Community_Posts_Create = "Permissions.Community.Posts.Create";
+    public const string Community_Posts_Update = "Permissions.Community.Posts.Update";
+    public const string Community_Posts_Delete = "Permissions.Community.Posts.Delete";
+    public const string Community_Posts_Like = "Permissions.Community.Posts.Like";
+    public const string Community_Posts_Save = "Permissions.Community.Posts.Save";
+    public const string Community_Posts_Report = "Permissions.Community.Posts.Report";
+    public const string Community_Comments_Add = "Permissions.Community.Comments.Add";
+    public const string Community_Comments_Delete = "Permissions.Community.Comments.Delete";
+    public const string Community_User_Follow = "Permissions.Community.User.Follow";
+    public const string Community_Events_Join = "Permissions.Community.Events.Join";
+    public const string Community_Events_Participants_View = "Permissions.Community.Events.Participants.View";
+    public const string Community_Feed_View = "Permissions.Community.Feed.View";
+    public const string Community_Notifications_View = "Permissions.Community.Notifications.View";
+    public const string Community_Complaints_Support = "Permissions.Community.Complaints.Support";
+    
+    public const string CommunityAdmin_Complaints_View = "Permissions.Community.Admin.Complaints.View";
+    public const string CommunityAdmin_Complaints_Resolve = "Permissions.Community.Admin.Complaints.Resolve";
+
     //-------------------------------------------------------------------------------------------------------
     public static IList<string?> GetAllPermissions() =>
         typeof(Permissions).GetFields(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.FlattenHierarchy)

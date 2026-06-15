@@ -96,11 +96,33 @@ public class UserService : IUserService
         return Result.Success(response);
     }
 
-    public async Task<Result<UserProfileResponse>> GetProfileAsync(string userId)
+    public async Task<Result<UserProfileResponse>> GetProfileAsync(string userId, string currentUserId)
     {
         var user = await _userManager.FindByIdAsync(userId);
         if (user is null)
             return Result.Failure<UserProfileResponse>(UserErrors.UserNotFound);
+
+        var followersCount = await _context.UserFollows.CountAsync(f => f.FollowingId == userId);
+        var followingCount = await _context.UserFollows.CountAsync(f => f.FollowerId == userId);
+        var savedPostsCount = await _context.SavedPosts.CountAsync(s => s.UserId == userId);
+        var likedPostsCount = await _context.PostLikes.CountAsync(l => l.UserId == userId);
+        var supportedComplaintsCount = await _context.ComplaintSupports.CountAsync(s => s.UserId == userId);
+        var postsCount = await _context.Posts.CountAsync(p => p.UserId == userId);
+
+        var rankTitle = postsCount switch
+        {
+            >= 100 => "Top Account",
+            >= 50 => "Elite Member",
+            >= 20 => "Active Member",
+            _ => "New Member"
+        };
+
+        bool? isFollowing = null;
+        if (userId != currentUserId)
+        {
+            isFollowing = await _context.UserFollows.AnyAsync(f => f.FollowerId == currentUserId && f.FollowingId == userId);
+        }
+
         return Result.Success(new UserProfileResponse
         {
             FirstName = user.FirstName,
@@ -109,7 +131,15 @@ public class UserService : IUserService
             PhoneNumber = user.PhoneNumber,
             Governorate = user.Governorate,
             Bio = user.Bio,
-            ProfilePictureUrl = user.ProfilePictureUrl
+            ProfilePictureUrl = user.ProfilePictureUrl,
+            FollowersCount = followersCount,
+            FollowingCount = followingCount,
+            SavedPostsCount = savedPostsCount,
+            LikedPostsCount = likedPostsCount,
+            SupportedComplaintsCount = supportedComplaintsCount,
+            PostsCount = postsCount,
+            RankTitle = rankTitle,
+            IsFollowing = isFollowing
         });
     }
     public async Task<Result<UserProfileResponse>> UpdateProfileAsync(string userId, UpdateProfileRequest request)
@@ -134,6 +164,22 @@ public class UserService : IUserService
         user.Governorate = request.Governorate;
         user.Bio = request.Bio;
         await _userManager.UpdateAsync(user);
+
+        var followersCount = await _context.UserFollows.CountAsync(f => f.FollowingId == userId);
+        var followingCount = await _context.UserFollows.CountAsync(f => f.FollowerId == userId);
+        var savedPostsCount = await _context.SavedPosts.CountAsync(s => s.UserId == userId);
+        var likedPostsCount = await _context.PostLikes.CountAsync(l => l.UserId == userId);
+        var supportedComplaintsCount = await _context.ComplaintSupports.CountAsync(s => s.UserId == userId);
+        var postsCount = await _context.Posts.CountAsync(p => p.UserId == userId);
+
+        var rankTitle = postsCount switch
+        {
+            >= 100 => "Top Account",
+            >= 50 => "Elite Member",
+            >= 20 => "Active Member",
+            _ => "New Member"
+        };
+
         return Result.Success(new UserProfileResponse
         {
             FirstName = user.FirstName,
@@ -142,7 +188,15 @@ public class UserService : IUserService
             PhoneNumber = user.PhoneNumber,
             Governorate = user.Governorate,
             Bio = user.Bio,
-            ProfilePictureUrl = user.ProfilePictureUrl
+            ProfilePictureUrl = user.ProfilePictureUrl,
+            FollowersCount = followersCount,
+            FollowingCount = followingCount,
+            SavedPostsCount = savedPostsCount,
+            LikedPostsCount = likedPostsCount,
+            SupportedComplaintsCount = supportedComplaintsCount,
+            PostsCount = postsCount,
+            RankTitle = rankTitle,
+            IsFollowing = null
         });
     }
 
@@ -338,4 +392,65 @@ public class UserService : IUserService
             : Result.Failure(new Error(result.Errors.First().Code, result.Errors.First().Description));
     }
 
+    public async Task<Result<IEnumerable<UserFollowResponse>>> GetFollowersAsync(string userId, string currentUserId, CancellationToken cancellationToken = default)
+    {
+        var userExists = await _userManager.Users.AnyAsync(u => u.Id == userId, cancellationToken);
+        if (!userExists)
+            return Result.Failure<IEnumerable<UserFollowResponse>>(UserErrors.UserNotFound);
+
+        var followers = await _context.UserFollows
+            .AsNoTracking()
+            .Where(f => f.FollowingId == userId)
+            .Include(f => f.Follower)
+            .ToListAsync(cancellationToken);
+
+        var followingIdsOfCurrentUser = await _context.UserFollows
+            .AsNoTracking()
+            .Where(f => f.FollowerId == currentUserId)
+            .Select(f => f.FollowingId)
+            .ToListAsync(cancellationToken);
+
+        var response = followers.Select(f => new UserFollowResponse
+        {
+            UserId = f.FollowerId,
+            Name = $"{f.Follower.FirstName} {f.Follower.LastName}",
+            ProfilePictureUrl = f.Follower.ProfilePictureUrl,
+            Bio = f.Follower.Bio,
+            PhoneNumber = f.Follower.PhoneNumber,
+            IsFollowing = f.FollowerId == currentUserId ? null : followingIdsOfCurrentUser.Contains(f.FollowerId)
+        });
+
+        return Result.Success<IEnumerable<UserFollowResponse>>(response);
+    }
+
+    public async Task<Result<IEnumerable<UserFollowResponse>>> GetFollowingAsync(string userId, string currentUserId, CancellationToken cancellationToken = default)
+    {
+        var userExists = await _userManager.Users.AnyAsync(u => u.Id == userId, cancellationToken);
+        if (!userExists)
+            return Result.Failure<IEnumerable<UserFollowResponse>>(UserErrors.UserNotFound);
+
+        var following = await _context.UserFollows
+            .AsNoTracking()
+            .Where(f => f.FollowerId == userId)
+            .Include(f => f.Following)
+            .ToListAsync(cancellationToken);
+
+        var followingIdsOfCurrentUser = await _context.UserFollows
+            .AsNoTracking()
+            .Where(f => f.FollowerId == currentUserId)
+            .Select(f => f.FollowingId)
+            .ToListAsync(cancellationToken);
+
+        var response = following.Select(f => new UserFollowResponse
+        {
+            UserId = f.FollowingId,
+            Name = $"{f.Following.FirstName} {f.Following.LastName}",
+            ProfilePictureUrl = f.Following.ProfilePictureUrl,
+            Bio = f.Following.Bio,
+            PhoneNumber = f.Following.PhoneNumber,
+            IsFollowing = f.FollowingId == currentUserId ? null : followingIdsOfCurrentUser.Contains(f.FollowingId)
+        });
+
+        return Result.Success<IEnumerable<UserFollowResponse>>(response);
+    }
 }
