@@ -202,7 +202,8 @@ public static class DatabaseSeeder
         var communityAdminPermissions = new List<string>
         {
             Permissions.CommunityAdmin_Complaints_View,
-            Permissions.CommunityAdmin_Complaints_Resolve
+            Permissions.CommunityAdmin_Complaints_Resolve,
+            Permissions.Community_Notifications_View
         };
 
         foreach (var permission in communityAdminPermissions)
