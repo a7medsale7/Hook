@@ -149,13 +149,18 @@ public class CommunityService : ICommunityService
         // Notify admins if it is a new complaint
         if (request.Category == PostCategory.Complaint)
         {
-            var adminRole = await _context.Roles.AsNoTracking().FirstOrDefaultAsync(r => r.Name == "Admin", cancellationToken);
-            if (adminRole != null)
+            var targetRoles = await _context.Roles.AsNoTracking()
+                .Where(r => r.Name == Hook.Domain.Consts.DefaultRoles.Admin || r.Name == Hook.Domain.Consts.DefaultRoles.CommunityAdmin)
+                .Select(r => r.Id)
+                .ToListAsync(cancellationToken);
+
+            if (targetRoles.Any())
             {
                 var adminUserIds = await _context.UserRoles
                     .AsNoTracking()
-                    .Where(ur => ur.RoleId == adminRole.Id)
+                    .Where(ur => targetRoles.Contains(ur.RoleId))
                     .Select(ur => ur.UserId)
+                    .Distinct()
                     .ToListAsync(cancellationToken);
 
                 foreach (var adminId in adminUserIds)

@@ -88,16 +88,24 @@ public class ComplaintService : IComplaintService
                 postId,
                 cancellationToken);
 
-            var adminRole = await _context.Roles.AsNoTracking().FirstOrDefaultAsync(r => r.Name == "Admin", cancellationToken);
-            if (adminRole != null)
+            var targetRoleNames = new[] { "Admin", "CommunityAdmin" };
+
+            var targetRoleIds = await _context.Roles
+                .AsNoTracking()
+                .Where(r => targetRoleNames.Contains(r.Name))
+                .Select(r => r.Id)
+                .ToListAsync(cancellationToken);
+
+            if (targetRoleIds.Any())
             {
-                var adminUserIds = await _context.UserRoles
+                var targetUserIds = await _context.UserRoles
                     .AsNoTracking()
-                    .Where(ur => ur.RoleId == adminRole.Id)
+                    .Where(ur => targetRoleIds.Contains(ur.RoleId))
                     .Select(ur => ur.UserId)
+                    .Distinct()
                     .ToListAsync(cancellationToken);
 
-                foreach (var adminId in adminUserIds)
+                foreach (var adminId in targetUserIds)
                 {
                     await _notificationService.CreateNotificationAsync(
                         adminId,
