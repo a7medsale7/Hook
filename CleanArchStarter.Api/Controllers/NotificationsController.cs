@@ -29,6 +29,31 @@ public class NotificationsController(INotificationService notificationService) :
         return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
     }
 
+    [HttpGet("unread/count")]
+    [Authorize(Policy = Permissions.Community_Notifications_View)]
+    public async Task<IActionResult> GetUnreadNotificationsCount(CancellationToken cancellationToken = default)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userId is null) return Unauthorized();
+
+        var result = await _notificationService.GetUnreadNotificationsCountAsync(userId, cancellationToken);
+        return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
+    }
+
+    [HttpGet("unread")]
+    [Authorize(Policy = Permissions.Community_Notifications_View)]
+    public async Task<IActionResult> GetUnreadNotifications(
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 20,
+        CancellationToken cancellationToken = default)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userId is null) return Unauthorized();
+
+        var result = await _notificationService.GetUnreadNotificationsAsync(userId, page, pageSize, cancellationToken);
+        return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
+    }
+
     [HttpPost("{id}/read")]
     [Authorize(Policy = Permissions.Community_Notifications_View)]
     public async Task<IActionResult> MarkAsRead(Guid id, CancellationToken cancellationToken)

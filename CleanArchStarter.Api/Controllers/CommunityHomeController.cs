@@ -40,4 +40,18 @@ public class CommunityHomeController(ICommunityHomeService homeService) : Contro
         var result = await _homeService.GetHomeProductsAsync(cancellationToken);
         return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
     }
+
+    [HttpGet("trips")]
+    public async Task<IActionResult> GetHomeTrips(CancellationToken cancellationToken)
+    {
+        var result = await _homeService.GetHomeTripsAsync(cancellationToken);
+        return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
+    }
+
+    [HttpGet("posts")]
+    public async Task<IActionResult> GetHomePosts(CancellationToken cancellationToken)
+    {
+        var result = await _homeService.GetHomePostsAsync(cancellationToken);
+        return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
+    }
 }

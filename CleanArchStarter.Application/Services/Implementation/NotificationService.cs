@@ -52,6 +52,42 @@ public class NotificationService : INotificationService
         return Result.Success(response);
     }
 
+    public async Task<Result<int>> GetUnreadNotificationsCountAsync(string userId, CancellationToken cancellationToken = default)
+    {
+        var count = await _context.Notifications
+            .AsNoTracking()
+            .CountAsync(n => n.UserId == userId && !n.IsRead, cancellationToken);
+
+        return Result.Success(count);
+    }
+
+    public async Task<Result<IEnumerable<NotificationResponse>>> GetUnreadNotificationsAsync(string userId, int page, int pageSize, CancellationToken cancellationToken = default)
+    {
+        var notifications = await _context.Notifications
+            .AsNoTracking()
+            .Include(n => n.ActorUser)
+            .Where(n => n.UserId == userId && !n.IsRead)
+            .OrderByDescending(n => n.CreatedOn)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync(cancellationToken);
+
+        var response = notifications.Select(n => new NotificationResponse
+        {
+            Id = n.Id,
+            UserId = n.UserId,
+            Type = n.Type,
+            ReferenceId = n.ReferenceId,
+            IsRead = n.IsRead,
+            CreatedOn = n.CreatedOn,
+            ActorName = n.ActorUser != null ? $"{n.ActorUser.FirstName} {n.ActorUser.LastName}" : "System",
+            ActorProfilePictureUrl = n.ActorUser?.ProfilePictureUrl,
+            Message = n.Message ?? GetNotificationMessage(n.Type, n.ActorUser != null ? $"{n.ActorUser.FirstName} {n.ActorUser.LastName}" : "System")
+        });
+
+        return Result.Success(response);
+    }
+
     public async Task<Result> MarkAsReadAsync(Guid notificationId, string userId, CancellationToken cancellationToken = default)
     {
         var notification = await _context.Notifications

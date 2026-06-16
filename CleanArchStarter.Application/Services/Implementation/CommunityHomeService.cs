@@ -83,4 +83,39 @@ public class CommunityHomeService(ApplicationDbContext context) : ICommunityHome
 
         return Result.Success(products);
     }
+
+    public async Task<Result<List<HomeItemResponse>>> GetHomeTripsAsync(CancellationToken cancellationToken = default)
+    {
+        var trips = await _context.Trips
+            .Select(t => new HomeItemResponse
+            {
+                Id = t.Id.ToString(),
+                Name = t.Title,
+                ImageUrl = t.Images.OrderBy(i => i.IsMainImage ? 0 : 1).Select(i => i.ImageUrl).FirstOrDefault(),
+                Title = "Trip"
+            })
+            .Take(5)
+            .ToListAsync(cancellationToken);
+
+        return Result.Success(trips);
+    }
+
+    public async Task<Result<List<HomeItemResponse>>> GetHomePostsAsync(CancellationToken cancellationToken = default)
+    {
+        var posts = await _context.Posts
+            .Include(p => p.User)
+            .Include(p => p.Images)
+            .OrderByDescending(p => p.CreatedOn)
+            .Select(p => new HomeItemResponse
+            {
+                Id = p.Id.ToString(),
+                Name = p.User.FirstName + " " + p.User.LastName,
+                ImageUrl = p.Images.Select(i => i.ImageUrl).FirstOrDefault() ?? p.User.ProfilePictureUrl,
+                Title = "Post"
+            })
+            .Take(5)
+            .ToListAsync(cancellationToken);
+
+        return Result.Success(posts);
+    }
 }

@@ -12,4 +12,6 @@ public interface ICommunityHomeService
     Task<Result<List<HomeItemResponse>>> GetHomeBoatOwnersAsync(CancellationToken cancellationToken = default);
     Task<Result<List<HomeItemResponse>>> GetHomeSellersAsync(CancellationToken cancellationToken = default);
     Task<Result<List<HomeItemResponse>>> GetHomeProductsAsync(CancellationToken cancellationToken = default);
+    Task<Result<List<HomeItemResponse>>> GetHomeTripsAsync(CancellationToken cancellationToken = default);
+    Task<Result<List<HomeItemResponse>>> GetHomePostsAsync(CancellationToken cancellationToken = default);
 }
