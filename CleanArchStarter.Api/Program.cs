@@ -83,6 +83,9 @@ app.UseHangfireDashboard("/jobs", new DashboardOptions
 // Enable CORS
 app.UseCors("AllowAll");
 
+// Enable Rate Limiting
+app.UseRateLimiter();
+
 // Redirect HTTP to HTTPS
 app.UseHttpsRedirection();
 

@@ -8,7 +8,7 @@ namespace Hook.Api.Controllers;
 
 [Route("api/Community/home")]
 [ApiController]
-[Authorize]
+[AllowAnonymous]
 public class CommunityHomeController(ICommunityHomeService homeService) : ControllerBase
 {
     private readonly ICommunityHomeService _homeService = homeService;

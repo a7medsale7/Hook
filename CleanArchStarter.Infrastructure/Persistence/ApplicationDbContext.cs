@@ -57,6 +57,14 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
         builder.Entity<EventParticipant>().HasQueryFilter(e => !e.IsDeleted);
         builder.Entity<Complaint>().HasQueryFilter(e => !e.IsDeleted);
         builder.Entity<PostComment>().HasQueryFilter(e => !e.IsDeleted);
+
+        // FishGuard AI Soft Delete Filters
+        builder.Entity<RestrictedLocation>().HasQueryFilter(e => !e.IsDeleted);
+        builder.Entity<RestrictedTool>().HasQueryFilter(e => !e.IsDeleted);
+        builder.Entity<FishingSeason>().HasQueryFilter(e => !e.IsDeleted);
+        builder.Entity<FishingFaq>().HasQueryFilter(e => !e.IsDeleted);
+        builder.Entity<ChatConversation>().HasQueryFilter(e => !e.IsDeleted);
+        builder.Entity<ChatMessage>().HasQueryFilter(e => !e.IsDeleted);
     }
 
     public DbSet<BoatOwnerProfile> BoatOwnerProfiles { get; set; }
@@ -95,7 +103,13 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
     public DbSet<UserFollow> UserFollows { get; set; }
     public DbSet<PostReport> PostReports { get; set; }
 
-
+    // FishGuard AI DbSets
+    public DbSet<RestrictedLocation> RestrictedLocations { get; set; }
+    public DbSet<RestrictedTool> RestrictedTools { get; set; }
+    public DbSet<FishingSeason> FishingSeasons { get; set; }
+    public DbSet<FishingFaq> FishingFaqs { get; set; }
+    public DbSet<ChatConversation> ChatConversations { get; set; }
+    public DbSet<ChatMessage> ChatMessages { get; set; }
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {

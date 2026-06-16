@@ -15,6 +15,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.RateLimiting;
+using System.Threading.RateLimiting;
 using Hook.Domain.Abstractions;
 using Hook.Infrastructure.Persistence;
 using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
@@ -44,7 +46,9 @@ public static class DependencyInjection
             .AddMapsterConfiguration()
             .AddFluentValidationConfiguration()
             .AddAuthenticationConfiguration(configuration)
-            .AddHangfireConfig(configuration);
+            .AddHangfireConfig(configuration)
+            .AddRateLimitingConfig()
+            .AddMemoryCache();
 
         return services;
     }
@@ -130,6 +134,14 @@ public static class DependencyInjection
         services.AddScoped<INotificationService, NotificationService>();
         services.AddScoped<INotificationHubService, NotificationHubService>();
         services.AddScoped<ICommunityHomeService, CommunityHomeService>();
+
+        // 🤖 FishGuard AI Module Services
+        services.AddHttpClient<IAiProvider, Hook.Application.Services.Implementation.GeminiProvider>();
+        services.AddScoped<IKeywordDetectionService, KeywordDetectionService>();
+        services.AddScoped<IFuzzySearchService, FuzzySearchService>();
+        services.AddScoped<IConversationService, ConversationService>();
+        services.AddScoped<IFishGuardChatService, FishGuardChatService>();
+        services.AddScoped<IFishGuardAdminService, FishGuardAdminService>();
 
         return services;
     }
@@ -276,4 +288,27 @@ public static class DependencyInjection
         return services;
     }
 
+    // ================================
+    // Rate Limiting Configuration
+    // ================================
+    private static IServiceCollection AddRateLimitingConfig(
+        this IServiceCollection services)
+    {
+        services.AddRateLimiter(options =>
+        {
+            options.AddPolicy("FishGuardRateLimit", context =>
+            {
+                var userId = context.User?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "anonymous";
+                return RateLimitPartition.GetFixedWindowLimiter(userId,
+                    partition => new FixedWindowRateLimiterOptions
+                    {
+                        AutoReplenishment = true,
+                        PermitLimit = 20, // 20 requests
+                        Window = TimeSpan.FromMinutes(1) // per minute
+                    });
+            });
+        });
+
+        return services;
+    }
 }

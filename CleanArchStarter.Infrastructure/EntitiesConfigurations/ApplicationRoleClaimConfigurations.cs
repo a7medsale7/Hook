@@ -198,7 +198,8 @@ public class ApplicationRoleClaimConfigurations : IEntityTypeConfiguration<Ident
         {
             Permissions.CommunityAdmin_Complaints_View,
             Permissions.CommunityAdmin_Complaints_Resolve,
-            Permissions.Community_Notifications_View
+            Permissions.Community_Notifications_View,
+            Permissions.FishGuardAdmin_Manage
         };
 
         foreach (var permission in communityAdminPermissions)

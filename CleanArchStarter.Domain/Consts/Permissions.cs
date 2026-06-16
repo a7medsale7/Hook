@@ -124,6 +124,9 @@ public static class Permissions
     public const string CommunityAdmin_Complaints_View = "Permissions.Community.Admin.Complaints.View";
     public const string CommunityAdmin_Complaints_Resolve = "Permissions.Community.Admin.Complaints.Resolve";
 
+    //------------------------------FishGuard AI---------------------------------------
+    public const string FishGuardAdmin_Manage = "Permissions.FishGuard.Admin.Manage";
+
     //-------------------------------------------------------------------------------------------------------
     public static IList<string?> GetAllPermissions() =>
         typeof(Permissions).GetFields(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.FlattenHierarchy)

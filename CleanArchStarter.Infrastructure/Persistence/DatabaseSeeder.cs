@@ -203,7 +203,8 @@ public static class DatabaseSeeder
         {
             Permissions.CommunityAdmin_Complaints_View,
             Permissions.CommunityAdmin_Complaints_Resolve,
-            Permissions.Community_Notifications_View
+            Permissions.Community_Notifications_View,
+            Permissions.FishGuardAdmin_Manage
         };
 
         foreach (var permission in communityAdminPermissions)

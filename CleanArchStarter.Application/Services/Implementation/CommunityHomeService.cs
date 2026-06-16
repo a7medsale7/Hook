@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Hook.Application.Abstractions.Result;
-using Hook.Application.Contracts.Community;
+using Hook.Application.Contracts.Community.Home;
 using Hook.Application.Services.Interfaces;
 using Hook.Domain.Enums;
 using Hook.Infrastructure.Persistence;
@@ -16,16 +16,20 @@ public class CommunityHomeService(ApplicationDbContext context) : ICommunityHome
 {
     private readonly ApplicationDbContext _context = context;
 
-    public async Task<Result<List<HomeItemResponse>>> GetHomeBoatsAsync(CancellationToken cancellationToken = default)
+    public async Task<Result<List<HomeBoatResponse>>> GetHomeBoatsAsync(CancellationToken cancellationToken = default)
     {
         var boats = await _context.Boats
             .Where(b => !b.IsDeleted)
-            .Select(b => new HomeItemResponse
+            .OrderBy(b => Guid.NewGuid())
+            .Select(b => new HomeBoatResponse
             {
                 Id = b.Id.ToString(),
                 Name = b.Name,
                 ImageUrl = b.Images.OrderBy(i => i.IsMainImage ? 0 : 1).Select(i => i.ImageUrl).FirstOrDefault(),
-                Title = "Boat"
+                Description = b.Description,
+                Capacity = b.Capacity,
+                OwnerName = b.OwnerProfile.User.FirstName + " " + b.OwnerProfile.User.LastName,
+                OwnerContact = b.OwnerProfile.User.PhoneNumber
             })
             .Take(5)
             .ToListAsync(cancellationToken);
@@ -33,16 +37,17 @@ public class CommunityHomeService(ApplicationDbContext context) : ICommunityHome
         return Result.Success(boats);
     }
 
-    public async Task<Result<List<HomeItemResponse>>> GetHomeBoatOwnersAsync(CancellationToken cancellationToken = default)
+    public async Task<Result<List<HomeBoatOwnerResponse>>> GetHomeBoatOwnersAsync(CancellationToken cancellationToken = default)
     {
         var boatOwners = await _context.BoatOwnerProfiles
             .Where(p => p.Status == RequestStatus.Approved && !p.IsDeleted)
-            .Select(p => new HomeItemResponse
+            .OrderBy(p => Guid.NewGuid())
+            .Select(p => new HomeBoatOwnerResponse
             {
                 Id = p.User.Id,
                 Name = p.User.FirstName + " " + p.User.LastName,
                 ImageUrl = p.User.ProfilePictureUrl,
-                Title = "Boat Owner"
+                ContactNumber = p.User.PhoneNumber
             })
             .Take(5)
             .ToListAsync(cancellationToken);
@@ -50,16 +55,18 @@ public class CommunityHomeService(ApplicationDbContext context) : ICommunityHome
         return Result.Success(boatOwners);
     }
 
-    public async Task<Result<List<HomeItemResponse>>> GetHomeSellersAsync(CancellationToken cancellationToken = default)
+    public async Task<Result<List<HomeSellerResponse>>> GetHomeSellersAsync(CancellationToken cancellationToken = default)
     {
         var sellers = await _context.SellerProfiles
             .Where(s => s.Status == RequestStatus.Approved && !s.IsDeleted)
-            .Select(s => new HomeItemResponse
+            .OrderBy(s => Guid.NewGuid())
+            .Select(s => new HomeSellerResponse
             {
                 Id = s.User.Id,
-                Name = s.SellerName,
-                ImageUrl = s.StoreImageUrl ?? s.User.ProfilePictureUrl,
-                Title = "Seller"
+                SellerName = s.SellerName,
+                StoreImageUrl = s.StoreImageUrl ?? s.User.ProfilePictureUrl,
+                Location = s.Governorate + ", " + s.City,
+                ContactNumber = s.User.PhoneNumber
             })
             .Take(5)
             .ToListAsync(cancellationToken);
@@ -67,16 +74,21 @@ public class CommunityHomeService(ApplicationDbContext context) : ICommunityHome
         return Result.Success(sellers);
     }
 
-    public async Task<Result<List<HomeItemResponse>>> GetHomeProductsAsync(CancellationToken cancellationToken = default)
+    public async Task<Result<List<HomeProductResponse>>> GetHomeProductsAsync(CancellationToken cancellationToken = default)
     {
         var products = await _context.MarketplaceProducts
             .Where(p => p.IsActive && !p.IsDeleted)
-            .Select(p => new HomeItemResponse
+            .OrderBy(p => Guid.NewGuid())
+            .Select(p => new HomeProductResponse
             {
                 Id = p.Id.ToString(),
-                Name = p.Title,
+                Title = p.Title,
                 ImageUrl = p.Images.OrderBy(i => i.IsMainImage ? 0 : 1).Select(i => i.ImageUrl).FirstOrDefault(),
-                Title = "Product"
+                Description = p.Description,
+                Price = p.Price,
+                SellerName = p.SellerProfile.SellerName,
+                SellerStoreImageUrl = p.SellerProfile.StoreImageUrl,
+                SellerContact = p.SellerProfile.User.PhoneNumber
             })
             .Take(5)
             .ToListAsync(cancellationToken);
@@ -84,15 +96,22 @@ public class CommunityHomeService(ApplicationDbContext context) : ICommunityHome
         return Result.Success(products);
     }
 
-    public async Task<Result<List<HomeItemResponse>>> GetHomeTripsAsync(CancellationToken cancellationToken = default)
+    public async Task<Result<List<HomeTripResponse>>> GetHomeTripsAsync(CancellationToken cancellationToken = default)
     {
         var trips = await _context.Trips
-            .Select(t => new HomeItemResponse
+            .OrderBy(t => Guid.NewGuid())
+            .Select(t => new HomeTripResponse
             {
                 Id = t.Id.ToString(),
-                Name = t.Title,
+                Title = t.Title,
                 ImageUrl = t.Images.OrderBy(i => i.IsMainImage ? 0 : 1).Select(i => i.ImageUrl).FirstOrDefault(),
-                Title = "Trip"
+                Description = t.ShortDescription,
+                Price = t.PricePerPerson,
+                BoatName = t.Boat.Name,
+                LocationName = t.LocationName,
+                OwnerName = t.Boat.OwnerProfile.User.FirstName + " " + t.Boat.OwnerProfile.User.LastName,
+                OwnerImageUrl = t.Boat.OwnerProfile.User.ProfilePictureUrl,
+                OwnerContact = t.Boat.OwnerProfile.User.PhoneNumber
             })
             .Take(5)
             .ToListAsync(cancellationToken);
@@ -100,18 +119,23 @@ public class CommunityHomeService(ApplicationDbContext context) : ICommunityHome
         return Result.Success(trips);
     }
 
-    public async Task<Result<List<HomeItemResponse>>> GetHomePostsAsync(CancellationToken cancellationToken = default)
+    public async Task<Result<List<HomePostResponse>>> GetHomePostsAsync(CancellationToken cancellationToken = default)
     {
         var posts = await _context.Posts
             .Include(p => p.User)
             .Include(p => p.Images)
-            .OrderByDescending(p => p.CreatedOn)
-            .Select(p => new HomeItemResponse
+            .OrderBy(p => Guid.NewGuid())
+            .Select(p => new HomePostResponse
             {
                 Id = p.Id.ToString(),
-                Name = p.User.FirstName + " " + p.User.LastName,
-                ImageUrl = p.Images.Select(i => i.ImageUrl).FirstOrDefault() ?? p.User.ProfilePictureUrl,
-                Title = "Post"
+                OwnerId = p.User.Id,
+                OwnerName = p.User.FirstName + " " + p.User.LastName,
+                OwnerImageUrl = p.User.ProfilePictureUrl,
+                Content = p.Content,
+                PostImageUrl = p.Images.Select(i => i.ImageUrl).FirstOrDefault(),
+                LikesCount = p.Likes.Count,
+                CommentsCount = p.Comments.Count,
+                Date = p.CreatedOn
             })
             .Take(5)
             .ToListAsync(cancellationToken);
