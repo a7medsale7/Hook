@@ -128,9 +128,11 @@ public class NotificationService : INotificationService
             NotificationType.PostShared => $"{actorName} shared your post.",
             NotificationType.Follow => $"{actorName} started following you.",
             NotificationType.FollowedUserPost => $"{actorName} published a new post.",
-            NotificationType.ComplaintUnderReview => "Your complaint is now under review by the administration.",
+            NotificationType.ComplaintUnderReview => "A complaint you are involved in is now under review by the administration.",
             NotificationType.NewComplaintForAdmin => "A new complaint has been posted.",
             NotificationType.PostDeletedDueToReports => "Your post was deleted due to receiving too many reports.",
+            NotificationType.ComplaintResolved => "A complaint you are involved in has been resolved by the administration.",
+            NotificationType.ComplaintRejected => "A complaint you are involved in has been rejected by the administration.",
             _ => "You have a new notification."
         };
     }

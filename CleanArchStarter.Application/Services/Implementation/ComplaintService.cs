@@ -88,6 +88,22 @@ public class ComplaintService : IComplaintService
                 postId,
                 cancellationToken);
 
+            // إشعار الداعمين بأن الشكوى أصبحت قيد المراجعة
+            var supporters = await _context.ComplaintSupports
+                .Where(cs => cs.ComplaintId == postId)
+                .Select(cs => cs.UserId)
+                .ToListAsync(cancellationToken);
+
+            foreach (var supporterId in supporters)
+            {
+                await _notificationService.CreateNotificationAsync(
+                    supporterId,
+                    null,
+                    NotificationType.ComplaintUnderReview,
+                    postId,
+                    cancellationToken);
+            }
+
             var targetRoleNames = new[] { "Admin", "CommunityAdmin" };
 
             var targetRoleIds = await _context.Roles
@@ -179,24 +195,46 @@ public class ComplaintService : IComplaintService
 
         await _context.SaveChangesAsync(cancellationToken);
 
-        // إشعار صاحب الشكوى بأن شكواه تم تحديث حالتها من قبل الإدارة
+        NotificationType? notifType = null;
+
         if (request.Status == ComplaintStatus.UnderReview && oldStatus != ComplaintStatus.UnderReview)
         {
+            notifType = NotificationType.ComplaintUnderReview;
+        }
+        else if (request.Status == ComplaintStatus.Resolved && oldStatus != ComplaintStatus.Resolved)
+        {
+            notifType = NotificationType.ComplaintResolved;
+        }
+        else if (request.Status == ComplaintStatus.Rejected && oldStatus != ComplaintStatus.Rejected)
+        {
+            notifType = NotificationType.ComplaintRejected;
+        }
+
+        if (notifType.HasValue)
+        {
+            // إشعار صاحب الشكوى
             await _notificationService.CreateNotificationAsync(
                 complaint.Post.UserId,
                 adminId,
-                NotificationType.ComplaintUnderReview,
+                notifType.Value,
                 postId,
                 cancellationToken);
-        }
-        else
-        {
-            await _notificationService.CreateNotificationAsync(
-                complaint.Post.UserId,
-                adminId, // Actor is the admin
-                NotificationType.ComplaintSupported, // نعيد استخدام نوع الدعم أو يمكن إضافته كإشعار
-                postId,
-                cancellationToken);
+
+            // إشعار الداعمين للشكوى
+            var supporters = await _context.ComplaintSupports
+                .Where(cs => cs.ComplaintId == postId)
+                .Select(cs => cs.UserId)
+                .ToListAsync(cancellationToken);
+
+            foreach (var supporterId in supporters)
+            {
+                await _notificationService.CreateNotificationAsync(
+                    supporterId,
+                    adminId,
+                    notifType.Value,
+                    postId,
+                    cancellationToken);
+            }
         }
 
         return Result.Success();

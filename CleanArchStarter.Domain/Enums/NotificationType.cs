@@ -14,5 +14,7 @@ public enum NotificationType
     FollowedUserPost = 10,
     ComplaintUnderReview = 11,
     NewComplaintForAdmin = 12,
-    PostDeletedDueToReports = 13
+    PostDeletedDueToReports = 13,
+    ComplaintResolved = 14,
+    ComplaintRejected = 15
 }
