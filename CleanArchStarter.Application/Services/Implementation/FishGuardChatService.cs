@@ -62,7 +62,7 @@ public class FishGuardChatService : IFishGuardChatService
                 var lastAiMsg = history[history.Count - 2];
                 var prevUserMsg = history[history.Count - 3];
 
-                if (lastAiMsg.Role == "Assistant" && lastAiMsg.Content.Contains("هل تريدني أن أجيبك بناءً على معلوماتي العامة"))
+                if (lastAiMsg.Role == "Assistant" && lastAiMsg.Content.Contains("بناءً على معلوماتي وخبرتي العامة في الصيد"))
                 {
                     var msgTrimmed = request.Message.Trim().ToLowerInvariant();
                     var affirmativeWords = new[] { "اه", "نعم", "ايوه", "أيوة", "ياريت", "ماشي", "اوك", "ok", "yes", "تمام", "يلا", "بالتأكيد", "أكيد" };
@@ -117,7 +117,7 @@ public class FishGuardChatService : IFishGuardChatService
         if ((dbEntities == null || dbEntities.Count == 0) && 
             (finalCategory == ChatCategory.RestrictedLocation || finalCategory == ChatCategory.RestrictedTool || finalCategory == ChatCategory.FishingSeason))
         {
-            var interactiveFallback = "للاسف الداتا مش معايا حول هذا الموضوع بالتحديد في قاعدة البيانات الرسمية. هل تريدني أن أجيبك بناءً على معلوماتي العامة كخبير صيد؟";
+            var interactiveFallback = "لا توجد قوانين أو مواسم منع رسمية بخصوص هذا الموضوع. هل ترغب أن أجيبك بناءً على معلوماتي وخبرتي العامة في الصيد؟";
             yield return JsonSerializer.Serialize(new { chunk = interactiveFallback }, jsonOptions) + "\n";
             
             // Save AI Message to DB
