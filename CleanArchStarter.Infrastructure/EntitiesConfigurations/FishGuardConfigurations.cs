@@ -19,8 +19,8 @@ public class RestrictedToolConfiguration : IEntityTypeConfiguration<RestrictedTo
     public void Configure(EntityTypeBuilder<RestrictedTool> builder)
     {
         builder.HasKey(x => x.Id);
-        builder.Property(x => x.ToolName).HasMaxLength(255).IsRequired();
-        builder.Property(x => x.Penalty).HasMaxLength(500);
+        builder.Property(x => x.Name).HasMaxLength(255).IsRequired();
+        builder.Property(x => x.Type).HasMaxLength(100);
     }
 }
 
@@ -29,7 +29,7 @@ public class FishingSeasonConfiguration : IEntityTypeConfiguration<FishingSeason
     public void Configure(EntityTypeBuilder<FishingSeason> builder)
     {
         builder.HasKey(x => x.Id);
-        builder.Property(x => x.Species).HasMaxLength(255).IsRequired();
+        builder.Property(x => x.SeasonName).HasMaxLength(255).IsRequired();
     }
 }
 

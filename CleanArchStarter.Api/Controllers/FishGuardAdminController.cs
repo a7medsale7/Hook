@@ -104,8 +104,8 @@ public class FishGuardAdminController : ControllerBase
     [HttpPost("tools/import")]
     public async Task<IActionResult> ImportTools(IFormFile file, CancellationToken cancellationToken)
     {
-        if (file == null || file.Length == 0) return BadRequest("No file uploaded.");
-        return Ok(new { message = "Tools imported successfully" });
+        var result = await _adminService.ImportToolsAsync(file, cancellationToken);
+        return result.IsSuccess ? Ok(new { message = "Tools imported successfully" }) : BadRequest(result.Error);
     }
 
     // --- Fishing Seasons ---
@@ -147,8 +147,8 @@ public class FishGuardAdminController : ControllerBase
     [HttpPost("seasons/import")]
     public async Task<IActionResult> ImportSeasons(IFormFile file, CancellationToken cancellationToken)
     {
-        if (file == null || file.Length == 0) return BadRequest("No file uploaded.");
-        return Ok(new { message = "Fishing seasons imported successfully" });
+        var result = await _adminService.ImportSeasonsAsync(file, cancellationToken);
+        return result.IsSuccess ? Ok(new { message = "Fishing seasons imported successfully" }) : BadRequest(result.Error);
     }
 
     // --- Fishing FAQs ---

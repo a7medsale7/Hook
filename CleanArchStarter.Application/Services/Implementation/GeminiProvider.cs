@@ -136,44 +136,81 @@ Return strictly ONLY JSON in this format:
             Content = new StringContent(JsonSerializer.Serialize(requestBody), Encoding.UTF8, "application/json")
         };
 
-        using var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
-        response.EnsureSuccessStatusCode();
+        HttpResponseMessage? response = null;
+        System.IO.Stream? stream = null;
+        System.IO.StreamReader? reader = null;
+        bool hasError = false;
+        string errorMessage = string.Empty;
 
-        using var stream = await response.Content.ReadAsStreamAsync(cancellationToken);
-        using var reader = new System.IO.StreamReader(stream);
-
-        while (!reader.EndOfStream && !cancellationToken.IsCancellationRequested)
+        try
         {
-            var line = await reader.ReadLineAsync(cancellationToken);
-            if (string.IsNullOrWhiteSpace(line)) continue;
-
-            if (line.StartsWith("data: "))
+            response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+            
+            if (!response.IsSuccessStatusCode)
             {
-                var data = line.Substring(6);
-                if (data == "[DONE]") break;
+                hasError = true;
+                errorMessage = "عذراً يا صديقي، هناك ضغط كبير على السيرفر في الوقت الحالي أو مشكلة في الاتصال. يرجى المحاولة مرة أخرى بعد قليل.";
+            }
+            else
+            {
+                stream = await response.Content.ReadAsStreamAsync(cancellationToken);
+                reader = new System.IO.StreamReader(stream);
+            }
+        }
+        catch (Exception)
+        {
+            hasError = true;
+            errorMessage = "عذراً يا صديقي، حدث خطأ غير متوقع أثناء معالجة طلبك. يرجى المحاولة مرة أخرى لاحقاً.";
+        }
 
-                string? chunkText = null;
-                try
+        if (hasError)
+        {
+            yield return errorMessage;
+            if (response != null) response.Dispose();
+            yield break;
+        }
+
+        if (reader != null)
+        {
+            try
+            {
+                while (!reader.EndOfStream && !cancellationToken.IsCancellationRequested)
                 {
-                    using var doc = JsonDocument.Parse(data);
-                    if (doc.RootElement.TryGetProperty("candidates", out var candidates) && candidates.GetArrayLength() > 0)
+                    var line = await reader.ReadLineAsync(cancellationToken);
+                    if (string.IsNullOrWhiteSpace(line)) continue;
+
+                    if (line.StartsWith("data: "))
                     {
-                        var candidate = candidates[0];
-                        if (candidate.TryGetProperty("content", out var contentObj) && contentObj.TryGetProperty("parts", out var parts) && parts.GetArrayLength() > 0)
+                        var data = line.Substring(6);
+                        if (data == "[DONE]") break;
+
+                        string? chunkText = null;
+                        try
                         {
-                            chunkText = parts[0].GetProperty("text").GetString();
+                            using var doc = JsonDocument.Parse(data);
+                            if (doc.RootElement.TryGetProperty("candidates", out var candidates) && candidates.GetArrayLength() > 0)
+                            {
+                                var candidate = candidates[0];
+                                if (candidate.TryGetProperty("content", out var contentObj) && contentObj.TryGetProperty("parts", out var parts) && parts.GetArrayLength() > 0)
+                                {
+                                    chunkText = parts[0].GetProperty("text").GetString();
+                                }
+                            }
+                        }
+                        catch { }
+
+                        if (!string.IsNullOrEmpty(chunkText))
+                        {
+                            yield return chunkText;
                         }
                     }
                 }
-                catch
-                {
-                    // Ignore parse errors on chunks
-                }
-
-                if (!string.IsNullOrEmpty(chunkText))
-                {
-                    yield return chunkText;
-                }
+            }
+            finally
+            {
+                reader.Dispose();
+                if (stream != null) await stream.DisposeAsync();
+                if (response != null) response.Dispose();
             }
         }
     }

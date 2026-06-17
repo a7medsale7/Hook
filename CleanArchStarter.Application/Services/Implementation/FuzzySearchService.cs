@@ -59,9 +59,9 @@ public class FuzzySearchService : IFuzzySearchService
                 break;
 
             case ChatCategory.RestrictedTool:
-                var tools = await _context.RestrictedTools.AsNoTracking().Select(x => new { x.Id, x.ToolName }).ToListAsync(cancellationToken);
+                var tools = await _context.RestrictedTools.AsNoTracking().Select(x => new { x.Id, x.Name }).ToListAsync(cancellationToken);
                 if (!tools.Any()) return (null, string.Empty, string.Empty);
-                var normalizedTools = tools.Select(x => new { OriginalId = x.Id, NormalizedName = NormalizeArabic(x.ToolName) }).ToList();
+                var normalizedTools = tools.Select(x => new { OriginalId = x.Id, NormalizedName = NormalizeArabic(x.Name) }).ToList();
                 var toolResult = Process.ExtractOne(normalizedEntityName, normalizedTools.Select(x => x.NormalizedName), s => s);
                 if (toolResult.Score >= Threshold)
                 {
@@ -79,9 +79,9 @@ public class FuzzySearchService : IFuzzySearchService
                 break;
 
             case ChatCategory.FishingSeason:
-                var seasons = await _context.FishingSeasons.AsNoTracking().Select(x => new { x.Id, x.Species }).ToListAsync(cancellationToken);
+                var seasons = await _context.FishingSeasons.AsNoTracking().Select(x => new { x.Id, x.SeasonName }).ToListAsync(cancellationToken);
                 if (!seasons.Any()) return (null, string.Empty, string.Empty);
-                var normalizedSeasons = seasons.Select(x => new { OriginalId = x.Id, NormalizedName = NormalizeArabic(x.Species) }).ToList();
+                var normalizedSeasons = seasons.Select(x => new { OriginalId = x.Id, NormalizedName = NormalizeArabic(x.SeasonName) }).ToList();
                 var seasonResult = Process.ExtractOne(normalizedEntityName, normalizedSeasons.Select(x => x.NormalizedName), s => s);
                 if (seasonResult.Score >= Threshold)
                 {

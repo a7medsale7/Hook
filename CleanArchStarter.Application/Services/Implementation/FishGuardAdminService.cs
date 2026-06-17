@@ -145,6 +145,46 @@ public class FishGuardAdminService : IFishGuardAdminService
         return Result.Success();
     }
 
+    public async Task<Result> ImportToolsAsync(IFormFile file, CancellationToken cancellationToken = default)
+    {
+        if (file == null || file.Length == 0)
+            return Result.Failure(new Error("ValidationError", "No file uploaded or file is empty"));
+
+        try
+        {
+            using var stream = file.OpenReadStream();
+            using var jsonDoc = await System.Text.Json.JsonDocument.ParseAsync(stream, cancellationToken: cancellationToken);
+            var root = jsonDoc.RootElement;
+            
+            System.Text.Json.JsonElement itemsElement;
+            if (root.ValueKind == System.Text.Json.JsonValueKind.Array)
+                itemsElement = root;
+            else if (root.ValueKind == System.Text.Json.JsonValueKind.Object && root.TryGetProperty("items", out var items))
+                itemsElement = items;
+            else
+                return Result.Failure(new Error("ValidationError", "Invalid JSON format. Expected an array or an object with an 'items' array."));
+
+            var options = new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+            var tools = System.Text.Json.JsonSerializer.Deserialize<List<RestrictedTool>>(itemsElement.GetRawText(), options);
+
+            if (tools != null && tools.Any())
+            {
+                _context.RestrictedTools.AddRange(tools);
+                await _context.SaveChangesAsync(cancellationToken);
+            }
+
+            return Result.Success();
+        }
+        catch (System.Text.Json.JsonException)
+        {
+            return Result.Failure(new Error("ValidationError", "Invalid JSON format."));
+        }
+        catch (Exception ex)
+        {
+            return Result.Failure(new Error("ServerError", $"Error importing file: {ex.Message}"));
+        }
+    }
+
     // --- Fishing Seasons ---
     public async Task<Result<IEnumerable<FishingSeason>>> GetSeasonsAsync(CancellationToken cancellationToken = default)
     {
@@ -188,6 +228,46 @@ public class FishGuardAdminService : IFishGuardAdminService
         _context.FishingSeasons.Remove(item);
         await _context.SaveChangesAsync(cancellationToken);
         return Result.Success();
+    }
+
+    public async Task<Result> ImportSeasonsAsync(IFormFile file, CancellationToken cancellationToken = default)
+    {
+        if (file == null || file.Length == 0)
+            return Result.Failure(new Error("ValidationError", "No file uploaded or file is empty"));
+
+        try
+        {
+            using var stream = file.OpenReadStream();
+            using var jsonDoc = await System.Text.Json.JsonDocument.ParseAsync(stream, cancellationToken: cancellationToken);
+            var root = jsonDoc.RootElement;
+            
+            System.Text.Json.JsonElement itemsElement;
+            if (root.ValueKind == System.Text.Json.JsonValueKind.Array)
+                itemsElement = root;
+            else if (root.ValueKind == System.Text.Json.JsonValueKind.Object && root.TryGetProperty("items", out var items))
+                itemsElement = items;
+            else
+                return Result.Failure(new Error("ValidationError", "Invalid JSON format. Expected an array or an object with an 'items' array."));
+
+            var options = new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+            var seasons = System.Text.Json.JsonSerializer.Deserialize<List<FishingSeason>>(itemsElement.GetRawText(), options);
+
+            if (seasons != null && seasons.Any())
+            {
+                _context.FishingSeasons.AddRange(seasons);
+                await _context.SaveChangesAsync(cancellationToken);
+            }
+
+            return Result.Success();
+        }
+        catch (System.Text.Json.JsonException)
+        {
+            return Result.Failure(new Error("ValidationError", "Invalid JSON format."));
+        }
+        catch (Exception ex)
+        {
+            return Result.Failure(new Error("ServerError", $"Error importing file: {ex.Message}"));
+        }
     }
 
     // --- Fishing FAQs ---

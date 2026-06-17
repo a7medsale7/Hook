@@ -1,0 +1,605 @@
+{
+  "_note": "هذه القائمة مبنية على تصنيفات عامة لأدوات وطرق صيد تقع ضمن الفئات الممنوعة في القوانين المصرية (قانون 124 لسنة 1983 لتنظيم الصيد في المياه البحرية، وقانون حماية وتنمية البحيرات والثروة السمكية)، وليست أسماء قانونية رسمية محددة بنص المادة. التفاصيل الرقمية (مثل مقاس الفتحة أو الطول) تقديرية لأغراض العرض وليست نصاً قانونياً دقيقاً، حيث أن أغلب هذه التفاصيل تحددها اللائحة التنفيذية وقرارات الجهة الإدارية المختصة وقد تختلف حسب المنطقة والموسم.",
+  "items": [
+    {
+      "name": "شبكة دقيقة الفتحات",
+      "type": "net",
+      "description": "شبكة ذات فتحات صغيرة جداً تستخدم لصيد الزريعة والأسماك الصغيرة قبل نموها، مما يهدد استمرارية المخزون السمكي.",
+      "material": "Nylon",
+      "is_active": true,
+      "regulations": {
+        "min_mesh_size_cm": 5,
+        "max_length_meters": null,
+        "ban_reason": "تقل فتحاتها عن الحد الأدنى المسموح به فتؤدي لصيد الزريعة"
+      }
+    },
+    {
+      "name": "شبكة الزريفة",
+      "type": "net",
+      "description": "شبكة كثيفة تُنصب لحصر مساحة كبيرة من المياه الضحلة وصيد كل ما فيها دون تمييز بين الأنواع أو الأحجام.",
+      "material": "Polyethylene",
+      "is_active": true,
+      "regulations": {
+        "min_mesh_size_cm": 3,
+        "max_length_meters": 100,
+        "ban_reason": "صيد عشوائي غير منتقٍ يضر بالتوازن البيئي"
+      }
+    },
+    {
+      "name": "شبكة الجر القاعدية",
+      "type": "net",
+      "description": "شبكة ثقيلة تُجر على قاع البحيرة أو البحر فتدمر الأعشاب والقشريات وبيئة تفريخ الأسماك.",
+      "material": "Polypropylene",
+      "is_active": true,
+      "regulations": {
+        "min_mesh_size_cm": 4,
+        "max_length_meters": 200,
+        "ban_reason": "تدمير القاع والبيئة الحاضنة لليرقات والزريعة"
+      }
+    },
+    {
+      "name": "شبكة الشراك المهجورة",
+      "type": "net",
+      "description": "شباك تُترك في المياه دون إشراف الصياد لفترات طويلة فتستمر في صيد الأسماك وقتلها دون جمعها (صيد الأشباح).",
+      "material": "Nylon",
+      "is_active": true,
+      "regulations": {
+        "min_mesh_size_cm": null,
+        "max_length_meters": null,
+        "ban_reason": "تتسبب في نفوق أحياء مائية دون استفادة منها (ظاهرة الصيد الشبحي)"
+      }
+    },
+    {
+      "name": "أداة الصعق الكهربائي",
+      "type": "equipment",
+      "description": "جهاز يولّد تياراً كهربائياً يُمرّر في المياه لصعق الأسماك وتجميعها وهي طافية على السطح.",
+      "material": "Metal/Electronic components",
+      "is_active": true,
+      "regulations": {
+        "min_mesh_size_cm": null,
+        "max_length_meters": null,
+        "ban_reason": "يقتل جميع الأحياء المائية في نطاقه بما فيها الزريعة والبيض ويُعد صيداً جائراً"
+      }
+    },
+    {
+      "name": "مادة متفجرة للصيد",
+      "type": "explosive",
+      "description": "متفجرات تُستخدم لإحداث صدمة في المياه تقتل الأسماك دفعة واحدة وتدمر الشعاب والبيئة المحيطة.",
+      "material": "Chemical compound",
+      "is_active": true,
+      "regulations": {
+        "min_mesh_size_cm": null,
+        "max_length_meters": null,
+        "ban_reason": "تدمير شامل للبيئة المائية وخطر مباشر على حياة الصيادين والمارة"
+      }
+    },
+    {
+      "name": "مادة سامة للصيد",
+      "type": "chemical",
+      "description": "مواد كيميائية أو سموم تُلقى في المياه لتخدير أو قتل الأسماك بأعداد كبيرة دفعة واحدة.",
+      "material": "Chemical compound",
+      "is_active": true,
+      "regulations": {
+        "min_mesh_size_cm": null,
+        "max_length_meters": null,
+        "ban_reason": "تلويث المياه وقتل عشوائي لجميع الأحياء المائية وخطر على صحة المستهلك"
+      }
+    },
+    {
+      "name": "شبكة الفخ الثابت غير المرخصة",
+      "type": "net",
+      "description": "منشأة شبكية ثابتة تُقام عبر مسار مائي لاعتراض الأسماك المتجهة للتفريخ دون ترخيص من الجهة المختصة.",
+      "material": "Nylon",
+      "is_active": true,
+      "regulations": {
+        "min_mesh_size_cm": 4,
+        "max_length_meters": 60,
+        "ban_reason": "تعترض مسارات الهجرة والتفريخ الطبيعية للأسماك"
+      }
+    },
+    {
+      "name": "شبكة الجراف الساحلي",
+      "type": "net",
+      "description": "شبكة طويلة تُسحب من الشاطئ بواسطة عدة أشخاص أو معدات لجمع كل الأحياء القريبة من السطح والقاع الضحل.",
+      "material": "Nylon",
+      "is_active": true,
+      "regulations": {
+        "min_mesh_size_cm": 4,
+        "max_length_meters": 150,
+        "ban_reason": "غير انتقائية وتدمر مناطق الحضانة الساحلية"
+      }
+    },
+    {
+      "name": "قفص صيد غير مرخص",
+      "type": "trap",
+      "description": "أقفاص أو سلال معدنية أو بلاستيكية تُغمر في المياه لحصر الأسماك دون حيازة ترخيص رسمي بنوعها أو موقعها.",
+      "material": "Metal/Plastic",
+      "is_active": true,
+      "regulations": {
+        "min_mesh_size_cm": 3,
+        "max_length_meters": null,
+        "ban_reason": "استخدام أداة صيد دون ترخيص من الجهة الإدارية المختصة"
+      }
+    },
+    {
+      "name": "شبكة الإحاطة العملاقة غير المرخصة",
+      "type": "net",
+      "description": "شبكة كبيرة الحجم تُحيط بتجمعات كاملة من الأسماك في منطقة واسعة لمنع هروبها قبل سحبها بالكامل.",
+      "material": "Polyethylene",
+      "is_active": true,
+      "regulations": {
+        "min_mesh_size_cm": 5,
+        "max_length_meters": 300,
+        "ban_reason": "استنزاف جائر للمخزون السمكي في منطقة واحدة"
+      }
+    },
+    {
+      "name": "خيط صيد متعدد الصنانير المحظور",
+      "type": "line",
+      "description": "خيط طويل يحمل عدداً كبيراً من الصنانير يُترك منصوباً لفترات طويلة دون إشراف، فيصطاد بشكل عشوائي ومستمر.",
+      "material": "Nylon/Steel hooks",
+      "is_active": true,
+      "regulations": {
+        "min_mesh_size_cm": null,
+        "max_length_meters": 500,
+        "ban_reason": "صيد غير منتقٍ يستمر دون رقابة لفترات طويلة"
+      }
+    },
+    {
+      "name": "أداة رفع المياه غير المرخصة",
+      "type": "equipment",
+      "description": "مضخات أو أدوات لرفع أو تصريف المياه من البحيرات أو بواغيزها بغرض تجميع الأسماك العالقة في القاع الضحل.",
+      "material": "Metal",
+      "is_active": true,
+      "regulations": {
+        "min_mesh_size_cm": null,
+        "max_length_meters": null,
+        "ban_reason": "حيازة أو استعمال أدوات رفع المياه داخل البحيرات دون ترخيص من الجهاز المختص"
+      }
+    },
+    {
+      "name": "شبكة الصيد الليلي بالأضواء الكاشفة المكثفة",
+      "type": "net",
+      "description": "شبكة تُستخدم مع أضواء قوية تُستدرج بها الأسماك ليلاً بكثافة تفوق الحدود المسموح بها في مناطق معينة.",
+      "material": "Nylon",
+      "is_active": true,
+      "regulations": {
+        "min_mesh_size_cm": 4,
+        "max_length_meters": 80,
+        "ban_reason": "استدراج جائر يستهدف تجمعات الأسماك أثناء فترات الراحة الطبيعية"
+      }
+    },
+    {
+      "name": "شبكة طحن وعصر الأسماك الصغيرة",
+      "type": "equipment",
+      "description": "معدة تُستخدم لطحن أو عصر الأسماك الصغيرة لاستخلاص الزيوت أو الأعلاف دون ترخيص.",
+      "material": "Metal",
+      "is_active": true,
+      "regulations": {
+        "min_mesh_size_cm": null,
+        "max_length_meters": null,
+        "ban_reason": "ممنوع طحن أو عصر الأسماك بجميع أحجامها إلا بترخيص من الجهة المختصة"
+      }
+    },
+    {
+      "name": "شبكة صيد الزينة البحرية غير المرخصة",
+      "type": "net",
+      "description": "شبكة دقيقة مخصصة لصيد أسماك الزينة من المياه البحرية دون ترخيص رسمي.",
+      "material": "Nylon",
+      "is_active": true,
+      "regulations": {
+        "min_mesh_size_cm": 1,
+        "max_length_meters": 10,
+        "ban_reason": "ممارسة صيد أسماك الزينة في المياه البحرية دون ترخيص من الجهة المختصة"
+      }
+    },
+    {
+      "name": "شبكة معترضة لقنوات الصرف والبواغيز",
+      "type": "net",
+      "description": "شبكة تُنصب عرضياً داخل بواغيز البحيرات لاعتراض حركة الأسماك بين المياه المالحة والعذبة.",
+      "material": "Nylon",
+      "is_active": true,
+      "regulations": {
+        "min_mesh_size_cm": 3,
+        "max_length_meters": 40,
+        "ban_reason": "تعطل حركة الهجرة الطبيعية للأسماك بين البحيرة والبحر"
+      }
+    },
+    {
+      "name": "مصيدة الزريعة الثابتة",
+      "type": "trap",
+      "description": "منشأة صيد ثابتة صُممت خصيصاً لاعتراض وجمع زريعة الأسماك قبل بلوغها مرحلة النمو.",
+      "material": "Mesh fabric",
+      "is_active": true,
+      "regulations": {
+        "min_mesh_size_cm": 1,
+        "max_length_meters": null,
+        "ban_reason": "تستهدف الزريعة وتضر باستمرارية الثروة السمكية"
+      }
+    },
+    {
+      "name": "شبكة صيد بدون رقم تسجيل أو ترخيص",
+      "type": "net",
+      "description": "شبكة لا تحمل أي علامة تسجيل أو رخصة صادرة من الجهة المختصة وتُستخدم خارج نطاق الرقابة الرسمية.",
+      "material": "Nylon",
+      "is_active": true,
+      "regulations": {
+        "min_mesh_size_cm": null,
+        "max_length_meters": null,
+        "ban_reason": "حيازة أو استعمال أداة صيد غير مرخصة على متن المركب أو في موقع الصيد"
+      }
+    },
+    {
+      "name": "أداة وزن الأسماك غير المصرح بحملها",
+      "type": "equipment",
+      "description": "أداة وزن تُستخدم لتقييم الكمية المصيدة على متن المركب أثناء وجوده في البحيرة، وهو أمر محظور حيازته على المركب.",
+      "material": "Metal/Plastic",
+      "is_active": true,
+      "regulations": {
+        "min_mesh_size_cm": null,
+        "max_length_meters": null,
+        "ban_reason": "حيازة أداة وزن الأسماك على المركب أمر محظور قانوناً"
+      }
+    },
+    {
+      "name": "شبكة جر مزدوجة عميقة",
+      "type": "net",
+      "description": "شبكتان مرتبطتان تُجران معاً بواسطة مركبين لتغطية مساحة أكبر من القاع، مما يزيد من الضرر البيئي.",
+      "material": "Polyester",
+      "is_active": true,
+      "regulations": {
+        "min_mesh_size_cm": 4,
+        "max_length_meters": 250,
+        "ban_reason": "تضخم حجم الصيد العشوائي وتدمير موسع للقاع البحري"
+      }
+    },
+    {
+      "name": "خطافات صيد قاعدية متعددة محظورة الاستخدام الموسمي",
+      "type": "line",
+      "description": "نظام خطافات يُثبت بالقرب من القاع لفترات طويلة، يُستخدم خلال فترة منع الصيد الموسمية المحددة لحماية التفريخ.",
+      "material": "Steel/Nylon",
+      "is_active": true,
+      "regulations": {
+        "min_mesh_size_cm": null,
+        "max_length_meters": 300,
+        "ban_reason": "الاستخدام خلال فترة منع الصيد الموسمية المخصصة لحماية التفريخ"
+      }
+    },
+    {
+      "name": "شبكة صيد في المناطق المحمية",
+      "type": "net",
+      "description": "شبكة عادية تُستخدم داخل حدود مناطق محمية طبيعياً أو مخصصة لحماية الثروة السمكية، وهو استخدام محظور بصرف النظر عن مواصفات الشبكة.",
+      "material": "Nylon",
+      "is_active": true,
+      "regulations": {
+        "min_mesh_size_cm": 5,
+        "max_length_meters": 50,
+        "ban_reason": "الصيد داخل منطقة محمية أو محظورة الصيد بقرار من الجهة المختصة"
+      }
+    },
+    {
+      "name": "شبكة صيد قرب منشآت تربية الأحياء المائية",
+      "type": "net",
+      "description": "شبكة تُستخدم بالقرب من المزارع السمكية أو منشآت تربية الأحياء المائية دون مسافة أمان أو ترخيص.",
+      "material": "Nylon",
+      "is_active": true,
+      "regulations": {
+        "min_mesh_size_cm": 4,
+        "max_length_meters": 70,
+        "ban_reason": "التعدي على مناطق التربية المرخصة يضر بالإنتاج السمكي المنظم"
+      }
+    },
+    {
+      "name": "معدة رفع وحفر غير مرخصة لتجفيف مناطق الصيد",
+      "type": "equipment",
+      "description": "معدات تُستخدم لتجفيف أو ردم أجزاء من البحيرات أو البرك لتسهيل تجميع الأسماك العالقة.",
+      "material": "Metal",
+      "is_active": true,
+      "regulations": {
+        "min_mesh_size_cm": null,
+        "max_length_meters": null,
+        "ban_reason": "تجفيف أو ردم مساحات من البحيرات محظور إلا للأغراض القومية بقرار رئاسي"
+      }
+    },
+    {
+      "name": "شبكة صيد الزعانف فقط (إزالة الزعانف)",
+      "type": "net",
+      "description": "أداة أو ممارسة تستهدف اصطياد الأسماك بغرض إزالة الزعانف فقط (كما في حالة أسماك القرش) ثم إعادتها للمياه دون اكتمال الجسم.",
+      "material": "Nylon",
+      "is_active": true,
+      "regulations": {
+        "min_mesh_size_cm": null,
+        "max_length_meters": null,
+        "ban_reason": "ممارسة وحشية تهدد الأنواع المهددة وتخالف ضوابط الصيد المستدام"
+      }
+    },
+    {
+      "name": "شبكة خيشومية دقيقة محظورة",
+      "type": "net",
+      "description": "شبكة عمودية تعلق الأسماك من خيوشها عند محاولة العبور، وتُصنع بفتحات أصغر من الحد المسموح فتحصر حتى الأسماك الصغيرة.",
+      "material": "Monofilament",
+      "is_active": true,
+      "regulations": {
+        "min_mesh_size_cm": 3,
+        "max_length_meters": 120,
+        "ban_reason": "فتحات أصغر من الحد القانوني تؤدي لحصر الأسماك غير المكتملة النمو"
+      }
+    },
+    {
+      "name": "شبكة صيد بشص متعدد غير قانوني (الشص المتعدد)",
+      "type": "hook",
+      "description": "أداة معدنية متعددة الشصوص تُستخدم لجرف الأسماك من القاع دون طُعم، بطريقة عشوائية غير مستهدفة.",
+      "material": "Steel",
+      "is_active": true,
+      "regulations": {
+        "min_mesh_size_cm": null,
+        "max_length_meters": null,
+        "ban_reason": "صيد عشوائي يجرح الأسماك بطريقة وحشية دون تمييز نوع أو حجم"
+      }
+    },
+    {
+      "name": "شبكة صيد بالقرب من السدود والمنشآت المائية",
+      "type": "net",
+      "description": "شبكة تُنصب قرب السدود أو المنشآت المائية الحيوية دون مراعاة مسافات الأمان المحددة.",
+      "material": "Nylon",
+      "is_active": true,
+      "regulations": {
+        "min_mesh_size_cm": 4,
+        "max_length_meters": 50,
+        "ban_reason": "التهديد بإلحاق ضرر بالمنشآت المائية الحيوية"
+      }
+    },
+    {
+      "name": "فخ غاطس آلي بدون رقابة",
+      "type": "trap",
+      "description": "مصيدة آلية تعمل ذاتياً وتُترك مغمورة لفترات طويلة دون متابعة، فتستمر في حصر الأحياء المائية.",
+      "material": "Plastic/Metal",
+      "is_active": true,
+      "regulations": {
+        "min_mesh_size_cm": 2,
+        "max_length_meters": null,
+        "ban_reason": "غياب الرقابة يؤدي لنفوق الأحياء المحصورة دون استفادة (مشابه للصيد الشبحي)"
+      }
+    },
+    {
+      "name": "شبكة صيد مزودة بأوزان رصاصية ثقيلة محظورة",
+      "type": "net",
+      "description": "شبكة مثبتة بأوزان رصاصية تجعلها تستقر على القاع بشكل دائم وتدمر الشعاب والنباتات المائية.",
+      "material": "Nylon/Lead weights",
+      "is_active": true,
+      "regulations": {
+        "min_mesh_size_cm": 3,
+        "max_length_meters": 90,
+        "ban_reason": "تدمير الموائل القاعية الحساسة مثل الشعاب المرجانية"
+      }
+    },
+    {
+      "name": "أداة شفط الزريعة الميكانيكية",
+      "type": "equipment",
+      "description": "مضخة شفط تُستخدم لجمع كميات كبيرة من زريعة الأسماك من المياه الضحلة بشكل جائر.",
+      "material": "Metal/Plastic",
+      "is_active": true,
+      "regulations": {
+        "min_mesh_size_cm": null,
+        "max_length_meters": null,
+        "ban_reason": "استنزاف مباشر لمصدر تجدد المخزون السمكي"
+      }
+    },
+    {
+      "name": "شبكة صيد بطول يتجاوز الحد القانوني",
+      "type": "net",
+      "description": "شبكة عادية الصناعة لكن يتجاوز طولها الإجمالي الحد الأقصى المقرر لمنطقة الصيد المحددة.",
+      "material": "Nylon",
+      "is_active": true,
+      "regulations": {
+        "min_mesh_size_cm": 5,
+        "max_length_meters": 500,
+        "ban_reason": "تجاوز الحد الأقصى للطول المسموح به في منطقة الصيد"
+      }
+    },
+    {
+      "name": "شبكة الصيد المتروكة بعد انتهاء الترخيص",
+      "type": "net",
+      "description": "شبكة كانت مرخصة لكن استمر استخدامها بعد انتهاء صلاحية الترخيص أو الموسم المحدد لها.",
+      "material": "Nylon",
+      "is_active": true,
+      "regulations": {
+        "min_mesh_size_cm": 4,
+        "max_length_meters": 60,
+        "ban_reason": "استخدام أداة صيد بترخيص منتهي الصلاحية"
+      }
+    },
+    {
+      "name": "شباك الصيد بالقرب من بوابات الصرف الزراعي",
+      "type": "net",
+      "description": "شبكة تُنصب أمام بوابات الصرف الزراعي أو الصناعي حيث تتجمع الأسماك بكثافة قبل دخولها مياه ملوثة.",
+      "material": "Nylon",
+      "is_active": true,
+      "regulations": {
+        "min_mesh_size_cm": 3,
+        "max_length_meters": 30,
+        "ban_reason": "صيد جائر في مناطق تجمع غير طبيعية، وخطر تلوث الأسماك المصيدة"
+      }
+    },
+    {
+      "name": "معدة صيد بالرادار أو أجهزة الاستشعار الجائرة",
+      "type": "equipment",
+      "description": "أجهزة استشعار متطورة تُستخدم لتحديد مواقع تجمعات الأسماك الكبيرة بدقة عالية وصيدها بالكامل قبل تفريخها.",
+      "material": "Electronic components",
+      "is_active": true,
+      "regulations": {
+        "min_mesh_size_cm": null,
+        "max_length_meters": null,
+        "ban_reason": "يمكّن من استهداف واستنزاف تجمعات سمكية كاملة في وقت قصير"
+      }
+    },
+    {
+      "name": "شبكة صيد متصلة بعدة مراكب لتطويق مساحة واسعة",
+      "type": "net",
+      "description": "نظام شباك يُنصب بمساعدة عدة مراكب لتطويق مساحة مائية واسعة دفعة واحدة بما يتجاوز الحصص المسموح بها.",
+      "material": "Polyethylene",
+      "is_active": true,
+      "regulations": {
+        "min_mesh_size_cm": 5,
+        "max_length_meters": 400,
+        "ban_reason": "تجاوز حصص الصيد المسموح بها وتدمير شامل لمنطقة الصيد"
+      }
+    },
+    {
+      "name": "أداة صيد بالضوء فوق البنفسجي المكثف",
+      "type": "equipment",
+      "description": "مصدر إضاءة قوي بطول موجي مكثف يُستخدم لجذب أعداد كبيرة من الأسماك والقشريات ليلاً بشكل غير متناسب.",
+      "material": "Electronic components",
+      "is_active": true,
+      "regulations": {
+        "min_mesh_size_cm": null,
+        "max_length_meters": null,
+        "ban_reason": "استدراج جائر يفوق الكثافة الطبيعية المسموح بصيدها"
+      }
+    },
+    {
+      "name": "شباك صيد قنديل البحر والقشريات الصغيرة",
+      "type": "net",
+      "description": "شبكة دقيقة جداً مخصصة لصيد القشريات واليرقات الصغيرة التي تُعد غذاءً أساسياً لليرقات السمكية.",
+      "material": "Fine mesh fabric",
+      "is_active": true,
+      "regulations": {
+        "min_mesh_size_cm": 0.5,
+        "max_length_meters": 20,
+        "ban_reason": "تستهدف القاعدة الغذائية للسلسلة الغذائية المائية وتضر بتجدد الأسماك"
+      }
+    },
+    {
+      "name": "شبكة صيد مزدوجة الطبقات (طبقة كثيفة وطبقة فضفاضة)",
+      "type": "net",
+      "description": "تصميم مزدوج يجمع بين شبكة فضفاضة وأخرى كثيفة خلفها لضمان حصر كل ما يحاول الهروب من الطبقة الأولى.",
+      "material": "Nylon",
+      "is_active": true,
+      "regulations": {
+        "min_mesh_size_cm": 2,
+        "max_length_meters": 100,
+        "ban_reason": "تصميم مخصص للتحايل على قيود مقاس الفتحة القانوني"
+      }
+    },
+    {
+      "name": "معدة صيد تعمل بالضغط الهوائي لتفجير القاع",
+      "type": "equipment",
+      "description": "معدة تستخدم نفخات هوائية مضغوطة لإخراج الأسماك المختبئة في الشقوق والقاع الصخري دفعة واحدة.",
+      "material": "Metal/Compressed air system",
+      "is_active": true,
+      "regulations": {
+        "min_mesh_size_cm": null,
+        "max_length_meters": null,
+        "ban_reason": "تدمير الموائل القاعية وتعريض الأسماك المختبئة للصيد الجائر"
+      }
+    },
+    {
+      "name": "شبكة صيد بمواصفات مخالفة لقرارات الجهاز المختص",
+      "type": "net",
+      "description": "شبكة لا تتوافق مواصفاتها (المادة، الفتحة، الطول) مع القرارات الصادرة عن جهاز حماية وتنمية البحيرات والثروة السمكية لمنطقة معينة.",
+      "material": "Polyethylene",
+      "is_active": true,
+      "regulations": {
+        "min_mesh_size_cm": 5,
+        "max_length_meters": 50,
+        "ban_reason": "عدم التوافق مع المواصفات الصادرة عن الجهة الإدارية المختصة"
+      }
+    },
+    {
+      "name": "أداة صيد آلية للحصاد الجائر للقشريات (الجمبري الصغير)",
+      "type": "equipment",
+      "description": "معدة آلية مخصصة لجمع كميات كبيرة من القشريات الصغيرة غير المكتملة النمو من القاع الطيني.",
+      "material": "Metal",
+      "is_active": true,
+      "regulations": {
+        "min_mesh_size_cm": 1,
+        "max_length_meters": null,
+        "ban_reason": "استهداف قشريات غير مكتملة النمو يضر باستمرارية المخزون"
+      }
+    },
+    {
+      "name": "شبكة صيد في فترة منع الصيد الموسمي (موسم التفريخ)",
+      "type": "net",
+      "description": "شبكة عادية لكن تُستخدم خلال الفترة الزمنية المحددة قانوناً لمنع الصيد بهدف حماية موسم التفريخ.",
+      "material": "Nylon",
+      "is_active": true,
+      "regulations": {
+        "min_mesh_size_cm": 5,
+        "max_length_meters": 50,
+        "ban_reason": "الاستخدام خلال الفترة الزمنية المحددة لمنع الصيد لحماية التفريخ"
+      }
+    },
+    {
+      "name": "مصيدة سلكية دائرية للقواقع والمحاريات الصغيرة",
+      "type": "trap",
+      "description": "مصيدة سلكية دائرية بفتحات صغيرة تستهدف القواقع والمحاريات الصغيرة قبل وصولها للحجم القانوني للبيع.",
+      "material": "Steel wire",
+      "is_active": true,
+      "regulations": {
+        "min_mesh_size_cm": 1,
+        "max_length_meters": null,
+        "ban_reason": "صيد محاريات وقواقع أصغر من الحجم القانوني المحدد للبيع"
+      }
+    },
+    {
+      "name": "شبكة صيد بمحرك جر آلي عالي السرعة",
+      "type": "net",
+      "description": "شبكة مرتبطة بمحرك آلي يسحبها بسرعة عالية تتجاوز السرعة المسموح بها في مناطق الصيد الحساسة.",
+      "material": "Nylon",
+      "is_active": true,
+      "regulations": {
+        "min_mesh_size_cm": 4,
+        "max_length_meters": 180,
+        "ban_reason": "السرعة العالية تزيد من الضرر بالقاع والموائل الحساسة"
+      }
+    },
+    {
+      "name": "شبكة صيد محظورة الاستخدام في قنوات الري الرئيسية",
+      "type": "net",
+      "description": "شبكة تُنصب داخل قنوات الري الرئيسية المخصصة للزراعة، وهو استخدام يتعارض مع الغرض المخصص للقناة.",
+      "material": "Nylon",
+      "is_active": true,
+      "regulations": {
+        "min_mesh_size_cm": 3,
+        "max_length_meters": 25,
+        "ban_reason": "استخدام منشأ مائي لغرض غير مخصص له دون ترخيص"
+      }
+    },
+    {
+      "name": "شبكة صيد بمواد عاكسة لجذب الأسماك بشكل مكثف",
+      "type": "net",
+      "description": "شبكة مزودة بشرائط عاكسة للضوء تجذب الأسماك بكثافة غير طبيعية أثناء حركتها في المياه.",
+      "material": "Nylon with reflective strips",
+      "is_active": true,
+      "regulations": {
+        "min_mesh_size_cm": 4,
+        "max_length_meters": 70,
+        "ban_reason": "استدراج مكثف يفوق المعدل الطبيعي للصيد المستدام"
+      }
+    },
+    {
+      "name": "أداة غاطسة لتدمير الشعاب المرجانية بحثاً عن الأسماك",
+      "type": "equipment",
+      "description": "معدة أو أداة تُستخدم لتفتيت أجزاء من الشعاب المرجانية للوصول إلى الأسماك المختبئة بداخلها.",
+      "material": "Metal",
+      "is_active": true,
+      "regulations": {
+        "min_mesh_size_cm": null,
+        "max_length_meters": null,
+        "ban_reason": "تدمير دائم لموائل بحرية حساسة ومحمية"
+      }
+    },
+    {
+      "name": "شبكة صيد مزودة بطعم سام لجذب الأسماك",
+      "type": "net",
+      "description": "شبكة عادية تُستخدم مع طعم مخلوط بمواد مخدرة أو سامة لتسهيل تجميع الأسماك بسرعة.",
+      "material": "Nylon",
+      "is_active": true,
+      "regulations": {
+        "min_mesh_size_cm": 4,
+        "max_length_meters": 60,
+        "ban_reason": "استخدام مواد سامة يضر بصحة المستهلك وبالبيئة المائية"
+      }
+    }
+  ]
+}

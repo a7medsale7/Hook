@@ -1,6 +1,7 @@
 using Hook.Application;
 using Hook.Application.Services.Implementation;
 using Hook.Application.Services.Interfaces;
+using Hook.Application.Contracts.Ai;
 using Hook.Infrastructure;
 using Hook.Api.Hubs;
 using Hook.Infrastructure.Authentication;
@@ -141,6 +142,7 @@ public static class DependencyInjection
         services.AddScoped<IFuzzySearchService, FuzzySearchService>();
         services.AddScoped<IConversationService, ConversationService>();
         services.AddScoped<IFishGuardChatService, FishGuardChatService>();
+        services.AddScoped<IAiDatabaseMapper, AiDatabaseMapper>();
         services.AddScoped<IFishGuardAdminService, FishGuardAdminService>();
 
         return services;

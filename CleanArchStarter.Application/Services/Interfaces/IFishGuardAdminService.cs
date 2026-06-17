@@ -24,6 +24,7 @@ public interface IFishGuardAdminService
     Task<Result<RestrictedTool>> CreateToolAsync(CreateRestrictedToolDto request, CancellationToken cancellationToken = default);
     Task<Result<RestrictedTool>> UpdateToolAsync(int id, UpdateRestrictedToolDto request, CancellationToken cancellationToken = default);
     Task<Result> DeleteToolAsync(int id, CancellationToken cancellationToken = default);
+    Task<Result> ImportToolsAsync(Microsoft.AspNetCore.Http.IFormFile file, CancellationToken cancellationToken = default);
 
     // Fishing Seasons
     Task<Result<IEnumerable<FishingSeason>>> GetSeasonsAsync(CancellationToken cancellationToken = default);
@@ -31,6 +32,7 @@ public interface IFishGuardAdminService
     Task<Result<FishingSeason>> CreateSeasonAsync(CreateFishingSeasonDto request, CancellationToken cancellationToken = default);
     Task<Result<FishingSeason>> UpdateSeasonAsync(int id, UpdateFishingSeasonDto request, CancellationToken cancellationToken = default);
     Task<Result> DeleteSeasonAsync(int id, CancellationToken cancellationToken = default);
+    Task<Result> ImportSeasonsAsync(Microsoft.AspNetCore.Http.IFormFile file, CancellationToken cancellationToken = default);
 
     // Fishing FAQs
     Task<Result<IEnumerable<FishingFaq>>> GetFaqsAsync(CancellationToken cancellationToken = default);
