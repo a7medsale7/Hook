@@ -46,6 +46,13 @@ public class ReviewRepository(ApplicationDbContext context) : IReviewRepository
             .ToListAsync();
     }
 
+    public async Task<IEnumerable<Review>> GetByOwnerIdAsync(Guid ownerId)
+    {
+        return await context.Reviews
+            .Where(r => r.Trip.TripManagerId == ownerId && !r.IsDeleted)
+            .ToListAsync();
+    }
+
     public async Task AddAsync(Review review)
     {
         await context.Reviews.AddAsync(review);

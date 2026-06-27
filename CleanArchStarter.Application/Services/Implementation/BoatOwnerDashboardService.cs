@@ -15,11 +15,42 @@ namespace Hook.Application.Services.Implementation
     public class BoatOwnerDashboardService(
         IBoatOwnerRepository boatOwnerRepository,
         IBookingRepository bookingRepository,
-        ITripRepository tripRepository) : IBoatOwnerDashboardService
+        ITripRepository tripRepository,
+        IReviewRepository reviewRepository) : IBoatOwnerDashboardService
     {
         private readonly IBoatOwnerRepository _boatOwnerRepository = boatOwnerRepository;
         private readonly IBookingRepository _bookingRepository = bookingRepository;
         private readonly ITripRepository _tripRepository = tripRepository;
+        private readonly IReviewRepository _reviewRepository = reviewRepository;
+
+        public async Task<Result<BoatOwnerStatisticsResponse>> GetStatisticsAsync(string userId, CancellationToken cancellationToken = default)
+        {
+            var boatOwner = await _boatOwnerRepository.GetByUserIdAsync(userId);
+            if (boatOwner is null || boatOwner.Status != RequestStatus.Approved)
+                return Result.Failure<BoatOwnerStatisticsResponse>(BoatOwnerErrors.NotApproved);
+
+            // Upcoming Bookings count
+            var bookings = await _bookingRepository.GetByOwnerIdAsync(boatOwner.Id);
+            var upcomingBookingsCount = bookings.Count(b => b.Status != BookingStatus.Cancelled && b.TripDate.EndDate >= DateTime.UtcNow);
+
+            // Active Trips count
+            var trips = await _tripRepository.GetByOwnerIdAsync(boatOwner.Id);
+            var activeTripsCount = trips.Count(t => t.TripDates.Any(d => d.IsActive && d.StartDate >= DateTime.UtcNow));
+
+            // Earnings
+            var earnings = bookings.Where(b => b.Status == BookingStatus.Completed || b.Status == BookingStatus.Confirmed).Sum(b => b.TotalPrice);
+
+            // Avg Rating
+            var reviews = await _reviewRepository.GetByOwnerIdAsync(boatOwner.Id);
+            var avgRating = reviews.Any() ? (decimal)reviews.Average(r => r.Rating) : 0;
+
+            return Result.Success(new BoatOwnerStatisticsResponse(
+                upcomingBookingsCount,
+                activeTripsCount,
+                Math.Round(avgRating, 1),
+                earnings
+            ));
+        }
 
         public async Task<Result<IEnumerable<UpcomingBookingResponse>>> GetUpcomingBookingsAsync(string userId, CancellationToken cancellationToken = default)
         {

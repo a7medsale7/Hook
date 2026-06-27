@@ -14,6 +14,17 @@ namespace Hook.Api.Controllers
     {
         private readonly IBoatOwnerDashboardService _dashboardService = dashboardService;
 
+        [HttpGet("statistics")]
+        [Authorize(Policy = Permissions.BoatOwner_ViewProfile)]
+        public async Task<IActionResult> GetStatistics(CancellationToken cancellationToken)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId is null) return Unauthorized();
+
+            var result = await _dashboardService.GetStatisticsAsync(userId, cancellationToken);
+            return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
+        }
+
         [HttpGet("upcoming-bookings")]
         [Authorize(Policy = Permissions.BoatOwner_ViewProfile)]
         public async Task<IActionResult> GetUpcomingBookings(CancellationToken cancellationToken)

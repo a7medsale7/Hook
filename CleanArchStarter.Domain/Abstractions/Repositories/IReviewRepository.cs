@@ -11,6 +11,7 @@ public interface IReviewRepository
     Task<Review?> GetByBookingIdAsync(Guid bookingId);
     Task<IEnumerable<Review>> GetByTripIdAsync(Guid tripId);
     Task<IEnumerable<Review>> GetByUserIdAsync(string userId);
+    Task<IEnumerable<Review>> GetByOwnerIdAsync(Guid ownerId);
     Task AddAsync(Review review);
     void Update(Review review);
     void Delete(Review review);
