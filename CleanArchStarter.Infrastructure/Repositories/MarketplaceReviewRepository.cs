@@ -1,4 +1,4 @@
-﻿using Hook.Domain.Abstractions.Repositories;
+using Hook.Domain.Abstractions.Repositories;
 using Hook.Domain.Entities;
 using Hook.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -32,6 +32,16 @@ namespace Hook.Infrastructure.Repositories
         {
             return await context.MarketplaceReviews
                 .Where(r => r.ProductId == productId && !r.IsDeleted)
+                .Include(r => r.Buyer)
+                .OrderByDescending(r => r.CreatedOn)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<MarketplaceReview>> GetBySellerProfileIdAsync(Guid sellerProfileId)
+        {
+            return await context.MarketplaceReviews
+                .Where(r => r.Product.SellerProfileId == sellerProfileId && !r.IsDeleted)
+                .Include(r => r.Product)
                 .Include(r => r.Buyer)
                 .OrderByDescending(r => r.CreatedOn)
                 .ToListAsync();

@@ -1,4 +1,4 @@
-﻿using Hook.Domain.Enums;
+using Hook.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,11 +10,13 @@ namespace Hook.Application.Contracts.Marketplace.Products
     public record MarketplaceProductListItemResponse(
      Guid Id,
      string Title,
+     string Description,
      decimal Price,
      MarketplaceProductCondition Condition,
      MarketplaceProductCategory Category,
      int StockQuantity,
-     string? MainImageUrl
+     string? MainImageUrl,
+     decimal AverageRating
     );
 
 }

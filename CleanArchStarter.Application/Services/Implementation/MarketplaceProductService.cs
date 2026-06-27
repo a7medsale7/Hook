@@ -22,8 +22,8 @@ namespace Hook.Application.Services.Implementation
             {
                 var q = filter.Query.Trim();
                 products = products.Where(p =>
-                    p.Title.Contains(q, StringComparison.OrdinalIgnoreCase) ||
-                    p.Description.Contains(q, StringComparison.OrdinalIgnoreCase));
+                    (p.Title != null && p.Title.Contains(q, StringComparison.OrdinalIgnoreCase)) ||
+                    (p.Description != null && p.Description.Contains(q, StringComparison.OrdinalIgnoreCase)));
             }
 
             if (filter.Category.HasValue)
@@ -91,14 +91,20 @@ namespace Hook.Application.Services.Implementation
         private static MarketplaceProductListItemResponse ToListItem(MarketplaceProduct p)
         {
             var main = p.Images.FirstOrDefault(i => i.IsMainImage)?.ImageUrl ?? p.Images.FirstOrDefault()?.ImageUrl;
+            var avgRating = p.Reviews != null && p.Reviews.Any(r => !r.IsDeleted) 
+                            ? (decimal)p.Reviews.Where(r => !r.IsDeleted).Average(r => r.Rating) 
+                            : 0;
+
             return new MarketplaceProductListItemResponse(
                 p.Id,
-                p.Title,
+                p.Title ?? string.Empty,
+                p.Description ?? string.Empty,
                 p.Price,
                 p.Condition,
                 p.Category,
                 p.StockQuantity,
-                main);
+                main,
+                Math.Round(avgRating, 1));
         }
     }
 

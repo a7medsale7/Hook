@@ -1,4 +1,4 @@
-﻿using Hook.Domain.Abstractions.Repositories;
+using Hook.Domain.Abstractions.Repositories;
 using Hook.Domain.Entities;
 using Hook.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -39,6 +39,7 @@ namespace Hook.Infrastructure.Repositories
                 .Include(p => p.Images)
                 .Include(p => p.SellerProfile)
                     .ThenInclude(s => s.User)
+                .Include(p => p.Reviews.Where(r => !r.IsDeleted))
                 .ToListAsync();
         }
 

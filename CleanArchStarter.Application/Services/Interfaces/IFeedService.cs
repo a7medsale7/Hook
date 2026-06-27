@@ -11,6 +11,7 @@ namespace Hook.Application.Services.Interfaces;
 public interface IFeedService
 {
     Task<Result<IEnumerable<PostResponse>>> GetLatestFeedAsync(string currentUserId, int page, int pageSize, PostCategory? category, string? location, CancellationToken cancellationToken = default);
+    Task<Result<IEnumerable<PostResponse>>> GetAllPostsAsync(string currentUserId, int page, int pageSize, CancellationToken cancellationToken = default);
     Task<Result<IEnumerable<PostResponse>>> GetTrendingFeedAsync(string currentUserId, int page, int pageSize, PostCategory? category, string? location, CancellationToken cancellationToken = default);
     Task<Result<IEnumerable<PostResponse>>> GetFollowingFeedAsync(string currentUserId, int page, int pageSize, CancellationToken cancellationToken = default);
     Task<Result<IEnumerable<PostResponse>>> GetSavedPostsAsync(string userId, int page, int pageSize, CancellationToken cancellationToken = default);

@@ -21,7 +21,8 @@ public class TripService(
     IBoatOwnerRepository boatOwnerRepository,
     IBookingRepository bookingRepository,
     IFileService fileService,
-    IUnitOfWork unitOfWork) : ITripService
+    IUnitOfWork unitOfWork,
+    IFuzzySearchService fuzzySearchService) : ITripService
 {
     private readonly ITripRepository _tripRepository = tripRepository;
     private readonly ITripDateRepository _tripDateRepository = tripDateRepository;
@@ -30,6 +31,7 @@ public class TripService(
     private readonly IBookingRepository _bookingRepository = bookingRepository;
     private readonly IFileService _fileService = fileService;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly IFuzzySearchService _fuzzySearchService = fuzzySearchService;
 
     public async Task<Result<TripResponse>> CreateTripAsync(string userId, CreateTripRequest request, CancellationToken cancellationToken = default)
     {
@@ -45,6 +47,75 @@ public class TripService(
         var boat = await _boatRepository.GetByIdAsync(request.BoatId);
         if (boat is null || boat.OwnerProfileId != ownerProfile.Id)
             return Result.Failure<TripResponse>(TripErrors.BoatNotOwned);
+
+        // 2.5 Check for Restricted Fishing Locations
+        var fishingKeywords = new[] { "صيد", "سمك", "سنارة", "تسقيط", "جيجينج", "fishing", "fish", "طعم", "جروف" };
+        var combinedText = $"{request.Title} {request.ShortDescription} {request.DetailedDescription}";
+        bool isFishingTrip = fishingKeywords.Any(k => combinedText.Contains(k, StringComparison.OrdinalIgnoreCase));
+
+        if (isFishingTrip && !string.IsNullOrWhiteSpace(request.LocationName))
+        {
+            // Map comprehensive English location names to Arabic for the DB search
+            var locationMap = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+            {
+                { "ras mohammed", "رأس محمد" }, { "ras mohamed", "رأس محمد" },
+                { "giftun", "الجفتون" }, { "geftun", "الجفتون" },
+                { "abu galum", "أبو جالوم" },
+                { "nabq", "نبق" },
+                { "tiran", "تيران" },
+                { "sanafir", "صنافير" },
+                { "wadi el gemal", "وادي الجمال" }, { "wadi elgemal", "وادي الجمال" },
+                { "brother islands", "الأخوين" }, { "brothers islands", "الأخوين" },
+                { "daedalus", "ديدالوس" },
+                { "elphinstone", "الفينستون" },
+                { "taba", "طابا" },
+                { "saint catherine", "سانت كاترين" }, { "st catherine", "سانت كاترين" },
+                { "gebel elba", "جبل علبة" }, { "elba", "جبل علبة" },
+                { "el omaid", "العميد" },
+                { "salum", "السلوم" }, { "salloum", "السلوم" },
+                { "wadi allaqi", "وادي العلاقي" },
+                { "qarun", "قارون" }, { "karun", "قارون" },
+                { "wadi el rayan", "وادي الريان" }, { "wadi rayan", "وادي الريان" },
+                { "ashtoum el gamil", "أشتوم الجميل" },
+                { "burullus", "البرلس" },
+                { "zaranik", "الزرانيق" },
+                { "ahrash", "الأحراش" },
+                { "petrified forest", "الغابة المتحجرة" },
+                { "white desert", "الصحراء البيضاء" },
+                { "siwa", "سيوة" },
+                { "alamein", "العلمين" }, { "el alamein", "العلمين" },
+                { "sannur", "كهف وادي سنور" },
+                { "rosetta", "بوغاز رشيد" }, { "rashid", "بوغاز رشيد" },
+                { "damietta", "بوغاز دمياط" }, { "dumyat", "بوغاز دمياط" },
+                { "manzala", "المنزلة" },
+                { "bardawil", "البردويل" },
+                { "edko", "إدكو" }, { "idku", "إدكو" },
+                { "mariout", "مريوط" }, { "maryut", "مريوط" },
+                { "lake nasser", "بحيرة ناصر" }, { "nasser lake", "بحيرة ناصر" },
+                { "abu simbel", "أبو سمبل" },
+                { "montaza", "المنتزه" }, { "montazah", "المنتزه" },
+                { "maamoura", "المعمورة" },
+                { "sharm el sheikh", "شرم الشيخ" },
+                { "naama bay", "خليج نعمة" },
+                { "marsa alam", "مرسى علم" }
+            };
+
+            string searchLocation = request.LocationName.Trim();
+            foreach (var kvp in locationMap)
+            {
+                if (searchLocation.Contains(kvp.Key, StringComparison.OrdinalIgnoreCase))
+                {
+                    searchLocation = kvp.Value;
+                    break;
+                }
+            }
+
+            var searchResult = await _fuzzySearchService.SearchAsync(Hook.Domain.Enums.ChatCategory.RestrictedLocation, searchLocation, cancellationToken);
+            if (searchResult.Entity != null)
+            {
+                return Result.Failure<TripResponse>(new Error("Trip.RestrictedLocation", $"Sorry, you cannot organize a fishing trip in '{request.LocationName}' because it is designated as a protected area or fishing is legally prohibited there."));
+            }
+        }
 
         // 3. Upload Images
         var imageUrls = await _fileService.SaveFilesAsync(request.Images, "uploads/trips");
@@ -150,6 +221,75 @@ public class TripService(
         // Check ownership (bypass for Admin)
         if (!isAdmin && trip.TripManager.UserId != userId)
             return Result.Failure<TripResponse>(TripErrors.Unauthorized);
+
+        // 0.5 Check for Restricted Fishing Locations
+        var fishingKeywords = new[] { "صيد", "سمك", "سنارة", "تسقيط", "جيجينج", "fishing", "fish", "طعم", "جروف" };
+        var combinedText = $"{request.Title} {request.ShortDescription} {request.DetailedDescription}";
+        bool isFishingTrip = fishingKeywords.Any(k => combinedText.Contains(k, StringComparison.OrdinalIgnoreCase));
+
+        if (isFishingTrip && !string.IsNullOrWhiteSpace(request.LocationName))
+        {
+            // Map comprehensive English location names to Arabic for the DB search
+            var locationMap = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+            {
+                { "ras mohammed", "رأس محمد" }, { "ras mohamed", "رأس محمد" },
+                { "giftun", "الجفتون" }, { "geftun", "الجفتون" },
+                { "abu galum", "أبو جالوم" },
+                { "nabq", "نبق" },
+                { "tiran", "تيران" },
+                { "sanafir", "صنافير" },
+                { "wadi el gemal", "وادي الجمال" }, { "wadi elgemal", "وادي الجمال" },
+                { "brother islands", "الأخوين" }, { "brothers islands", "الأخوين" },
+                { "daedalus", "ديدالوس" },
+                { "elphinstone", "الفينستون" },
+                { "taba", "طابا" },
+                { "saint catherine", "سانت كاترين" }, { "st catherine", "سانت كاترين" },
+                { "gebel elba", "جبل علبة" }, { "elba", "جبل علبة" },
+                { "el omaid", "العميد" },
+                { "salum", "السلوم" }, { "salloum", "السلوم" },
+                { "wadi allaqi", "وادي العلاقي" },
+                { "qarun", "قارون" }, { "karun", "قارون" },
+                { "wadi el rayan", "وادي الريان" }, { "wadi rayan", "وادي الريان" },
+                { "ashtoum el gamil", "أشتوم الجميل" },
+                { "burullus", "البرلس" },
+                { "zaranik", "الزرانيق" },
+                { "ahrash", "الأحراش" },
+                { "petrified forest", "الغابة المتحجرة" },
+                { "white desert", "الصحراء البيضاء" },
+                { "siwa", "سيوة" },
+                { "alamein", "العلمين" }, { "el alamein", "العلمين" },
+                { "sannur", "كهف وادي سنور" },
+                { "rosetta", "بوغاز رشيد" }, { "rashid", "بوغاز رشيد" },
+                { "damietta", "بوغاز دمياط" }, { "dumyat", "بوغاز دمياط" },
+                { "manzala", "المنزلة" },
+                { "bardawil", "البردويل" },
+                { "edko", "إدكو" }, { "idku", "إدكو" },
+                { "mariout", "مريوط" }, { "maryut", "مريوط" },
+                { "lake nasser", "بحيرة ناصر" }, { "nasser lake", "بحيرة ناصر" },
+                { "abu simbel", "أبو سمبل" },
+                { "montaza", "المنتزه" }, { "montazah", "المنتزه" },
+                { "maamoura", "المعمورة" },
+                { "sharm el sheikh", "شرم الشيخ" },
+                { "naama bay", "خليج نعمة" },
+                { "marsa alam", "مرسى علم" }
+            };
+
+            string searchLocation = request.LocationName.Trim();
+            foreach (var kvp in locationMap)
+            {
+                if (searchLocation.Contains(kvp.Key, StringComparison.OrdinalIgnoreCase))
+                {
+                    searchLocation = kvp.Value;
+                    break;
+                }
+            }
+
+            var searchResult = await _fuzzySearchService.SearchAsync(Hook.Domain.Enums.ChatCategory.RestrictedLocation, searchLocation, cancellationToken);
+            if (searchResult.Entity != null)
+            {
+                return Result.Failure<TripResponse>(new Error("Trip.RestrictedLocation", $"Sorry, you cannot organize a fishing trip in '{request.LocationName}' because it is designated as a protected area or fishing is legally prohibited there."));
+            }
+        }
 
         // 1. Update basic info
         trip.Title = request.Title;

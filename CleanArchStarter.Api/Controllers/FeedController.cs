@@ -32,6 +32,20 @@ public class FeedController(IFeedService feedService) : ControllerBase
         return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
     }
 
+    [HttpGet("all")]
+    [Authorize(Policy = Permissions.Community_Feed_View)]
+    public async Task<IActionResult> GetAll(
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 10,
+        CancellationToken cancellationToken = default)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userId is null) return Unauthorized();
+
+        var result = await _feedService.GetAllPostsAsync(userId, page, pageSize, cancellationToken);
+        return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
+    }
+
     [HttpGet("trending")]
     [Authorize(Policy = Permissions.Community_Feed_View)]
     public async Task<IActionResult> GetTrending(

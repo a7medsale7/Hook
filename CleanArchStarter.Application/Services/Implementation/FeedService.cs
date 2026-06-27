@@ -32,7 +32,11 @@ public class FeedService : IFeedService
             .Include(p => p.EventDetails)
             .Include(p => p.ComplaintDetails)
             .Include(p => p.OriginalPost)
-            .ThenInclude(op => op.User)
+                .ThenInclude(op => op.User)
+            .Include(p => p.OriginalPost)
+                .ThenInclude(op => op.Images)
+            .Include(p => p.OriginalPost)
+                .ThenInclude(op => op.Location)
             .AsQueryable();
 
         if (category.HasValue)
@@ -55,6 +59,30 @@ public class FeedService : IFeedService
         return Result.Success<IEnumerable<PostResponse>>(response);
     }
 
+    public async Task<Result<IEnumerable<PostResponse>>> GetAllPostsAsync(string currentUserId, int page, int pageSize, CancellationToken cancellationToken = default)
+    {
+        var posts = await _context.Posts
+            .AsNoTracking()
+            .Include(p => p.User)
+            .Include(p => p.Location)
+            .Include(p => p.Images)
+            .Include(p => p.EventDetails)
+            .Include(p => p.ComplaintDetails)
+            .Include(p => p.OriginalPost)
+                .ThenInclude(op => op.User)
+            .Include(p => p.OriginalPost)
+                .ThenInclude(op => op.Images)
+            .Include(p => p.OriginalPost)
+                .ThenInclude(op => op.Location)
+            .OrderByDescending(p => p.CreatedOn)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync(cancellationToken);
+
+        var response = await MapPostsAsync(posts, currentUserId, cancellationToken);
+        return Result.Success<IEnumerable<PostResponse>>(response);
+    }
+
     public async Task<Result<IEnumerable<PostResponse>>> GetTrendingFeedAsync(string currentUserId, int page, int pageSize, PostCategory? category, string? location, CancellationToken cancellationToken = default)
     {
         var query = _context.Posts
@@ -65,7 +93,11 @@ public class FeedService : IFeedService
             .Include(p => p.EventDetails)
             .Include(p => p.ComplaintDetails)
             .Include(p => p.OriginalPost)
-            .ThenInclude(op => op.User)
+                .ThenInclude(op => op.User)
+            .Include(p => p.OriginalPost)
+                .ThenInclude(op => op.Images)
+            .Include(p => p.OriginalPost)
+                .ThenInclude(op => op.Location)
             .AsQueryable();
 
         if (category.HasValue)
@@ -111,7 +143,11 @@ public class FeedService : IFeedService
             .Include(p => p.EventDetails)
             .Include(p => p.ComplaintDetails)
             .Include(p => p.OriginalPost)
-            .ThenInclude(op => op.User)
+                .ThenInclude(op => op.User)
+            .Include(p => p.OriginalPost)
+                .ThenInclude(op => op.Images)
+            .Include(p => p.OriginalPost)
+                .ThenInclude(op => op.Location)
             .Where(p => followingIds.Contains(p.UserId))
             .OrderBy(p => Guid.NewGuid())
             .Skip((page - 1) * pageSize)
@@ -147,7 +183,11 @@ public class FeedService : IFeedService
             .Include(p => p.EventDetails)
             .Include(p => p.ComplaintDetails)
             .Include(p => p.OriginalPost)
-            .ThenInclude(op => op.User)
+                .ThenInclude(op => op.User)
+            .Include(p => p.OriginalPost)
+                .ThenInclude(op => op.Images)
+            .Include(p => p.OriginalPost)
+                .ThenInclude(op => op.Location)
             .Where(p => postIds.Contains(p.Id))
             .ToDictionaryAsync(p => p.Id, cancellationToken);
 
@@ -302,7 +342,11 @@ public class FeedService : IFeedService
             .Include(p => p.EventDetails)
             .Include(p => p.ComplaintDetails)
             .Include(p => p.OriginalPost)
-            .ThenInclude(op => op.User)
+                .ThenInclude(op => op.User)
+            .Include(p => p.OriginalPost)
+                .ThenInclude(op => op.Images)
+            .Include(p => p.OriginalPost)
+                .ThenInclude(op => op.Location)
             .Where(p => postIds.Contains(p.Id))
             .ToDictionaryAsync(p => p.Id, cancellationToken);
 
@@ -340,7 +384,11 @@ public class FeedService : IFeedService
             .Include(p => p.EventDetails)
             .Include(p => p.ComplaintDetails)
             .Include(p => p.OriginalPost)
-            .ThenInclude(op => op.User)
+                .ThenInclude(op => op.User)
+            .Include(p => p.OriginalPost)
+                .ThenInclude(op => op.Images)
+            .Include(p => p.OriginalPost)
+                .ThenInclude(op => op.Location)
             .Where(p => postIds.Contains(p.Id))
             .ToDictionaryAsync(p => p.Id, cancellationToken);
 
@@ -363,7 +411,11 @@ public class FeedService : IFeedService
             .Include(p => p.EventDetails)
             .Include(p => p.ComplaintDetails)
             .Include(p => p.OriginalPost)
-            .ThenInclude(op => op.User)
+                .ThenInclude(op => op.User)
+            .Include(p => p.OriginalPost)
+                .ThenInclude(op => op.Images)
+            .Include(p => p.OriginalPost)
+                .ThenInclude(op => op.Location)
             .Where(p => p.UserId == userId)
             .OrderByDescending(p => p.CreatedOn)
             .Skip((page - 1) * pageSize)

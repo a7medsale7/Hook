@@ -1,4 +1,4 @@
-﻿using Hook.Application.Contracts.Marketplace.Products;
+using Hook.Application.Contracts.Marketplace.Products;
 using Hook.Application.Services.Interfaces;
 using Hook.Domain.Consts;
 using Microsoft.AspNetCore.Authorization;
@@ -47,12 +47,12 @@ namespace Hook.Api.Controllers
 
         [HttpGet("seller/my-products")]
         [Authorize(Policy = Permissions.MarketplaceProducts_View)]
-        public async Task<IActionResult> MyProducts(CancellationToken cancellationToken)
+        public async Task<IActionResult> MyProducts([FromQuery] bool? isActive, CancellationToken cancellationToken)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (userId is null) return Unauthorized();
 
-            var result = await sellerProductService.GetMyProductsAsync(userId, cancellationToken);
+            var result = await sellerProductService.GetMyProductsAsync(userId, isActive, cancellationToken);
             return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
         }
     }

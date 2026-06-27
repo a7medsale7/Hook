@@ -1,4 +1,4 @@
-﻿using Hook.Application.Abstractions.Result;
+using Hook.Application.Abstractions.Result;
 using Hook.Application.Contracts.Marketplace.Products;
 using System;
 using System.Collections.Generic;
@@ -13,6 +13,6 @@ namespace Hook.Application.Services.Interfaces
         Task<Result<Guid>> CreateAsync(string userId, CreateMarketplaceProductRequest request, CancellationToken cancellationToken = default);
         Task<Result> UpdateAsync(string userId, UpdateMarketplaceProductRequest request, CancellationToken cancellationToken = default);
         Task<Result> DeleteAsync(string userId, Guid productId, CancellationToken cancellationToken = default);
-        Task<Result<IEnumerable<MarketplaceProductListItemResponse>>> GetMyProductsAsync(string userId, CancellationToken cancellationToken = default);
+        Task<Result<IEnumerable<MarketplaceProductListItemResponse>>> GetMyProductsAsync(string userId, bool? isActive = null, CancellationToken cancellationToken = default);
     }
 }

@@ -1,4 +1,4 @@
-﻿using Hook.Domain.Entities;
+using Hook.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +12,7 @@ namespace Hook.Domain.Abstractions.Repositories
         Task<MarketplaceReview?> GetByIdAsync(Guid id);
         Task<MarketplaceReview?> GetByBuyerProductOrderAsync(string buyerUserId, Guid productId, Guid orderId);
         Task<IEnumerable<MarketplaceReview>> GetByProductIdAsync(Guid productId);
+        Task<IEnumerable<MarketplaceReview>> GetBySellerProfileIdAsync(Guid sellerProfileId);
         Task AddAsync(MarketplaceReview review);
         void Update(MarketplaceReview review);
         void Delete(MarketplaceReview review);

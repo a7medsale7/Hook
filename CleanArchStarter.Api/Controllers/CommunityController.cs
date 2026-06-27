@@ -54,6 +54,14 @@ public class CommunityController(
         return result.IsSuccess ? Ok() : BadRequest(result.Error);
     }
 
+    [HttpDelete("admin/delete-post/{id}")]
+    [Authorize(Roles = DefaultRoles.Admin)]
+    public async Task<IActionResult> HardDeletePost(Guid id, CancellationToken cancellationToken)
+    {
+        var result = await _communityService.HardDeletePostAsync(id, cancellationToken);
+        return result.IsSuccess ? Ok() : BadRequest(result.Error);
+    }
+
     [HttpGet("posts/{id}")]
     [Authorize(Policy = Permissions.Community_Feed_View)]
     public async Task<IActionResult> GetPostById(Guid id, CancellationToken cancellationToken)

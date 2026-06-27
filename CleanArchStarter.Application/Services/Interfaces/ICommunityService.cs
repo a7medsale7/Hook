@@ -12,6 +12,7 @@ public interface ICommunityService
     Task<Result<PostResponse>> CreatePostAsync(string userId, CreatePostRequest request, CancellationToken cancellationToken = default);
     Task<Result<PostResponse>> UpdatePostAsync(Guid postId, string userId, UpdatePostRequest request, CancellationToken cancellationToken = default);
     Task<Result> DeletePostAsync(Guid postId, string userId, CancellationToken cancellationToken = default);
+    Task<Result> HardDeletePostAsync(Guid postId, CancellationToken cancellationToken = default);
     Task<Result<PostResponse>> GetPostByIdAsync(Guid postId, string currentUserId, CancellationToken cancellationToken = default);
     Task<Result<bool>> ToggleLikeAsync(Guid postId, string userId, CancellationToken cancellationToken = default);
     Task<Result<PostCommentResponse>> AddCommentAsync(Guid postId, string userId, AddCommentRequest request, CancellationToken cancellationToken = default);

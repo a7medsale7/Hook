@@ -126,6 +126,8 @@ public static class DependencyInjection
         services.AddScoped<IMarketplaceSellerService, MarketplaceSellerService>();
         services.AddScoped<IMarketplaceAnalyticsService, MarketplaceAnalyticsService>();
         services.AddScoped<IMarketplaceAdminManagementService, MarketplaceAdminManagementService>();
+        services.AddScoped<ISellerDashboardService, SellerDashboardService>();
+        services.AddScoped<IBoatOwnerDashboardService, BoatOwnerDashboardService>();
 
         // 🎣 Community Module Services
         services.AddScoped<ICommunityService, CommunityService>();

@@ -299,6 +299,51 @@ public class CommunityService : ICommunityService
         return Result.Success();
     }
 
+    public async Task<Result> HardDeletePostAsync(Guid postId, CancellationToken cancellationToken = default)
+    {
+        var postExists = await _context.Posts.IgnoreQueryFilters().AnyAsync(p => p.Id == postId, cancellationToken);
+        if (!postExists)
+        {
+            return Result.Failure(CommunityErrors.PostNotFound);
+        }
+
+        // Delete dependencies first
+        await _context.PostImages.IgnoreQueryFilters().Where(i => i.PostId == postId).ExecuteDeleteAsync(cancellationToken);
+        await _context.PostLikes.IgnoreQueryFilters().Where(l => l.PostId == postId).ExecuteDeleteAsync(cancellationToken);
+        
+        await _context.PostComments.IgnoreQueryFilters().Where(c => c.PostId == postId).ExecuteUpdateAsync(s => s.SetProperty(c => c.ParentCommentId, (Guid?)null), cancellationToken);
+        await _context.PostComments.IgnoreQueryFilters().Where(c => c.PostId == postId).ExecuteDeleteAsync(cancellationToken);
+        
+        // Delete event and participants
+        var eventIds = await _context.FishingEvents.IgnoreQueryFilters().Where(e => e.PostId == postId).Select(e => e.Id).ToListAsync(cancellationToken);
+        if (eventIds.Any())
+        {
+            await _context.EventParticipants.IgnoreQueryFilters().Where(ep => eventIds.Contains(ep.EventId)).ExecuteDeleteAsync(cancellationToken);
+            await _context.FishingEvents.IgnoreQueryFilters().Where(e => eventIds.Contains(e.Id)).ExecuteDeleteAsync(cancellationToken);
+        }
+
+        // Delete complaints and supports
+        var complaintIds = await _context.Complaints.IgnoreQueryFilters().Where(c => c.PostId == postId).Select(c => c.PostId).ToListAsync(cancellationToken);
+        if (complaintIds.Any())
+        {
+            await _context.ComplaintSupports.IgnoreQueryFilters().Where(cs => complaintIds.Contains(cs.ComplaintId)).ExecuteDeleteAsync(cancellationToken);
+            await _context.Complaints.IgnoreQueryFilters().Where(c => complaintIds.Contains(c.PostId)).ExecuteDeleteAsync(cancellationToken);
+        }
+
+        await _context.SavedPosts.IgnoreQueryFilters().Where(s => s.PostId == postId).ExecuteDeleteAsync(cancellationToken);
+        await _context.PostReports.IgnoreQueryFilters().Where(r => r.PostId == postId).ExecuteDeleteAsync(cancellationToken);
+        
+        // Nullify OriginalPostId for shared posts
+        await _context.Posts.IgnoreQueryFilters().Where(p => p.OriginalPostId == postId).ExecuteUpdateAsync(s => s.SetProperty(p => p.OriginalPostId, (Guid?)null), cancellationToken);
+        
+        // Finally hard delete the post
+        await _context.Posts.IgnoreQueryFilters().Where(p => p.Id == postId).ExecuteDeleteAsync(cancellationToken);
+
+        await _notificationHubService.BroadcastPostDeletedAsync(postId);
+
+        return Result.Success();
+    }
+
     public async Task<Result<PostResponse>> GetPostByIdAsync(Guid postId, string currentUserId, CancellationToken cancellationToken = default)
     {
         var postDto = await GetPostWithDetailsAsync(postId, currentUserId, cancellationToken);
@@ -781,6 +826,7 @@ public class CommunityService : ICommunityService
     {
         var originalPost = await _context.Posts
             .Include(p => p.User)
+            .Include(p => p.Images)
             .FirstOrDefaultAsync(p => p.Id == postId, cancellationToken);
 
         if (originalPost is null)
@@ -793,7 +839,10 @@ public class CommunityService : ICommunityService
         var actualOriginalPost = originalPost;
         if (originalPost.OriginalPostId.HasValue)
         {
-            actualOriginalPost = await _context.Posts.FirstOrDefaultAsync(p => p.Id == originalPost.OriginalPostId.Value, cancellationToken);
+            actualOriginalPost = await _context.Posts
+                .Include(p => p.User)
+                .Include(p => p.Images)
+                .FirstOrDefaultAsync(p => p.Id == originalPost.OriginalPostId.Value, cancellationToken);
         }
 
         var newPost = new Post

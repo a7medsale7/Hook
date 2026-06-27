@@ -144,13 +144,19 @@ namespace Hook.Application.Services.Implementation
             return Result.Success();
         }
 
-        public async Task<Result<IEnumerable<MarketplaceProductListItemResponse>>> GetMyProductsAsync(string userId, CancellationToken cancellationToken = default)
+        public async Task<Result<IEnumerable<MarketplaceProductListItemResponse>>> GetMyProductsAsync(string userId, bool? isActive = null, CancellationToken cancellationToken = default)
         {
             var sellerProfile = await _sellerProfileRepository.GetByUserIdAsync(userId);
             if (sellerProfile is null || sellerProfile.Status != RequestStatus.Approved)
                 return Result.Failure<IEnumerable<MarketplaceProductListItemResponse>>(MarketplaceSellerProductErrors.NotApprovedSeller);
 
             var products = await _productRepository.GetBySellerProfileIdAsync(sellerProfile.Id);
+            
+            if (isActive.HasValue)
+            {
+                products = products.Where(p => p.IsActive == isActive.Value);
+            }
+
             var response = products.Select(ToListItem);
             return Result.Success(response);
         }
@@ -158,14 +164,20 @@ namespace Hook.Application.Services.Implementation
         private static MarketplaceProductListItemResponse ToListItem(MarketplaceProduct p)
         {
             var main = p.Images.FirstOrDefault(i => i.IsMainImage)?.ImageUrl ?? p.Images.FirstOrDefault()?.ImageUrl;
+            var avgRating = p.Reviews != null && p.Reviews.Any(r => !r.IsDeleted) 
+                            ? (decimal)p.Reviews.Where(r => !r.IsDeleted).Average(r => r.Rating) 
+                            : 0;
+
             return new MarketplaceProductListItemResponse(
                 p.Id,
-                p.Title,
+                p.Title ?? string.Empty,
+                p.Description ?? string.Empty,
                 p.Price,
                 p.Condition,
                 p.Category,
                 p.StockQuantity,
-                main);
+                main,
+                Math.Round(avgRating, 1));
         }
     }
 
