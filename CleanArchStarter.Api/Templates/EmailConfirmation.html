@@ -4,11 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Confirm Your Email</title>
+    <title>Confirm Your Email - Hook</title>
     <style>
         /* Reset some default styles */
         body, p, h1, a {
+            body
+
+        {
             margin: 0;
             padding: 0;
+            background-color: #f2f7fb;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            -webkit-font-smoothing: antialiased;
         }
 
         body {
@@ -17,36 +24,85 @@
             color: #333;
             line-height: 1.6;
             padding: 20px;
+            .wrapper
+
+        {
+            width: 100%;
+            background-color: #f2f7fb;
+            padding: 40px 20px;
+            box-sizing: border-box;
         }
 
         .email-wrapper {
+            .main
+
+        {
+            background-color: #ffffff;
+            margin: 0 auto;
+            width: 100%;
             max-width: 600px;
             margin: 40px auto;
             background: #ffffff;
             border-radius: 12px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
             overflow: hidden;
+            box-shadow: 0 8px 24px rgba(10, 40, 80, 0.08);
         }
 
         .email-header {
             background: #007bff;
             color: white;
+            .header
+
+        {
+            background: #112A46;
+            background: linear-gradient(135deg, #112A46 0%, #1C4E80 100%);
+            padding: 40px 20px;
             text-align: center;
             padding: 25px 20px;
+            border-bottom: 4px solid #0091D5;
         }
 
-            .email-header h1 {
-                font-size: 24px;
-            }
+        .email-header h1 {
+            font-size: 24px;
+        }
+
+        .logo-circle {
+            display: inline-block;
+            background-color: #0091D5;
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            line-height: 64px;
+            font-size: 32px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 145, 213, 0.4);
+            margin-bottom: 15px;
+        }
 
         .email-body {
             padding: 30px 25px;
+            .header h1
+
+        {
+            margin: 0;
+            color: #ffffff;
+            font-size: 26px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
         }
 
-            .email-body p {
-                font-size: 16px;
-                margin-bottom: 15px;
-            }
+        .email-body p {
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+
+        .content {
+            padding: 40px 35px;
+            color: #334155;
+            line-height: 1.7;
+            font-size: 16px;
+        }
 
         .btn-confirm {
             display: inline-block;
@@ -54,37 +110,109 @@
             margin-top: 20px;
             background-color: #28a745;
             color: #fff !important;
+            .content h2
+
+        {
+            margin-top: 0;
+            color: #112A46;
+            font-size: 22px;
+            font-weight: 600;
+        }
+
+        .content p {
+            margin: 0 0 20px 0;
+        }
+
+        .button-container {
+            text-align: center;
+            margin: 35px 0;
+        }
+
+        .btn {
+            background-color: #EA6A47;
+            color: #ffffff !important;
             text-decoration: none;
+            padding: 16px 36px;
+            border-radius: 8px;
             font-weight: bold;
             border-radius: 6px;
             transition: background 0.3s;
+            font-size: 16px;
+            display: inline-block;
+            box-shadow: 0 4px 12px rgba(234, 106, 71, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-            .btn-confirm:hover {
-                background-color: #1e7e34;
-            }
+        .btn-confirm:hover {
+            background-color: #1e7e34;
+        }
+
+        .btn:hover {
+            background-color: #D35431;
+        }
 
         .email-footer {
             background: #f4f6f8;
+            .divider
+
+        {
+            height: 1px;
+            background-color: #e2e8f0;
+            margin: 30px 0;
+        }
+
+        .footer {
+            background-color: #F9FAFB;
+            padding: 30px 20px;
             text-align: center;
             font-size: 12px;
             color: #888;
             padding: 20px;
+            color: #64748b;
+            font-size: 14px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+            .footer p {
+                margin: 0 0 8px 0;
+            }
+
+        .ignore-text {
+            font-size: 14px;
+            color: #94a3b8;
         }
 
         @media screen and (max-width: 600px) {
             .email-wrapper {
                 margin: 20px;
-            }
+                .wrapper
 
-            .email-header h1 {
-                font-size: 20px;
-            }
+        {
+            padding: 20px 10px;
+        }
 
-            .btn-confirm {
-                width: 100%;
-                text-align: center;
-            }
+        .email-header h1 {
+            font-size: 20px;
+            .content
+
+        {
+            padding: 30px 20px;
+        }
+
+        .btn-confirm {
+            .header h1
+
+        {
+            font-size: 22px;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            text-align: center;
+            box-sizing: border-box;
+        }
         }
     </style>
 </head>
@@ -92,16 +220,42 @@
     <div class="email-wrapper">
         <div class="email-header">
             <h1>Confirm Your Email</h1>
-        </div>
-        <div class="email-body">
-            <p>Hello {{UserName}},</p>
-            <p>Thank you for registering! Please confirm your email address by clicking the button below:</p>
-            <a class="btn-confirm" href="{{ConfirmationLink}}">Confirm Email</a>
-            <p>If you did not register for this account, please ignore this email.</p>
-        </div>
-        <div class="email-footer">
-            &copy; {{Year}} MalaebBooking. All rights reserved.
-        </div>
-    </div>
+            <div class="wrapper">
+                <div class="main">
+                    <div class="header">
+                        <div class="logo-circle">🎣</div>
+                        <h1>Welcome to Hook</h1>
+                    </div>
+
+                    <div class="content">
+                        <h2>Ahoy, {{UserName}}! 🌊</h2>
+                        <p>Welcome aboard! We're thrilled to have you join our community. To fully dive in and start exploring the best fishing spots and boat trips, we just need to verify your email address.</p>
+
+                        <div class="button-container">
+                            <a href="{{ConfirmationLink}}" class="btn">Verify Email Address</a>
+                        </div>
+
+                        <p>Click the button above to confirm your account and get started. The ocean is calling!</p>
+
+                        <div class="divider"></div>
+
+                        <p class="ignore-text">If you didn't cast this net and create an account with us, you can safely ignore this message. No further action is required.</p>
+                    </div>
+
+                    <div class="footer">
+                        <p>&copy; {{Year}} Hook App. All rights reserved.</p>
+                        <p>Catch the perfect experience. 🐟</p>
+                    </div>
+                </div>
+                <div class="email-body">
+                    <p>Hello {{UserName}},</p>
+                    <p>Thank you for registering! Please confirm your email address by clicking the button below:</p>
+                    <a class="btn-confirm" href="{{ConfirmationLink}}">Confirm Email</a>
+                    <p>If you did not register for this account, please ignore this email.</p>
+                </div>
+                <div class="email-footer">
+                    &copy; {{Year}} MalaebBooking. All rights reserved.
+                </div>
+            </div>
 </body>
 </html>

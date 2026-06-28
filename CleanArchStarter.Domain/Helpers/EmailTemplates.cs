@@ -307,6 +307,12 @@ public static class EmailTemplates
 
     public static string GetMarketplaceOrderOutForDeliveryBuyerTemplate(Hook.Domain.Entities.MarketplaceOrder order)
     {
+        var itemsHtml = string.Join("", order.Items.Select(i =>
+        {
+            var title = i.Product?.Title ?? "Item";
+            return $"<tr><th>{title}</th><td>{i.Quantity} × {i.UnitPrice} EGP = <strong>{i.LineTotal} EGP</strong></td></tr>";
+        }));
+
         return $@"
         <html>
         <head>{BaseStyle}</head>
@@ -317,6 +323,12 @@ public static class EmailTemplates
                 </div>
                 <div class='content'>
                     <p>Your order <strong>{order.Id}</strong> is on its way.</p>
+                    
+                    <h3>Items in this order:</h3>
+                    <table class='details-table'>
+                        {itemsHtml}
+                    </table>
+
                     <div class='alert-box'>
                         Once you receive it, open your profile → purchases and click <strong>I received my order</strong>.
                     </div>
@@ -332,6 +344,12 @@ public static class EmailTemplates
     public static string GetMarketplaceOrderCancelledBuyerTemplate(Hook.Domain.Entities.MarketplaceOrder order, string? reason)
     {
         var reasonHtml = string.IsNullOrWhiteSpace(reason) ? "" : $"<p><strong>Reason:</strong> {reason}</p>";
+        var itemsHtml = string.Join("", order.Items.Select(i =>
+        {
+            var title = i.Product?.Title ?? "Item";
+            return $"<tr><th>{title}</th><td>{i.Quantity} × {i.UnitPrice} EGP = <strong>{i.LineTotal} EGP</strong></td></tr>";
+        }));
+
         return $@"
         <html>
         <head>{BaseStyle}</head>
@@ -343,6 +361,11 @@ public static class EmailTemplates
                 <div class='content'>
                     <p>Your order <strong>{order.Id}</strong> was cancelled by the seller.</p>
                     {reasonHtml}
+                    
+                    <h3>Items that were in this order:</h3>
+                    <table class='details-table'>
+                        {itemsHtml}
+                    </table>
                 </div>
                 <div class='footer'>
                     &copy; {DateTime.UtcNow.Year} Hook Fishing Platform. All rights reserved.
@@ -354,6 +377,12 @@ public static class EmailTemplates
 
     public static string GetMarketplaceOrderDeliveredBuyerTemplate(Hook.Domain.Entities.MarketplaceOrder order)
     {
+        var itemsHtml = string.Join("", order.Items.Select(i =>
+        {
+            var title = i.Product?.Title ?? "Item";
+            return $"<tr><th>{title}</th><td>{i.Quantity} × {i.UnitPrice} EGP = <strong>{i.LineTotal} EGP</strong></td></tr>";
+        }));
+
         return $@"
         <html>
         <head>{BaseStyle}</head>
@@ -364,6 +393,12 @@ public static class EmailTemplates
                 </div>
                 <div class='content'>
                     <p>Thank you! Your order <strong>{order.Id}</strong> is marked as delivered.</p>
+                    
+                    <h3>Items Delivered:</h3>
+                    <table class='details-table'>
+                        {itemsHtml}
+                    </table>
+
                     <div class='alert-box'>
                         You can now leave a review (stars + comment). Reviews are only available after delivery confirmation.
                     </div>

@@ -423,7 +423,7 @@ public class TripService(
             {
                 TripId = tripId,
                 StartDate = dateDto.StartDate,
-                EndDate = dateDto.StartDate.AddDays(1),
+                EndDate = dateDto.EndDate,
                 AvailableSeats = dateDto.AvailableSeats,
                 IsActive = true
             };

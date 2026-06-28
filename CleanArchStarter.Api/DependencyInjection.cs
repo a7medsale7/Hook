@@ -91,6 +91,7 @@ public static class DependencyInjection
         services.AddScoped<ISellerProfileRepository, SellerProfileRepository>();
         services.AddScoped<IMarketplaceReviewRepository, MarketplaceReviewRepository>();
         services.AddScoped<IMarketplaceListingRequestRepository, MarketplaceListingRequestRepository>();
+        services.AddScoped<IAdminDashboardRepository, AdminDashboardRepository>();
 
         services.AddExceptionHandler<GlobalExceptionHandler>();
         services.AddProblemDetails();
@@ -128,6 +129,7 @@ public static class DependencyInjection
         services.AddScoped<IMarketplaceAdminManagementService, MarketplaceAdminManagementService>();
         services.AddScoped<ISellerDashboardService, SellerDashboardService>();
         services.AddScoped<IBoatOwnerDashboardService, BoatOwnerDashboardService>();
+        services.AddScoped<IAdminDashboardService, AdminDashboardService>();
 
         // 🎣 Community Module Services
         services.AddScoped<ICommunityService, CommunityService>();
